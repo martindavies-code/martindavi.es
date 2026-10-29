@@ -172,9 +172,94 @@ const FALLBACK_WRONG_MARTIN = [
   }
 ];
 
+const FALLBACK_PLAYLISTS = [
+  {
+    "id": "MJD-PL-01",
+    "title": "I think I am better at music than Paul McCartney",
+    "genre": "Beatles Competitor Complex",
+    "tracks": "Curated Selection",
+    "summary": "Arrogant artists who thought they could top the actual Beatles but nevertheless didn't disgrace themselves.",
+    "url": "https://open.spotify.com/playlist/4hnCZBij1qGdPZRAiE71T0?si=bbcabaaf94d8430f",
+    "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67706c0000da84b2d6d1d19aaf56a5c22443c5"
+  },
+  {
+    "id": "MJD-PL-02",
+    "title": "Shh! Library music that goes off",
+    "genre": "Vintage Production & Funk",
+    "tracks": "20 Tracks",
+    "summary": "Obscure archive cues, driving library rhythms, and heavy analogue breaks that have no business hitting this hard.",
+    "url": "https://open.spotify.com/playlist/4csU0MIgjxpyqKM7Px644N?si=d5c9ff2ba955438e",
+    "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67706c0000da84c5a4f4f9a815020bc6bd10f5"
+  },
+  {
+    "id": "MJD-PL-03",
+    "title": "Thomas the Skank Engine",
+    "genre": "2-Tone & Third Wave Ska",
+    "tracks": "26 Tracks",
+    "summary": "Full-throttle skanking rhythms, brass stabs, and uptempo offbeats engineered for maximum velocity.",
+    "url": "https://open.spotify.com/playlist/6mC7gndFXdtk3LJLbUDVgj?si=a791a47a7f1a4987",
+    "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67706c0000da8419cd7276e06ba1bc8c390162"
+  },
+  {
+    "id": "MJD-PL-04",
+    "title": "Motherfucking House",
+    "genre": "Classic & Acid House",
+    "tracks": "119 Tracks",
+    "summary": "A sprawling anthology of raw Chicago 808s, soaring piano riffs, and late-night warehouse euphoria.",
+    "url": "https://open.spotify.com/playlist/2BwxWj5Fu2jEYrINWq5328?si=e49ef1dda702411e",
+    "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67706c0000da84e67d49571fa24e26621127ce"
+  },
+  {
+    "id": "MJD-PL-05",
+    "title": "One note bangers",
+    "genre": "Monotone Minimalism",
+    "tracks": "17 Tracks",
+    "summary": "Unapologetic masterclasses in hypnosis: tracks that lock into a single unrelenting pitch and ride it into orbit.",
+    "url": "https://open.spotify.com/playlist/7qL4TX5jWjdoATM7w0r09A?si=c8491926a3c84303",
+    "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67706c0000da843dd31a8ee47e06721412d08b"
+  },
+  {
+    "id": "MJD-PL-06",
+    "title": "These songs have the same name! And! Crucially! They are great!",
+    "genre": "Homonymic Pop & Rock",
+    "tracks": "96 Tracks",
+    "summary": "Clusters of completely unrelated tracks that share the exact same title, with zero filler permitted.",
+    "url": "https://open.spotify.com/playlist/3zmO1LfAtNKjO7XRbBPZjn?si=095998b5e9774b73",
+    "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67706c0000da84126fd21a35ada78fae9727df"
+  },
+  {
+    "id": "MJD-PL-07",
+    "title": "Beats to get shit done to",
+    "genre": "High-Focus Propulsive Beats",
+    "tracks": "33 Tracks",
+    "summary": "Driving electronic rhythms, sharp basslines, and zero-distraction momentum for long terminal sessions.",
+    "url": "https://open.spotify.com/playlist/5BEXMpfmmhUrK6eDIAHkPl?si=f6ee7b698af14c72",
+    "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67706c0000da8487fe6764c76be0d7a411cbed"
+  },
+  {
+    "id": "MJD-PL-08",
+    "title": "The artist name is also in the song title!",
+    "genre": "Self-Referential Anthems",
+    "tracks": "44 Tracks",
+    "summary": "The ultimate recursive meta-tracklist: Talk Talk by Talk Talk, Bad Company by Bad Company, and beyond.",
+    "url": "https://open.spotify.com/playlist/5iGsDPKitxHPFh56PZC1Sv?si=ca128496fe874803",
+    "cover": "https://mosaic.scdn.co/640/ab67616d00001e020b74e9fcbe76d8245535a207ab67616d00001e0219b6a0ae303eef6370e4ee83ab67616d00001e025901aaa980d3e714bf01171cab67616d00001e0275cec6ca2727d5717f195c40"
+  },
+  {
+    "id": "MJD-PL-09",
+    "title": "Electrodiscohousemusic",
+    "genre": "French Touch & Cosmic Disco",
+    "tracks": "67 Tracks",
+    "summary": "Glittering vocoders, compressed bass grooves, and four-to-the-floor euphoria from Paris to Chicago.",
+    "url": "https://open.spotify.com/playlist/0W39nohRmhWO5fpq9CcCCz?si=d19234be1c2942bd",
+    "cover": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da84b869d8503b9a0b16f41fbcfc"
+  }
+];
+
 // App State
 let projectsData = [];
 let wrongMartinData = [];
+let playlistsData = [];
 let activeFilter = 'ALL';
 
 /* --- Theme Management --- */
@@ -430,7 +515,78 @@ function renderWrongMartin() {
   });
 }
 
-/* --- Section 04: Contact Form (Web3Forms Async Submission) --- */
+/* --- Section 04: Curated Spotify Playlists --- */
+async function loadPlaylists() {
+  const container = document.getElementById('playlists-grid');
+  try {
+    const res = await fetch('./data/playlists.json');
+    if (!res.ok) throw new Error(`HTTP error ${res.status}`);
+    playlistsData = await res.json();
+  } catch (err) {
+    console.warn('Playlists fetch failed, employing inline fallback archive:', err);
+    playlistsData = FALLBACK_PLAYLISTS;
+  }
+  renderPlaylists();
+}
+
+function renderPlaylists() {
+  const container = document.getElementById('playlists-grid');
+  const counterEl = document.getElementById('playlist-counter');
+  if (!container) return;
+
+  if (counterEl) {
+    counterEl.textContent = `${playlistsData.length} SOUND ARCHIVES`;
+  }
+
+  container.innerHTML = playlistsData.map(item => {
+    const escapedId = escapeHtml(item.id);
+    const escapedTitle = escapeHtml(item.title);
+    const escapedGenre = escapeHtml(item.genre);
+    const escapedTracks = escapeHtml(item.tracks);
+    const escapedSummary = escapeHtml(item.summary);
+    const escapedUrl = escapeHtml(item.url);
+    const escapedCover = escapeHtml(item.cover);
+
+    return `
+      <article class="playlist-card" id="card-${escapedId}">
+        <div class="playlist-top-bar">
+          <span class="playlist-cat">${escapedId}</span>
+          <span class="playlist-tracks">${escapedTracks}</span>
+        </div>
+
+        <div class="playlist-cover-wrapper">
+          <img
+            src="${escapedCover}"
+            alt="Cover artwork for ${escapedTitle}"
+            class="playlist-cover-img"
+            loading="lazy"
+            decoding="async"
+            width="640"
+            height="640">
+        </div>
+
+        <div class="playlist-body">
+          <div class="playlist-genre">${escapedGenre}</div>
+          <h3 class="playlist-title">${escapedTitle}</h3>
+          <p class="playlist-desc">${escapedSummary}</p>
+        </div>
+
+        <div class="playlist-footer">
+          <a
+            href="${escapedUrl}"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="spotify-btn"
+            aria-label="Open ${escapedTitle} on Spotify">
+            OPEN IN SPOTIFY &nearr;
+          </a>
+        </div>
+      </article>
+    `;
+  }).join('');
+}
+
+/* --- Section 05: Contact Form (Web3Forms Async Submission) --- */
 function initContactForm() {
   const form = document.getElementById('contact-form');
   const statusEl = document.getElementById('form-status');
@@ -514,5 +670,6 @@ document.addEventListener('DOMContentLoaded', () => {
   initTheme();
   loadProjects();
   loadWrongMartin();
+  loadPlaylists();
   initContactForm();
 });
