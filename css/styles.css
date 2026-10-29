@@ -940,10 +940,6 @@ main {
   color: var(--accent);
 }
 
-.playlist-tracks {
-  color: var(--ink-secondary);
-}
-
 .playlist-cover-wrapper {
   position: relative;
   width: 100%;
