@@ -409,7 +409,7 @@ main {
   display: grid;
   grid-template-columns: minmax(180px, 280px) minmax(0, 1fr);
   grid-auto-rows: min-content;
-  align-content: center;
+  align-content: start;
   column-gap: var(--space-md);
   row-gap: var(--space-md);
 }
@@ -1609,3 +1609,9 @@ main {
     box-shadow: 0 0 50px rgba(0, 0, 0, 0.05);
   }
 }
+
+/* Theme-specific portrait */
+.about-portrait .portrait-light { display: block; }
+.about-portrait .portrait-dark { display: none; }
+[data-theme="dark"] .about-portrait .portrait-light { display: none; }
+[data-theme="dark"] .about-portrait .portrait-dark { display: block; }
