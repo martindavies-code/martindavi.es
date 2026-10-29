@@ -497,10 +497,16 @@ main {
 /* --- Section 02: Coding Experiments Grid --- */
 .projects-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+  grid-template-columns: repeat(3, 1fr);
   background-color: var(--bg-primary);
   border-top: 1px solid var(--border-color);
   border-left: 1px solid var(--border-color);
+}
+
+@media (max-width: 1023px) {
+  .projects-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .project-card {
@@ -517,14 +523,74 @@ main {
   z-index: 2;
 }
 
-/* Hero visual weight for Interactive Dashboards */
+/* Flagship / Hero styling for Card 1 (Interactive Dashboards) */
 .project-card:first-child {
-  border-left: 3px solid var(--accent);
+  border-left: 4px solid var(--accent);
+}
+
+.project-card:first-child .card-cat::after {
+  content: " // FLAGSHIP R&D";
+  color: var(--accent);
+  font-weight: 700;
 }
 
 @media (min-width: 1024px) {
   .project-card:first-child {
-    grid-column: span 2;
+    grid-column: 1 / -1;
+  }
+
+  .project-card:first-child .card-content {
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    grid-template-areas:
+      "cat      spec"
+      "title    spec"
+      "summary  spec"
+      "tags     spec";
+    gap: var(--space-xs) var(--space-lg);
+    align-items: start;
+    padding: var(--space-md);
+  }
+
+  .project-card:first-child .card-category-tag {
+    grid-area: cat;
+    margin-bottom: 0;
+  }
+
+  .project-card:first-child .card-title {
+    grid-area: title;
+    font-size: var(--text-subhead);
+    margin-bottom: 0;
+  }
+
+  .project-card:first-child .card-summary {
+    grid-area: summary;
+    font-size: var(--text-body);
+    line-height: 1.6;
+    margin-bottom: 0;
+  }
+
+  .project-card:first-child .card-tags {
+    grid-area: tags;
+    margin-bottom: 0;
+  }
+
+  .project-card:first-child .card-details {
+    grid-area: spec;
+    margin-bottom: 0;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background-color: var(--bg-secondary);
+    border-left: 3px solid var(--accent);
+    padding: var(--space-sm) var(--space-md);
+    font-size: var(--text-caption);
+    line-height: 1.6;
+  }
+
+  .project-card:first-child .card-links {
+    grid-template-columns: repeat(4, 1fr);
   }
 }
 
