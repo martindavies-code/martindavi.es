@@ -406,10 +406,24 @@ main {
   border-right: 1px solid var(--border-color);
   padding: var(--space-lg) var(--space-md);
   background-color: var(--bg-primary);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: var(--space-md);
+  display: grid;
+  grid-template-columns: minmax(180px, 280px) minmax(0, 1fr);
+  grid-auto-rows: min-content;
+  align-content: center;
+  column-gap: var(--space-md);
+  row-gap: var(--space-md);
+}
+
+.about-prose > .about-portrait {
+  grid-column: 1;
+  grid-row: 1 / span 4;
+  align-self: start;
+  max-width: none;
+  margin: 0;
+}
+
+.about-prose > :not(.about-portrait) {
+  grid-column: 2;
 }
 
 .about-prose p {
@@ -1504,6 +1518,16 @@ main {
     border-right: none;
     border-bottom: 1px solid var(--border-color);
     padding: var(--space-md);
+  }
+  .about-prose {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .about-prose > .about-portrait {
+    grid-row: auto;
+    max-width: 320px;
+  }
+  .about-prose > :not(.about-portrait) {
+    grid-column: 1;
   }
   .about-specs {
     padding: var(--space-md);
