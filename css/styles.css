@@ -417,7 +417,7 @@ main {
 .about-prose > .about-portrait {
   grid-column: 1;
   grid-row: 1 / span 4;
-  align-self: start;
+  align-self: center;
   max-width: none;
   margin: 0;
 }
