@@ -5,7 +5,7 @@
     "title": "Interactive Dashboards",
     "category": "Frontend & Data",
     "status": "Active",
-    "summary": "Zero-dependency static data dashboards hosted on GitHub Pages, delivering sub-second visual analytics for NFL tactical field positions, NBA shot charts, UFC judging scorecards, and cycling competitions.",
+    "summary": "Zero-dependency static data dashboards hosted on GitHub Pages, delivering sub-second visual analytics for NFL live scores and field position, NBA shot charts, UFC judging scorecards, and cycling competitions.",
     "details": "Engineered with vanilla ES6 and CSS Grid without framework overhead. Showcases four live deployments: the NFL Live tactical radar and win probability engine, the NBA Live court shot chart and Scorigami tracker, an empirical scorecard audit of 31,881 UFC rounds evaluating judge dissent rates, and the Tour de France Points Classification radar. Audited with custom contrast and responsive geometry rules before deployment.",
     "tech": ["HTML5", "CSS Grid", "Vanilla JS", "GitHub Pages", "Data Analytics"],
     "links": {
@@ -22,7 +22,7 @@
     "category": "Agentic Workflows",
     "status": "Active",
     "summary": "A collection of specialised agent skills built for Google Antigravity IDE to automate multi-step research and production tasks.",
-    "details": "Includes dj-man (extracts Camelot key and BPM data to order DJ sets with verified harmonic transitions), sports-radar (compiles 24-hour UK broadcast schedules across mainstream and niche sports), and match-my-writing-style (analyses personal Workspace correspondence to strip out synthetic AI phrasing).",
+    "details": "Includes dj-man (extracts Camelot key and BPM data to order DJ sets with verified harmonic transitions), sports-radar (compiles 24-hour UK broadcast schedules across mainstream and niche sports), and match-my-writing-style (analyses personal Workspace correspondence to strip out synthetic phrasing).",
     "tech": ["Google Antigravity", "Prompt Engineering", "JSON Schema", "Markdown"]
   },
   {
@@ -31,7 +31,7 @@
     "title": "PromptologyLabs Reference Blueprints",
     "category": "Applied AI & Design",
     "status": "Live",
-    "summary": "Structured prompt workflow blueprints and technical reference sheets designed for Google Gemini users.",
+    "summary": "Structured prompt workflow blueprints and technical reference sheets designed for novice Google Gemini users.",
     "details": "Built during my 2026 sabbatical alongside the seven-course Google AI Professional Certificate. Combines modular information design with tested system instruction patterns to reduce repetitive rework in research and editorial pipelines.",
     "tech": ["Google Gemini", "System Instructions", "Information Design", "Etsy Digital"]
   },
