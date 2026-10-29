@@ -538,7 +538,7 @@ describe('Stage 6: DOM Mock Controller Integration', () => {
     const mockFetch = async () => new Response(JSON.stringify(app.FALLBACK_PLAYLISTS), { status: 200 });
     await app.loadPlaylists(doc, mockFetch);
 
-    assert.match(counter.textContent, /9 SOUND ARCHIVES/);
+    assert.match(counter.textContent, /8 SOUND ARCHIVES/);
     assert.match(grid.innerHTML, /MJD-PL-01/);
   });
 

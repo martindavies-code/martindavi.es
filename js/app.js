@@ -229,14 +229,6 @@ const FALLBACK_PLAYLISTS = [
     "summary": "The ultimate recursive meta-tracklist: Talk Talk by Talk Talk, Bad Company by Bad Company, and beyond.",
     "url": "https://open.spotify.com/playlist/5iGsDPKitxHPFh56PZC1Sv?si=ca128496fe874803",
     "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67706c0000da84805d4d1a45912bcbb28ab80c"
-  },
-  {
-    "id": "MJD-PL-09",
-    "title": "Electrodiscohousemusic",
-    "genre": "French Touch & Cosmic Disco",
-    "summary": "Glittering vocoders, compressed bass grooves, and four-to-the-floor euphoria from Paris to Chicago.",
-    "url": "https://open.spotify.com/playlist/0W39nohRmhWO5fpq9CcCCz?si=d19234be1c2942bd",
-    "cover": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da84b869d8503b9a0b16f41fbcfc"
   }
 ];
 

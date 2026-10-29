@@ -1025,10 +1025,18 @@ main {
 /* --- Section 04: Spotify Playlists Grid --- */
 .playlists-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+  grid-template-columns: 1fr;
   background-color: var(--bg-primary);
   border-top: 1px solid var(--border-color);
   border-left: 1px solid var(--border-color);
+}
+
+@media (min-width: 640px) {
+  .playlists-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (min-width: 1200px) {
+  .playlists-grid { grid-template-columns: repeat(4, 1fr); }
 }
 
 .playlist-card {
