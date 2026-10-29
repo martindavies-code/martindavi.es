@@ -123,11 +123,25 @@ body {
 }
 
 .site-title {
+  margin: 0;
   font-family: var(--font-sans);
   font-size: var(--text-body);
   font-weight: 800;
   letter-spacing: -0.02em;
   white-space: nowrap;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.35em;
+  line-height: 1.2;
+}
+
+.site-title .title-prefix,
+.site-title .title-suffix {
+  font-family: var(--font-mono);
+  font-size: 0.75em;
+  font-weight: 700;
+  color: var(--ink-secondary);
+  letter-spacing: 0.04em;
 }
 
 .chassis-nav {
@@ -1379,6 +1393,17 @@ main {
   }
   .chassis-header {
     grid-template-columns: 1fr auto;
+  }
+  .chassis-id {
+    flex-wrap: wrap;
+    gap: 4px;
+    padding: var(--space-xs);
+  }
+  .site-title {
+    white-space: normal;
+    display: inline;
+    line-height: 1.25;
+    font-size: var(--text-caption);
   }
   .chassis-nav {
     grid-column: 1 / -1;
