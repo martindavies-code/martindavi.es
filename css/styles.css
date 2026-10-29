@@ -313,16 +313,36 @@ main {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  gap: var(--space-md);
+}
+
+.about-prose p {
+  font-size: var(--text-body);
+  line-height: 1.6;
+  color: var(--ink-primary);
 }
 
 .about-prose .lead {
   font-size: var(--text-header);
-  font-weight: 600;
-  line-height: 1.55;
+  font-weight: 700;
+  line-height: 1.3;
   letter-spacing: -0.02em;
   color: var(--ink-primary);
   border-left: 3px solid var(--accent);
   padding-left: var(--space-sm);
+}
+
+.about-prose a {
+  color: var(--ink-primary);
+  text-decoration: underline;
+  text-decoration-color: var(--accent);
+  text-underline-offset: 3px;
+  font-weight: 600;
+  transition: color var(--transition-fast), text-decoration-color var(--transition-fast);
+}
+
+.about-prose a:hover {
+  color: var(--accent);
 }
 
 .about-specs {
