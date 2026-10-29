@@ -1,5 +1,5 @@
 /**
- * FAC-MD-000 // CORE ARCHIVAL LOGIC & INTERACTION ENGINE
+ * MJD-MD-000 // CORE ARCHIVAL LOGIC & INTERACTION ENGINE
  * Target: Vanilla ES6, zero external libraries.
  * UK English spelling, no em dashes, strict ISO/UK dates without commas.
  */
@@ -13,33 +13,49 @@ const WEB3FORMS_ACCESS_KEY = 'f186f71c-0c63-4ea6-b656-9c6cecf4888b';
 // Inline Fallbacks for Local / Offline / file:// Environments
 const FALLBACK_PROJECTS = [
   {
-    "id": "FAC-EXP-01",
+    "id": "MJD-EXP-01",
+    "date": "October 2026",
+    "title": "Interactive Sports Radar & Decision Dashboards",
+    "category": "Frontend & Data",
+    "status": "Active",
+    "summary": "Zero-dependency static data dashboards hosted on GitHub Pages, delivering sub-second visual analytics for NFL tactical field positions, NBA shot charts, UFC judging scorecards, and cycling competitions.",
+    "details": "Engineered with vanilla ES6 and CSS Grid without framework overhead. Showcases four live deployments: the NFL Live tactical radar and win probability engine, the NBA Live court shot chart and Scorigami tracker, an empirical scorecard audit of 31,881 UFC rounds evaluating judge dissent rates, and the Tour de France Points Classification radar. Audited with custom contrast and responsive geometry rules before deployment.",
+    "tech": ["HTML5", "CSS Grid", "Vanilla JS", "GitHub Pages", "Data Analytics"],
+    "links": {
+      "nfl": "https://github.com/martindavies-code/nfl-live-dashboard",
+      "nba": "https://github.com/martindavies-code/nba-live-dashboard",
+      "ufc": "https://github.com/martindavies-code/ufc-judging-analysis",
+      "tdf": "https://github.com/martindavies-code/tdf-dashboard"
+    }
+  },
+  {
+    "id": "MJD-EXP-02",
     "date": "October 2026",
     "title": "Antigravity Custom Agent Skills",
     "category": "Agentic Workflows",
     "status": "Active",
     "summary": "A collection of specialised agent skills built for Google Antigravity IDE to automate multi-step research and production tasks.",
-    "details": "Includes dj-man (extracts Camelot key and BPM data to order DJ sets with verified harmonic transitions), sports-radar (compiles 24-hour UK broadcast schedules across mainstream and niche sports), cover-letter-man (tailors applications for UK publishing and science communication roles), and match-my-writing-style (analyses personal Workspace correspondence to strip out synthetic AI phrasing).",
+    "details": "Includes dj-man (extracts Camelot key and BPM data to order DJ sets with verified harmonic transitions), sports-radar (compiles 24-hour UK broadcast schedules across mainstream and niche sports), and match-my-writing-style (analyses personal Workspace correspondence to strip out synthetic AI phrasing).",
     "tech": ["Google Antigravity", "Prompt Engineering", "JSON Schema", "Markdown"],
     "links": {
       "github": "https://github.com/martindavies-code"
     }
   },
   {
-    "id": "FAC-EXP-02",
+    "id": "MJD-EXP-03",
     "date": "August 2026",
     "title": "PromptologyLabs Reference Blueprints",
     "category": "Applied AI & Design",
     "status": "Live",
     "summary": "Structured prompt workflow blueprints and technical reference sheets designed for Google Gemini users.",
-    "details": "Built during my 2026 sabbatical alongside the seven-course Google AI Professional Certificate. Combines Swiss typographic grid layouts with tested system instruction patterns to reduce repetitive rework in research and editorial pipelines.",
+    "details": "Built during my 2026 sabbatical alongside the seven-course Google AI Professional Certificate. Combines modular information design with tested system instruction patterns to reduce repetitive rework in research and editorial pipelines.",
     "tech": ["Google Gemini", "System Instructions", "Information Design", "Etsy Digital"],
     "links": {
       "github": "https://github.com/martindavies-code"
     }
   },
   {
-    "id": "FAC-EXP-03",
+    "id": "MJD-EXP-04",
     "date": "July 2026",
     "title": "Windows 11 Media & Audio Pipeline Tools",
     "category": "Desktop Utilities",
@@ -50,36 +66,20 @@ const FALLBACK_PROJECTS = [
     "links": {
       "github": "https://github.com/martindavies-code"
     }
-  },
-  {
-    "id": "FAC-EXP-04",
-    "date": "October 2026",
-    "title": "Interactive Dashboards & UI Audit Standards",
-    "category": "Frontend & Data",
-    "status": "Active",
-    "summary": "Zero-dependency data dashboards hosted on GitHub Pages, paired with an automated UI/UX audit skill.",
-    "details": "Uses vanilla HTML5, CSS Grid, and ES6 JavaScript to publish fast, static data visualisations without framework overhead. Governed by a custom polish-dashboard skill that audits contrast ratios, grid geometry, and responsive breakpoints before deployment.",
-    "tech": ["HTML5", "CSS Grid", "Vanilla JS", "GitHub Pages"],
-    "links": {
-      "github": "https://github.com/martindavies-code"
-    }
-  },
-  {
-    "id": "FAC-EXP-05",
-    "date": "May 2026",
-    "title": "OctaMED to Modern DAW Tracker Experiments",
-    "category": "Audio & Music Tech",
-    "status": "Archive",
-    "summary": "Rapid audio sketching workflows for turning misdirected emails and topical sketches into finished tracks.",
-    "details": "Started on an Amiga 1200 running OctaMED in the 1990s and evolved into a fast-turnaround production pipeline blending melodica recordings, 90s Eurodance synthesis, dub basslines, and generative vocal stems for YouTube Shorts and BBC Radio comedy submissions.",
-    "tech": ["Audio Production", "Melodica", "Generative Audio", "YouTube Shorts"],
-    "links": {
-      "youtube": "https://youtube.com/shorts/OIk50i5G6s0"
-    }
   }
 ];
 
 const FALLBACK_WRONG_MARTIN = [
+  {
+    "id": "IX8mW3_-ODQ",
+    "date": "25 March 2026",
+    "title": "Indoor Bowling Summer Season (Watch The Wood Hit The Jack)",
+    "recipient": "Tony Tooley",
+    "genre": "Green-Side Diss Track",
+    "featured": true,
+    "blurb": "Invited to sign up for summer indoor bowls friendly matches. Replied with 'Watch the wood hit the jack' -- you're going down, Tooley.",
+    "url": "https://youtube.com/shorts/IX8mW3_-ODQ"
+  },
   {
     "id": "OIk50i5G6s0",
     "date": "28 October 2026",
@@ -169,15 +169,6 @@ const FALLBACK_WRONG_MARTIN = [
     "genre": "Endurance Beats",
     "blurb": "Looped into a sponsorship thread meant for canoeist Martin Deaves. Connected them with the right Martin first, then dropped the track.",
     "url": "https://youtube.com/shorts/CpVKoZjK6rA"
-  },
-  {
-    "id": "IX8mW3_-ODQ",
-    "date": "25 March 2026",
-    "title": "Indoor Bowling Summer Season",
-    "recipient": "Tony Tooley",
-    "genre": "Green-Side Diss Track",
-    "blurb": "Invited to sign up for summer indoor bowls friendly matches. 'You're going down Tooley.'",
-    "url": "https://youtube.com/shorts/IX8mW3_-ODQ"
   }
 ];
 
@@ -246,7 +237,7 @@ function renderProjects() {
   }
 
   container.innerHTML = filtered.map(item => {
-    const itemId = item.id || item.catalogue || 'FAC-EXP';
+    const itemId = item.id || item.catalogue || 'MJD-EXP';
     const itemDate = item.date || '';
     const itemStatus = (item.status || 'Active').toUpperCase();
     const itemTech = item.tech || item.tags || [];
@@ -259,10 +250,15 @@ function renderProjects() {
     if (linkKeys.length > 0) {
       linksHtml = linkKeys.map(key => {
         const url = item.links[key];
+        const k = key.toLowerCase();
         let label = 'LINK &nearr;';
-        if (key.toLowerCase() === 'github') label = 'GITHUB // REPO &nearr;';
-        else if (key.toLowerCase() === 'youtube') label = 'YOUTUBE // SHORT &nearr;';
-        else if (key.toLowerCase() === 'live' || key.toLowerCase() === 'demo') label = 'LAUNCH // LIVE &nearr;';
+        if (k === 'nfl') label = 'NFL RADAR // GITHUB &nearr;';
+        else if (k === 'nba') label = 'NBA LIVE // GITHUB &nearr;';
+        else if (k === 'ufc') label = 'UFC AUDIT // GITHUB &nearr;';
+        else if (k === 'tdf') label = 'TDF POINTS // GITHUB &nearr;';
+        else if (k === 'github') label = 'GITHUB // REPO &nearr;';
+        else if (k === 'youtube') label = 'YOUTUBE // SHORT &nearr;';
+        else if (k === 'live' || k === 'demo') label = 'LAUNCH // LIVE &nearr;';
         else label = `${key.toUpperCase()} // ACCESS &nearr;`;
 
         return `<a href="${escapeHtml(url)}" class="card-link" target="_blank" rel="noopener noreferrer">${label}</a>`;
@@ -355,9 +351,16 @@ function renderWrongMartin() {
     const escapedUrl = escapeHtml(item.url);
     const videoId = escapeHtml(item.id);
     const dateStr = escapeHtml(item.date);
+    const isFeatured = Boolean(item.featured);
 
     return `
-      <article class="short-card" id="card-${videoId}">
+      <article class="short-card ${isFeatured ? 'featured' : ''}" id="card-${videoId}">
+        ${isFeatured ? `
+          <div class="featured-banner">
+            <span>&#9733; CREATOR&apos;S PICK // FAVOURITE SONG</span>
+            <span>[FEATURED]</span>
+          </div>
+        ` : ''}
         <div class="short-card-header">
           <span class="short-index">${paddedIndex}</span>
           <span class="short-date">${dateStr}</span>

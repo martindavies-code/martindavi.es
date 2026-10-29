@@ -1,5 +1,5 @@
 /* ==========================================================================
-   FAC-MD-000 // STYLESHEET SPECIFICATION
+   MJD-MD-000 // STYLESHEET SPECIFICATION
    Aesthetic: Bauhaus / 1980s Factory Records / Cassette Futurism
    Zero-bloat, strict grid, high-contrast industrial typography
    ========================================================================== */
@@ -715,32 +715,29 @@ main {
 
 .card-links {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
   border-top: 1px solid var(--border-color);
+  background-color: var(--border-color);
+  gap: 1px;
 }
 
 .card-links.single-link {
   grid-template-columns: 1fr;
 }
 
-.card-links.single-link .card-link {
-  border-right: none;
-}
-
 .card-link {
   font-family: var(--font-mono);
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   font-weight: 700;
   text-decoration: none;
-  padding: 0.65rem 0.75rem;
+  padding: 0.65rem 0.6rem;
   text-align: center;
   color: var(--ink-primary);
   background-color: var(--bg-primary);
   transition: all var(--transition-fast);
-}
-
-.card-link:first-child {
-  border-right: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .card-link:hover {
@@ -793,6 +790,30 @@ main {
   background-color: var(--bg-card);
   display: flex;
   flex-direction: column;
+}
+
+.short-card.featured {
+  outline: 3px solid var(--accent);
+  position: relative;
+  z-index: 2;
+}
+
+.featured-banner {
+  background-color: var(--accent);
+  color: #FFFFFF;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.4rem 0.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  letter-spacing: 0.06em;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.featured-banner .star {
+  font-size: 0.85rem;
 }
 
 .short-card-header {

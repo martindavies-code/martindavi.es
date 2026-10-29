@@ -2,7 +2,7 @@
 
 **Target Builder**: Flash 3.8
 **Deployment Target**: GitHub Pages (Static root, custom domain `martindavi.es`)
-**Catalogue Reference**: `FAC-MD-000 // SYSTEM SPECIFICATION`
+**Catalogue Reference**: `MJD-MD-000 // SYSTEM SPECIFICATION`
 
 ---
 
@@ -31,7 +31,7 @@ Zero-bloat, zero-build static architecture using Vanilla HTML5, CSS3 (Custom Pro
 
 **Visual Language**: Bauhaus / 1980s Factory Records (Peter Saville) / Cassette Futurism / Teenage Engineering technical manuals.
 - **Structural Grid**: Exposed `1px solid` structural borders dividing sections, headers, metadata strips, and cards. Zero border-radius (`border-radius: 0px`) across all elements.
-- **Industrial Labelling**: Every section, card, and interactive control carries a catalogue code (e.g., `FAC-MD-001`, `WM-01` to `WM-11`), hazard/index markers, and technical specification metadata bars.
+- **Industrial Labelling**: Every section, card, and interactive control carries a catalogue code (e.g., `MJD-MD-001`, `WM-01` to `WM-11`), hazard/index markers, and technical specification metadata bars.
 - **Tactile Micro-Interactions**: Crisp inverted hover states, `2px` hard offset shadows on active/hover cards, and mechanical-feeling filter and theme switches.
 
 ### Color Tokens (CSS Custom Properties)
@@ -77,7 +77,7 @@ Load Google Fonts for `Inter` (`400`, `600`, `700`, `800`) and `JetBrains Mono` 
 ## 3. Global Header & Chassis Bar
 
 Sticky or fixed top structural bar with `1px solid var(--border-color)` bottom border:
-- **Left cell**: Catalogue stamp `FAC-MD // SE8-LON` and site title `MARTIN DAVIES`.
+- **Left cell**: Catalogue stamp `MJD-MD // SE8-LON` and site title `MARTIN DAVIES`.
 - **Center cell**: Anchor navigation links (`01 // ABOUT`, `02 // EXPERIMENTS`, `03 // WRONG MARTIN`, `04 // CONTACT`).
 - **Right cell**: High-contrast mechanical theme toggle button (`[ LIGHT / DARK ]` or `[ PAPER / CARBON ]`) with an orange indicator LED square.
 
@@ -86,7 +86,7 @@ Sticky or fixed top structural bar with `1px solid var(--border-color)` bottom b
 ## 4. Core Sections Specification
 
 ### Section 1: `01 // ABOUT ME`
-- **Catalogue Ref**: `FAC-MD-010 // BIOGRAPHICAL SPECIFICATION`
+- **Catalogue Ref**: `MJD-MD-010 // BIOGRAPHICAL SPECIFICATION`
 - **Layout**: Asymmetric 2-column Bauhaus grid (`2fr 1fr` on desktop, stacked on mobile) separated by a `1px` vertical rule.
 - **Left Column (Hero & Narrative)**:
   - Headline displaying **Martin Davies** with a high-impact sub-banner in `JetBrains Mono`.
@@ -103,7 +103,7 @@ Sticky or fixed top structural bar with `1px solid var(--border-color)` bottom b
 ---
 
 ### Section 2: `02 // CODING EXPERIMENTS`
-- **Catalogue Ref**: `FAC-MD-020 // R&D ARCHIVE`
+- **Catalogue Ref**: `MJD-MD-020 // R&D ARCHIVE`
 - **Data Source**: Fetch from `./data/projects.json` (with an inline fallback array in `js/main.js` if opened via `file://` protocol).
 - **Interactive Filter Bar**:
   - Generated dynamically or declared with buttons: `ALL`, `AI-AGENTS`, `WORKFLOWS`, `AUTOMATION`, `WEB-TOOLS`.
@@ -113,7 +113,7 @@ Sticky or fixed top structural bar with `1px solid var(--border-color)` bottom b
   ```json
   [
     {
-      "catalogue": "FAC-MD-021",
+      "catalogue": "MJD-MD-021",
       "title": "Antigravity Custom Agent Skills",
       "category": "AI-AGENTS",
       "status": "ACTIVE",
@@ -123,7 +123,7 @@ Sticky or fixed top structural bar with `1px solid var(--border-color)` bottom b
       "liveUrl": "#experiments"
     },
     {
-      "catalogue": "FAC-MD-022",
+      "catalogue": "MJD-MD-022",
       "title": "PromptologyLabs Workflow Blueprints",
       "category": "WORKFLOWS",
       "status": "PRODUCTION",
@@ -133,7 +133,7 @@ Sticky or fixed top structural bar with `1px solid var(--border-color)` bottom b
       "liveUrl": "#experiments"
     },
     {
-      "catalogue": "FAC-MD-023",
+      "catalogue": "MJD-MD-023",
       "title": "Media & Event Automation Utilities",
       "category": "AUTOMATION",
       "status": "DEPLOYED",
@@ -143,7 +143,7 @@ Sticky or fixed top structural bar with `1px solid var(--border-color)` bottom b
       "liveUrl": "#experiments"
     },
     {
-      "catalogue": "FAC-MD-024",
+      "catalogue": "MJD-MD-024",
       "title": "Cassette-Futurist Web Micro-Tools",
       "category": "WEB-TOOLS",
       "status": "ONLINE",
@@ -155,14 +155,14 @@ Sticky or fixed top structural bar with `1px solid var(--border-color)` bottom b
   ]
   ```
 - **Card Anatomy**:
-  - Top strip: Catalogue code (`FAC-MD-021`) on left, status badge (`[ACTIVE]`) on right.
+  - Top strip: Catalogue code (`MJD-MD-021`) on left, status badge (`[ACTIVE]`) on right.
   - Body: Title, concise summary, and monospace tag pills.
   - Footer strip: Split `1px` cells for `SOURCE // REPO ↗` and `LAUNCH // SPEC ↗`.
 
 ---
 
 ### Section 3: `03 // THE WRONG MARTIN DAVIES`
-- **Catalogue Ref**: `FAC-MD-030 // MISDIRECTED MAIL TRANSMISSIONS`
+- **Catalogue Ref**: `MJD-MD-030 // MISDIRECTED MAIL TRANSMISSIONS`
 - **Premise Header Block**:
   - Must prominently feature the exact premise quote:
     > "Because I registered a common name on Gmail early, I get strangers' invoices, car repair videos, and bowls fixtures. I reply with custom songs."
@@ -200,7 +200,7 @@ Sticky or fixed top structural bar with `1px solid var(--border-color)` bottom b
 ---
 
 ### Section 4: `04 // CONTACT ME`
-- **Catalogue Ref**: `FAC-MD-040 // EXTERNAL COMMUNICATIONS`
+- **Catalogue Ref**: `MJD-MD-040 // EXTERNAL COMMUNICATIONS`
 - **Layout**: 2-column asymmetric split (`3fr 2fr` on desktop, stacked on mobile).
 - **Left Column -- Web3Forms Dispatch Terminal**:
   - Endpoint: `POST https://api.web3forms.com/submit`
@@ -235,7 +235,7 @@ Sticky or fixed top structural bar with `1px solid var(--border-color)` bottom b
 
 ## 5. Footer & Deployment Files
 
-- **Footer**: Full-width structural bar with catalogue stamp `FAC-MD-999 // END OF SPECIFICATION`, copyright `© MARTIN DAVIES // LONDON SE8`, and a `BACK TO TOP ↑` anchor link.
+- **Footer**: Full-width structural bar with catalogue stamp `MJD-MD-999 // END OF SPECIFICATION`, copyright `© MARTIN DAVIES // LONDON SE8`, and a `BACK TO TOP ↑` anchor link.
 - **`CNAME`**: Create `/CNAME` at the repository root containing strictly:
   ```text
   martindavi.es
