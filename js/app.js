@@ -411,7 +411,7 @@ function renderWrongMartin() {
   const container = document.getElementById('wrong-martin-grid');
   if (!container) return;
 
-  container.innerHTML = wrongMartinData.map((item, index) => {
+  const cardsHtml = wrongMartinData.map((item, index) => {
     const paddedIndex = `WM-${String(index + 1).padStart(2, '0')}`;
     const escapedTitle = escapeHtml(item.title);
     const escapedRecipient = escapeHtml(item.recipient);
@@ -424,19 +424,21 @@ function renderWrongMartin() {
 
     return `
       <article class="short-card ${isFeatured ? 'featured' : ''}" id="card-${videoId}">
-        ${isFeatured ? `
-          <div class="featured-banner">
-            <span>&#9733; CREATOR&apos;S PICK // FAVOURITE SONG</span>
-            <span>[FEATURED]</span>
-          </div>
-        ` : ''}
-        <div class="short-card-header">
-          <span class="short-index">${paddedIndex}</span>
+        <div class="short-card-header ${isFeatured ? 'featured-header' : ''}">
+          <span class="short-index">
+            ${paddedIndex}
+            ${isFeatured ? '<span class="featured-tag">&#9733; FAVOURITE</span>' : ''}
+          </span>
           <span class="short-date">${dateStr}</span>
         </div>
 
         <!-- 9:16 Media Stage with Click-to-Play Facade -->
         <div class="stage-wrapper">
+          ${isFeatured ? `
+            <div class="featured-stage-ribbon" aria-label="Creator's Pick: Favourite Song">
+              <span>&#9733; CREATOR&apos;S PICK // FAVOURITE SONG</span>
+            </div>
+          ` : ''}
           <button
             class="yt-facade"
             type="button"
@@ -473,6 +475,42 @@ function renderWrongMartin() {
       </article>
     `;
   }).join('');
+
+  const submissionCardHtml = `
+    <article class="short-card submission-card" id="card-dispatch-submission">
+      <div class="short-card-header">
+        <span class="short-index">WM-12</span>
+        <span class="short-date">INCOMING LOG</span>
+      </div>
+
+      <div class="stage-wrapper submission-stage">
+        <div class="submission-terminal">
+          <div class="terminal-signal-circle">
+            <span class="radar-dot">&#9679;</span>
+          </div>
+          <div class="terminal-meta-tag">CLEARING HOUSE // AWAITING DISPATCH</div>
+          <div class="terminal-callout">YOUR MISDIRECTED EMAIL COULD BE NEXT</div>
+        </div>
+        <span class="genre-tag">AWAITING AUDIO RESPONSE</span>
+      </div>
+
+      <div class="short-card-body">
+        <h3 class="short-title">The Next Wrong Martin Davies</h3>
+        <div class="short-recipient">TO: <strong>Accidental Senders Everywhere</strong></div>
+        <p class="short-blurb">
+          Did someone copy you in on Blackpool council tax, Welsh golf subscriptions, or tree felling? Send it through and it may become the next custom reply track.
+        </p>
+      </div>
+
+      <div class="short-footer">
+        <a href="#contact" class="yt-fallback-link dispatch-submit-link">
+          REPORT MISDIRECTED EMAIL &darr;
+        </a>
+      </div>
+    </article>
+  `;
+
+  container.innerHTML = cardsHtml + submissionCardHtml;
 
   // Event Delegation for YouTube Facades
   container.addEventListener('click', (e) => {
