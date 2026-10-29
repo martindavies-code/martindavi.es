@@ -25,9 +25,19 @@
       <a href="#contact" class="nav-link"><span class="nav-num">MD-05</span> CONTACT</a>
     </nav>
     <div class="chassis-cell chassis-controls">
-      <button id="theme-toggle" class="theme-toggle-btn" type="button" aria-label="Toggle light and dark theme">
-        <span class="led-indicator" aria-hidden="true"></span>
-        <span class="toggle-label" id="theme-label">PAPER</span>
+      <button id="theme-toggle" class="theme-toggle-btn" type="button" role="switch" aria-checked="false" aria-label="Light mode active. Click to switch to dark mode." title="Switch to dark mode">
+        <span class="theme-prefix">THEME</span>
+        <span class="theme-switch-frame">
+          <span class="theme-opt opt-light active" id="theme-opt-light">
+            <span class="theme-led" aria-hidden="true"></span>
+            <span class="opt-icon">&#9728;</span> LIGHT
+          </span>
+          <span class="theme-sep" aria-hidden="true">//</span>
+          <span class="theme-opt opt-dark inactive" id="theme-opt-dark">
+            <span class="theme-led" aria-hidden="true"></span>
+            <span class="opt-icon">&#9789;</span> DARK
+          </span>
+        </span>
       </button>
     </div>
   </header>

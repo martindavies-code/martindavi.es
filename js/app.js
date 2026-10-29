@@ -266,7 +266,8 @@ let activeFilter = 'ALL';
 function initTheme() {
   const root = document.documentElement;
   const toggleBtn = document.getElementById('theme-toggle');
-  const labelEl = document.getElementById('theme-label');
+  const optLight = document.getElementById('theme-opt-light');
+  const optDark = document.getElementById('theme-opt-dark');
 
   const savedTheme = localStorage.getItem('fac_md_theme') || 'light';
   applyTheme(savedTheme);
@@ -281,9 +282,32 @@ function initTheme() {
   }
 
   function applyTheme(theme) {
+    const isDark = theme === 'dark';
     root.setAttribute('data-theme', theme);
-    if (labelEl) {
-      labelEl.textContent = theme === 'dark' ? 'CARBON' : 'PAPER';
+
+    if (toggleBtn) {
+      toggleBtn.setAttribute('aria-checked', isDark ? 'true' : 'false');
+      toggleBtn.setAttribute(
+        'aria-label',
+        isDark
+          ? 'Dark mode active. Click to switch to light mode.'
+          : 'Light mode active. Click to switch to dark mode.'
+      );
+      toggleBtn.title = isDark ? 'Switch to light mode' : 'Switch to dark mode';
+    }
+
+    if (optLight && optDark) {
+      if (isDark) {
+        optDark.classList.add('active');
+        optDark.classList.remove('inactive');
+        optLight.classList.remove('active');
+        optLight.classList.add('inactive');
+      } else {
+        optLight.classList.add('active');
+        optLight.classList.remove('inactive');
+        optDark.classList.remove('active');
+        optDark.classList.add('inactive');
+      }
     }
   }
 }

@@ -169,26 +169,87 @@ body {
   color: var(--ink-primary);
   border: 1px solid var(--border-color);
   min-height: 44px;
-  padding: 0 var(--space-sm);
+  padding: 0 var(--space-xs);
   cursor: pointer;
   display: inline-flex;
   align-items: center;
-  gap: var(--space-xs);
+  gap: 8px;
   letter-spacing: 0.05em;
-  transition: background var(--transition-fast), color var(--transition-fast);
+  transition: border-color var(--transition-fast), background-color var(--transition-fast);
 }
 
-.theme-toggle-btn:hover {
-  background: var(--ink-primary);
-  color: var(--bg-primary);
+.theme-toggle-btn:hover,
+.theme-toggle-btn:focus-visible {
+  border-color: var(--accent);
+  outline: none;
 }
 
-.led-indicator {
+.theme-prefix {
+  font-size: 10px;
+  color: var(--ink-secondary);
+  letter-spacing: 0.08em;
+  padding-right: 6px;
+  border-right: 1px solid var(--border-color);
+  user-select: none;
+}
+
+.theme-switch-frame {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.theme-opt {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 6px;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  transition: all var(--transition-fast);
+  user-select: none;
+}
+
+.theme-opt.active {
+  color: var(--ink-primary);
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+}
+
+.theme-opt.inactive {
+  color: var(--ink-secondary);
+  opacity: 0.55;
+}
+
+.theme-toggle-btn:hover .theme-opt.inactive {
+  opacity: 1;
+  color: var(--accent);
+}
+
+.theme-led {
   display: inline-block;
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
+  background-color: transparent;
+  border: 1px solid var(--ink-secondary);
+  transition: all var(--transition-fast);
+}
+
+.theme-opt.active .theme-led {
   background-color: var(--accent);
+  border-color: var(--accent);
   box-shadow: 0 0 6px var(--accent);
+}
+
+.opt-icon {
+  font-size: 12px;
+  line-height: 1;
+}
+
+.theme-sep {
+  color: var(--border-color);
+  font-size: 10px;
+  user-select: none;
 }
 
 /* --- Main Layout & Grid Sections --- */
@@ -1306,6 +1367,13 @@ main {
   }
   .card-link:last-child {
     border-bottom: none;
+  }
+}
+
+/* Extra small mobile (< 480px) */
+@media (max-width: 480px) {
+  .theme-prefix {
+    display: none;
   }
 }
 
