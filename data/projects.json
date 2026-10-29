@@ -2,7 +2,7 @@
   {
     "id": "MJD-EXP-01",
     "date": "October 2026",
-    "title": "Interactive Sports Radar & Decision Dashboards",
+    "title": "Interactive Dashboards",
     "category": "Frontend & Data",
     "status": "Active",
     "summary": "Zero-dependency static data dashboards hosted on GitHub Pages, delivering sub-second visual analytics for NFL tactical field positions, NBA shot charts, UFC judging scorecards, and cycling competitions.",
@@ -23,10 +23,7 @@
     "status": "Active",
     "summary": "A collection of specialised agent skills built for Google Antigravity IDE to automate multi-step research and production tasks.",
     "details": "Includes dj-man (extracts Camelot key and BPM data to order DJ sets with verified harmonic transitions), sports-radar (compiles 24-hour UK broadcast schedules across mainstream and niche sports), and match-my-writing-style (analyses personal Workspace correspondence to strip out synthetic AI phrasing).",
-    "tech": ["Google Antigravity", "Prompt Engineering", "JSON Schema", "Markdown"],
-    "links": {
-      "github": "https://github.com/martindavies-code"
-    }
+    "tech": ["Google Antigravity", "Prompt Engineering", "JSON Schema", "Markdown"]
   },
   {
     "id": "MJD-EXP-03",
@@ -36,10 +33,7 @@
     "status": "Live",
     "summary": "Structured prompt workflow blueprints and technical reference sheets designed for Google Gemini users.",
     "details": "Built during my 2026 sabbatical alongside the seven-course Google AI Professional Certificate. Combines modular information design with tested system instruction patterns to reduce repetitive rework in research and editorial pipelines.",
-    "tech": ["Google Gemini", "System Instructions", "Information Design", "Etsy Digital"],
-    "links": {
-      "github": "https://github.com/martindavies-code"
-    }
+    "tech": ["Google Gemini", "System Instructions", "Information Design", "Etsy Digital"]
   },
   {
     "id": "MJD-EXP-04",
@@ -49,9 +43,6 @@
     "status": "Active",
     "summary": "Native Python GUI wrappers and PowerShell automation scripts for batch media archiving and spatial audio inspection.",
     "details": "Created to bypass bloated third-party media managers on Windows 11. Wraps yt-dlp, gallery-dl, and FFmpeg into clean desktop workflows for batch downloading, metadata organisation, and verifying Dolby Atmos eARC passthrough on local .mkv and .mp4 containers.",
-    "tech": ["Python", "PowerShell", "yt-dlp", "FFmpeg"],
-    "links": {
-      "github": "https://github.com/martindavies-code"
-    }
+    "tech": ["Python", "PowerShell", "yt-dlp", "FFmpeg"]
   }
 ]

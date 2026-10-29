@@ -15,7 +15,7 @@ const FALLBACK_PROJECTS = [
   {
     "id": "MJD-EXP-01",
     "date": "October 2026",
-    "title": "Interactive Sports Radar & Decision Dashboards",
+    "title": "Interactive Dashboards",
     "category": "Frontend & Data",
     "status": "Active",
     "summary": "Zero-dependency static data dashboards hosted on GitHub Pages, delivering sub-second visual analytics for NFL tactical field positions, NBA shot charts, UFC judging scorecards, and cycling competitions.",
@@ -36,10 +36,7 @@ const FALLBACK_PROJECTS = [
     "status": "Active",
     "summary": "A collection of specialised agent skills built for Google Antigravity IDE to automate multi-step research and production tasks.",
     "details": "Includes dj-man (extracts Camelot key and BPM data to order DJ sets with verified harmonic transitions), sports-radar (compiles 24-hour UK broadcast schedules across mainstream and niche sports), and match-my-writing-style (analyses personal Workspace correspondence to strip out synthetic AI phrasing).",
-    "tech": ["Google Antigravity", "Prompt Engineering", "JSON Schema", "Markdown"],
-    "links": {
-      "github": "https://github.com/martindavies-code"
-    }
+    "tech": ["Google Antigravity", "Prompt Engineering", "JSON Schema", "Markdown"]
   },
   {
     "id": "MJD-EXP-03",
@@ -49,10 +46,7 @@ const FALLBACK_PROJECTS = [
     "status": "Live",
     "summary": "Structured prompt workflow blueprints and technical reference sheets designed for Google Gemini users.",
     "details": "Built during my 2026 sabbatical alongside the seven-course Google AI Professional Certificate. Combines modular information design with tested system instruction patterns to reduce repetitive rework in research and editorial pipelines.",
-    "tech": ["Google Gemini", "System Instructions", "Information Design", "Etsy Digital"],
-    "links": {
-      "github": "https://github.com/martindavies-code"
-    }
+    "tech": ["Google Gemini", "System Instructions", "Information Design", "Etsy Digital"]
   },
   {
     "id": "MJD-EXP-04",
@@ -62,10 +56,7 @@ const FALLBACK_PROJECTS = [
     "status": "Active",
     "summary": "Native Python GUI wrappers and PowerShell automation scripts for batch media archiving and spatial audio inspection.",
     "details": "Created to bypass bloated third-party media managers on Windows 11. Wraps yt-dlp, gallery-dl, and FFmpeg into clean desktop workflows for batch downloading, metadata organisation, and verifying Dolby Atmos eARC passthrough on local .mkv and .mp4 containers.",
-    "tech": ["Python", "PowerShell", "yt-dlp", "FFmpeg"],
-    "links": {
-      "github": "https://github.com/martindavies-code"
-    }
+    "tech": ["Python", "PowerShell", "yt-dlp", "FFmpeg"]
   }
 ];
 
@@ -260,7 +251,6 @@ const FALLBACK_PLAYLISTS = [
 let projectsData = [];
 let wrongMartinData = [];
 let playlistsData = [];
-let activeFilter = 'ALL';
 
 /* --- Theme Management --- */
 function initTheme() {
@@ -324,7 +314,6 @@ async function loadProjects() {
     projectsData = FALLBACK_PROJECTS;
   }
   renderProjects();
-  initFilters();
 }
 
 function renderProjects() {
@@ -332,32 +321,28 @@ function renderProjects() {
   const counterEl = document.getElementById('project-counter');
   if (!container) return;
 
-  const filtered = activeFilter === 'ALL'
-    ? projectsData
-    : projectsData.filter(p => p.category === activeFilter);
-
   if (counterEl) {
-    counterEl.textContent = `SHOWING ${filtered.length} / ${projectsData.length} UNITS`;
+    counterEl.textContent = `${projectsData.length} R&D UNITS`;
   }
 
-  if (filtered.length === 0) {
-    container.innerHTML = `<div class="loading-state">NO EXPERIMENTS FOUND FOR CATEGORY [${escapeHtml(activeFilter)}]</div>`;
+  if (projectsData.length === 0) {
+    container.innerHTML = `<div class="loading-state">NO EXPERIMENTS FOUND</div>`;
     return;
   }
 
-  container.innerHTML = filtered.map(item => {
+  container.innerHTML = projectsData.map(item => {
     const itemId = item.id || item.catalogue || 'MJD-EXP';
     const itemDate = item.date || '';
     const itemStatus = (item.status || 'Active').toUpperCase();
     const itemTech = item.tech || item.tags || [];
 
-    // Parse external links
+    // Parse external links (only rendered when explicit links exist)
     const linkKeys = item.links ? Object.keys(item.links) : [];
-    let linksHtml = '';
-    const isSingleLink = linkKeys.length === 1;
+    let linksSectionHtml = '';
 
     if (linkKeys.length > 0) {
-      linksHtml = linkKeys.map(key => {
+      const isSingleLink = linkKeys.length === 1;
+      const linksHtml = linkKeys.map(key => {
         const url = item.links[key];
         const k = key.toLowerCase();
         let label = 'LINK &nearr;';
@@ -372,13 +357,12 @@ function renderProjects() {
 
         return `<a href="${escapeHtml(url)}" class="card-link" target="_blank" rel="noopener noreferrer">${label}</a>`;
       }).join('');
-    } else if (item.repoUrl || item.liveUrl) {
-      linksHtml = `
-        ${item.repoUrl ? `<a href="${escapeHtml(item.repoUrl)}" class="card-link" target="_blank" rel="noopener noreferrer">SOURCE // REPO &nearr;</a>` : ''}
-        ${item.liveUrl ? `<a href="${escapeHtml(item.liveUrl)}" class="card-link">LAUNCH // SPEC &nearr;</a>` : ''}
+
+      linksSectionHtml = `
+        <div class="card-links ${isSingleLink ? 'single-link' : ''}">
+          ${linksHtml}
+        </div>
       `;
-    } else {
-      linksHtml = `<span class="card-link">INTERNAL SPECIFICATION</span>`;
     }
 
     return `
@@ -403,34 +387,10 @@ function renderProjects() {
             ${itemTech.map(t => `<span class="tag-pill">${escapeHtml(t)}</span>`).join('')}
           </div>
         </div>
-        <div class="card-links ${isSingleLink ? 'single-link' : ''}">
-          ${linksHtml}
-        </div>
+        ${linksSectionHtml}
       </article>
     `;
   }).join('');
-}
-
-function initFilters() {
-  const filterContainer = document.getElementById('project-filters');
-  if (!filterContainer) return;
-
-  const categories = ['ALL', ...new Set(projectsData.map(p => p.category).filter(Boolean))];
-
-  filterContainer.innerHTML = categories.map(cat => {
-    const isActive = cat === activeFilter;
-    return `<button class="filter-btn ${isActive ? 'active' : ''}" data-filter="${escapeHtml(cat)}" type="button">${escapeHtml(cat.toUpperCase())}</button>`;
-  }).join('');
-
-  filterContainer.onclick = (e) => {
-    const btn = e.target.closest('.filter-btn');
-    if (!btn) return;
-
-    filterContainer.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    activeFilter = btn.getAttribute('data-filter') || 'ALL';
-    renderProjects();
-  };
 }
 
 /* --- Section 03: The Wrong Martin Davies (Shorts Gallery) --- */

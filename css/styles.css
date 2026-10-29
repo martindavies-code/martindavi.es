@@ -459,49 +459,7 @@ main {
   color: var(--accent);
 }
 
-/* --- Section 02: Coding Experiments Filter & Grid --- */
-.filter-bar {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: var(--space-xs);
-  margin-top: var(--space-sm);
-  font-family: var(--font-mono);
-}
-
-.filter-label {
-  font-weight: 700;
-  font-size: var(--text-caption);
-  color: var(--ink-secondary);
-}
-
-.filter-buttons {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-xs);
-}
-
-.filter-btn {
-  font-family: var(--font-mono);
-  font-size: var(--text-caption);
-  font-weight: 700;
-  min-height: 44px;
-  padding: 0 var(--space-sm);
-  background-color: var(--bg-card);
-  color: var(--ink-primary);
-  border: 1px solid var(--border-color);
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  transition: all var(--transition-fast);
-}
-
-.filter-btn.active, .filter-btn:hover {
-  background-color: var(--ink-primary);
-  color: var(--bg-primary);
-}
-
+/* --- Section 02: Coding Experiments Grid --- */
 .projects-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
