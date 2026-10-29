@@ -451,7 +451,8 @@ main {
 }
 
 .about-portrait {
-  margin: 0;
+  margin: 0 0 var(--space-sm);
+  max-width: 320px;
   border: 1px solid var(--border-color);
   background-color: var(--bg-card);
 }
