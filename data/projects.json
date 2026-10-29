@@ -2,7 +2,7 @@
   {
     "id": "MJD-EXP-01",
     "date": "October 2026",
-    "title": "Interactive Dashboards",
+    "title": "Interactive Sports Dashboards",
     "category": "Frontend & Data",
     "status": "Active",
     "summary": "Zero-dependency static data dashboards hosted on GitHub Pages, delivering sub-second visual analytics for NFL live scores and field position, NBA shot charts, UFC judging scorecards, and cycling competitions.",
