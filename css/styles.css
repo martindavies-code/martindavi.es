@@ -445,7 +445,23 @@ main {
   padding: var(--space-lg) var(--space-md);
   background-color: var(--bg-secondary);
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--space-md);
+}
+
+.about-portrait {
+  margin: 0;
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-card);
+}
+
+.about-portrait img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
 }
 
 .spec-list {
