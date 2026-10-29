@@ -705,14 +705,14 @@ function buildPlaylistCardHtml(item) {
       </div>
 
       <div class="playlist-cover-wrapper">
-        <img
+        <a href="${escapeHtml(safeUrl)}" target="_blank" rel="noopener noreferrer" class="playlist-cover-link" tabindex="-1"><img
           src="${escapeHtml(safeCover)}"
           alt="Cover artwork for ${escapedTitle}"
           class="playlist-cover-img"
           loading="lazy"
           decoding="async"
           width="640"
-          height="640">
+          height="640"></a>
       </div>
 
       <div class="playlist-body">
