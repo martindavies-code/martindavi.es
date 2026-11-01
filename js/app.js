@@ -814,7 +814,7 @@ function swapSpotifyFacade(coverWrapper, embedUrl, previewBtn = null, doc = (typ
 function playMechanicalClickSound(win = (typeof window !== 'undefined' ? window : null)) {
   if (!win) return;
   try {
-    const AudioCtx = win.AudioContext || win.webkitAudioContext;
+    const AudioCtx = /** @type {any} */ (win).AudioContext || /** @type {any} */ (win).webkitAudioContext;
     if (!AudioCtx) return;
     const ctx = new AudioCtx();
     const now = ctx.currentTime;
@@ -883,7 +883,7 @@ function initTheme(doc = (typeof document !== 'undefined' ? document : null), st
     const isDark = theme === 'dark';
     root.setAttribute('data-theme', theme);
 
-    if (typeof doc.querySelector === 'function') {
+    if (doc && typeof doc.querySelector === 'function') {
       const metaThemeColor = doc.querySelector('meta[name="theme-color"]');
       if (metaThemeColor && typeof metaThemeColor.setAttribute === 'function') {
         metaThemeColor.setAttribute('content', isDark ? '#121212' : '#F4F1EA');
