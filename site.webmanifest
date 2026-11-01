@@ -1,0 +1,16 @@
+{
+  "name": "The Official Martin Davies Homepage",
+  "short_name": "Martin Davies",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#121212",
+  "theme_color": "#121212",
+  "icons": [
+    {
+      "src": "./assets/martin.jpg",
+      "sizes": "800x800",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    }
+  ]
+}

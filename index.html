@@ -11,12 +11,16 @@
   <link rel="canonical" href="https://martindavi.es/">
   <link rel="icon" type="image/jpeg" href="./assets/martin.jpg">
   <link rel="apple-touch-icon" href="./assets/martin.jpg">
+  <link rel="manifest" href="./site.webmanifest">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://martindavi.es/">
   <meta property="og:title" content="The Official Martin Davies Homepage [martindavi.es]">
   <meta property="og:description"
     content="The Official Martin Davies Homepage. London SE8. Science and technology event producer, AI workflow architect, and recipient of misdirected emails.">
   <meta property="og:image" content="https://martindavi.es/assets/martin.jpg">
+  <meta property="og:image:width" content="800">
+  <meta property="og:image:height" content="800">
+  <meta property="og:image:alt" content="Stylised glitch-art portrait of Martin Davies">
   <meta property="og:site_name" content="The Official Martin Davies Homepage">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="The Official Martin Davies Homepage [martindavi.es]">
@@ -26,69 +30,84 @@
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
-    "@type": "Person",
-    "@id": "https://martindavi.es/#person",
-    "name": "Martin Davies",
-    "alternateName": ["Martin J. Davies", "MJD"],
-    "url": "https://martindavi.es",
-    "image": "https://martindavi.es/assets/martin.jpg",
-    "jobTitle": "Head of Events, Content & Production",
-    "description": "Head of Events, Content & Production with over 15 years of experience directing flagship science festivals like New Scientist Live and the Royal Institution public programme, alongside Python workflow automation and AI applications.",
-    "address": {
-      "@type": "PostalAddress",
-      "addressLocality": "London",
-      "postalCode": "SE8",
-      "addressCountry": "GB"
-    },
-    "alumniOf": {
-      "@type": "CollegeOrUniversity",
-      "name": "King's College, University of Cambridge",
-      "url": "https://www.kings.cam.ac.uk/"
-    },
-    "hasCredential": [
+    "@graph": [
       {
-        "@type": "EducationalOccupationalCredential",
-        "name": "Google AI Professional Certificate",
-        "credentialCategory": "Professional Certificate"
-      }
-    ],
-    "pastAffiliation": [
-      {
-        "@type": "Organization",
-        "name": "New Scientist",
-        "url": "https://www.newscientist.com/"
+        "@type": "WebSite",
+        "@id": "https://martindavi.es/#website",
+        "url": "https://martindavi.es",
+        "name": "The Official Martin Davies Homepage",
+        "description": "The Official Martin Davies Homepage. London SE8. Science and technology event producer, AI workflow architect, and recipient of misdirected emails.",
+        "publisher": {
+          "@id": "https://martindavi.es/#person"
+        },
+        "inLanguage": "en-GB"
       },
       {
-        "@type": "Organization",
-        "name": "The Royal Institution",
-        "url": "https://www.rigb.org/"
-      },
-      {
-        "@type": "Organization",
-        "name": "British Science Association",
-        "url": "https://www.britishscienceassociation.org/"
+        "@type": "Person",
+        "@id": "https://martindavi.es/#person",
+        "name": "Martin Davies",
+        "alternateName": ["Martin J. Davies", "MJD"],
+        "url": "https://martindavi.es",
+        "image": "https://martindavi.es/assets/martin.jpg",
+        "jobTitle": "Head of Events, Content & Production",
+        "description": "Head of Events, Content & Production with over 15 years of experience directing flagship science festivals like New Scientist Live and the Royal Institution public programme, alongside Python workflow automation and AI applications.",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "London",
+          "postalCode": "SE8",
+          "addressCountry": "GB"
+        },
+        "alumniOf": {
+          "@type": "CollegeOrUniversity",
+          "name": "King's College, University of Cambridge",
+          "url": "https://www.kings.cam.ac.uk/"
+        },
+        "hasCredential": [
+          {
+            "@type": "EducationalOccupationalCredential",
+            "name": "Google AI Professional Certificate",
+            "credentialCategory": "Professional Certificate"
+          }
+        ],
+        "pastAffiliation": [
+          {
+            "@type": "Organization",
+            "name": "New Scientist",
+            "url": "https://www.newscientist.com/"
+          },
+          {
+            "@type": "Organization",
+            "name": "The Royal Institution",
+            "url": "https://www.rigb.org/"
+          },
+          {
+            "@type": "Organization",
+            "name": "British Science Association",
+            "url": "https://www.britishscienceassociation.org/"
+          }
+        ],
+        "award": [
+          "Consumer Media Event of the Year (PPA Awards 2023) - New Scientist Live",
+          "Best Consumer Show (Exhibition News Awards 2025) - New Scientist Live"
+        ],
+        "knowsAbout": [
+          "Event Strategy, Curation & Production",
+          "Science Communication & Public Programming",
+          "New Scientist Live",
+          "B2B Technology & AI Summits",
+          "Content & Editorial Strategy",
+          "Commercial & Financial Operations",
+          "Python Workflow Automation",
+          "Live & Hybrid Broadcast Production",
+          "Natural Sciences"
+        ],
+        "sameAs": [
+          "https://www.linkedin.com/in/martin--davies/",
+          "https://bsky.app/profile/martindavi.es",
+          "https://github.com/martindavies-code",
+          "https://www.instagram.com/adogcalledbette/"
+        ]
       }
-    ],
-    "award": [
-      "Consumer Media Event of the Year (PPA Awards 2023) - New Scientist Live",
-      "Best Consumer Show (Exhibition News Awards 2025) - New Scientist Live"
-    ],
-    "knowsAbout": [
-      "Event Strategy, Curation & Production",
-      "Science Communication & Public Programming",
-      "New Scientist Live",
-      "B2B Technology & AI Summits",
-      "Content & Editorial Strategy",
-      "Commercial & Financial Operations",
-      "Python Workflow Automation",
-      "Live & Hybrid Broadcast Production",
-      "Natural Sciences"
-    ],
-    "sameAs": [
-      "https://www.linkedin.com/in/martin--davies/",
-      "https://bsky.app/profile/martindavi.es",
-      "https://github.com/martindavies-code",
-      "https://www.instagram.com/adogcalledbette/"
     ]
   }
   </script>
@@ -160,10 +179,10 @@
           <figure class="about-portrait">
             <img class="portrait-dark" src="./assets/martin.jpg"
               alt="Stylised glitch-art portrait of Martin Davies, bald with a stubbled beard, wearing a knitted hoodie"
-              width="800" height="800" loading="lazy" decoding="async">
+              width="800" height="800" fetchpriority="high" decoding="async" loading="eager">
             <img class="portrait-light" src="./assets/martin-light.jpg"
               alt="Stylised glitch-art portrait of Martin Davies, bald with a stubbled beard, wearing a knitted hoodie, in light colours"
-              width="800" height="800" loading="lazy" decoding="async">
+              width="800" height="800" fetchpriority="high" decoding="async" loading="eager">
           </figure>
           <div class="about-portrait-caption">
             <span class="caption-label">FIG. 01 // VISUAL RECORD</span>

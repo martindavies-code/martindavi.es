@@ -9,11 +9,15 @@
   <link rel="canonical" href="https://martindavi.es/wrong-martin">
   <link rel="icon" type="image/jpeg" href="./assets/martin.jpg">
   <link rel="apple-touch-icon" href="./assets/martin.jpg">
+  <link rel="manifest" href="./site.webmanifest">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://martindavi.es/wrong-martin">
   <meta property="og:title" content="The Wrong Martin Davies // Misdirected Audio Archive">
   <meta property="og:description" content="Misdirected emails transformed into custom genre-hopping songs and YouTube Shorts by Martin Davies.">
   <meta property="og:image" content="https://martindavi.es/assets/martin.jpg">
+  <meta property="og:image:width" content="800">
+  <meta property="og:image:height" content="800">
+  <meta property="og:image:alt" content="Stylised glitch-art portrait of Martin Davies">
   <meta property="og:site_name" content="The Official Martin Davies Homepage">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="The Wrong Martin Davies // Misdirected Audio Archive">
@@ -22,17 +26,46 @@
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
-    "@type": "WebPage",
-    "name": "The Wrong Martin Davies // Misdirected Audio Archive",
-    "url": "https://martindavi.es/wrong-martin",
-    "description": "Misdirected emails transformed into custom genre-hopping songs and YouTube Shorts by Martin Davies.",
-    "author": {
-      "@type": "Person",
-      "@id": "https://martindavi.es/#person",
-      "name": "Martin Davies",
-      "jobTitle": "Head of Events, Content & Production",
-      "url": "https://martindavi.es"
-    }
+    "@graph": [
+      {
+        "@type": "WebPage",
+        "@id": "https://martindavi.es/wrong-martin#webpage",
+        "name": "The Wrong Martin Davies // Misdirected Audio Archive",
+        "url": "https://martindavi.es/wrong-martin",
+        "description": "Misdirected emails transformed into custom genre-hopping songs and YouTube Shorts by Martin Davies.",
+        "isPartOf": {
+          "@type": "WebSite",
+          "@id": "https://martindavi.es/#website",
+          "url": "https://martindavi.es",
+          "name": "The Official Martin Davies Homepage"
+        },
+        "author": {
+          "@type": "Person",
+          "@id": "https://martindavi.es/#person",
+          "name": "Martin Davies",
+          "jobTitle": "Head of Events, Content & Production",
+          "url": "https://martindavi.es"
+        }
+      },
+      {
+        "@type": "BreadcrumbList",
+        "@id": "https://martindavi.es/wrong-martin#breadcrumb",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "About",
+            "item": "https://martindavi.es"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Wrong Martin",
+            "item": "https://martindavi.es/wrong-martin"
+          }
+        ]
+      }
+    ]
   }
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
