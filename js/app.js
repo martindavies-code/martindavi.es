@@ -1258,6 +1258,68 @@ function cleanIndexUrl(win = (typeof window !== 'undefined' ? window : null)) {
 }
 
 /**
+ * Initialises back-to-top button handling to smoothly scroll to top without adding #top to the URL.
+ * @param {Document | null} [doc=(typeof document !== 'undefined' ? document : null)]
+ * @param {Window | null} [win=(typeof window !== 'undefined' ? window : null)]
+ */
+function initBackToTop(doc = (typeof document !== 'undefined' ? document : null), win = (typeof window !== 'undefined' ? window : null)) {
+  if (!doc || typeof doc.querySelectorAll !== 'function') return;
+  const backToTopLinks = doc.querySelectorAll('a.back-to-top, a[href="#top"]');
+  if (!backToTopLinks || backToTopLinks.length === 0) return;
+
+  backToTopLinks.forEach(link => {
+    if (!link || !link.dataset || link.dataset.backToTopBound) return;
+    link.dataset.backToTopBound = 'true';
+
+    link.addEventListener('click', (e) => {
+      if (e && typeof e.preventDefault === 'function') {
+        e.preventDefault();
+      }
+
+      if (win) {
+        const prefersReduced = win.matchMedia && typeof win.matchMedia === 'function'
+          ? Boolean(win.matchMedia('(prefers-reduced-motion: reduce)').matches)
+          : false;
+
+        if (typeof win.scrollTo === 'function') {
+          try {
+            win.scrollTo({ top: 0, behavior: prefersReduced ? 'auto' : 'smooth' });
+          } catch {
+            win.scrollTo(0, 0);
+          }
+        }
+
+        if (win.history && typeof win.history.replaceState === 'function' && win.location) {
+          try {
+            const cleanUrl = (win.location.pathname || '') + (win.location.search || '');
+            win.history.replaceState(null, '', cleanUrl);
+          } catch {
+            // Graceful fallback for restricted origins
+          }
+        }
+      }
+
+      const topTarget = doc.getElementById('top');
+      if (topTarget) {
+        const hasTabindex = typeof topTarget.hasAttribute === 'function'
+          ? topTarget.hasAttribute('tabindex')
+          : (typeof topTarget.getAttribute === 'function' ? topTarget.getAttribute('tabindex') !== null : false);
+        if (!hasTabindex && typeof topTarget.setAttribute === 'function') {
+          topTarget.setAttribute('tabindex', '-1');
+        }
+        if (typeof topTarget.focus === 'function') {
+          try {
+            topTarget.focus({ preventScroll: true });
+          } catch {
+            topTarget.focus();
+          }
+        }
+      }
+    });
+  });
+}
+
+/**
  * Boots the entire application lifecycle concurrently with isolated failure boundaries.
  * @param {Document | null} [doc=(typeof document !== 'undefined' ? document : null)]
  * @param {Storage | null} [storage=(typeof localStorage !== 'undefined' ? localStorage : null)]
@@ -1271,6 +1333,7 @@ async function bootApp(doc = (typeof document !== 'undefined' ? document : null)
   initTheme(doc, storage);
   initKeyboardNavigation(win, doc);
   initCopyHandle(doc, nav);
+  initBackToTop(doc, win);
   initContactForm(doc, customFetch);
 
   await Promise.allSettled([
@@ -1315,6 +1378,7 @@ if (typeof module !== 'undefined' && module.exports) {
     initTheme,
     initCopyHandle,
     initKeyboardNavigation,
+    initBackToTop,
     cleanIndexUrl,
     loadProjects,
     renderProjects,

@@ -473,6 +473,7 @@ describe('Stage 6: DOM Mock Controller Integration', () => {
       attributes: {},
       setAttribute(k, v) { this.attributes[k] = String(v); },
       getAttribute(k) { return this.attributes[k] !== undefined ? this.attributes[k] : null; },
+      hasAttribute(k) { return this.attributes[k] !== undefined; },
       removeAttribute(k) { delete this.attributes[k]; },
       listeners: {},
       addEventListener(event, fn) {
@@ -1143,6 +1144,99 @@ describe('Stage 6: DOM Mock Controller Integration', () => {
       }
     };
     assert.doesNotThrow(() => app.cleanIndexUrl(throwingWin));
+  });
+
+  test('initBackToTop intercepts click, scrolls smoothly, and strips #top from URL without adding it', () => {
+    // 1. Guard check: null or invalid document/window
+    assert.doesNotThrow(() => app.initBackToTop(null, null));
+    assert.doesNotThrow(() => app.initBackToTop({}, null));
+    assert.doesNotThrow(() => app.initBackToTop({ querySelectorAll: () => [] }, null));
+
+    // 2. Setup mock document and window
+    const doc = createMockDocument();
+    const topEl = doc.getElementById('top');
+    let topFocused = false;
+    topEl.focus = () => { topFocused = true; };
+
+    const backToTopLink = createMockElement('back-to-top', 'A');
+    doc.querySelectorAll = (sel) => sel.includes('back-to-top') ? [backToTopLink] : [];
+
+    let scrollToOpts = null;
+    let replacedUrl = null;
+    const mockWin = {
+      location: {
+        pathname: '/experiments',
+        search: '?filter=ai',
+        hash: '#top'
+      },
+      history: {
+        replaceState(_state, _title, url) {
+          replacedUrl = url;
+        }
+      },
+      matchMedia(query) {
+        return { matches: query.includes('reduce') };
+      },
+      scrollTo(opts) {
+        scrollToOpts = opts;
+      }
+    };
+
+    app.initBackToTop(doc, mockWin);
+    // Idempotency: second call does not re-bind
+    app.initBackToTop(doc, mockWin);
+    assert.equal(backToTopLink.listeners['click'].length, 1);
+
+    // Simulate click
+    let defaultPrevented = false;
+    backToTopLink.dispatch('click', {
+      preventDefault() { defaultPrevented = true; }
+    });
+
+    assert.equal(defaultPrevented, true);
+    assert.deepEqual(scrollToOpts, { top: 0, behavior: 'auto' });
+    assert.equal(replacedUrl, '/experiments?filter=ai');
+    assert.equal(topEl.getAttribute('tabindex'), '-1');
+    assert.equal(topFocused, true);
+
+    // Test with smooth scroll (when prefers-reduced-motion is false)
+    const smoothWin = {
+      location: { pathname: '/', search: '', hash: '' },
+      history: { replaceState: (_s, _t, url) => { replacedUrl = url; } },
+      matchMedia: () => ({ matches: false }),
+      scrollTo: (opts) => { scrollToOpts = opts; }
+    };
+    const smoothLink = createMockElement('smooth-link', 'A');
+    const docSmooth = createMockDocument();
+    docSmooth.querySelectorAll = () => [smoothLink];
+    app.initBackToTop(docSmooth, smoothWin);
+
+    smoothLink.dispatch('click', { preventDefault() {} });
+    assert.deepEqual(scrollToOpts, { top: 0, behavior: 'smooth' });
+    assert.equal(replacedUrl, '/');
+
+    // Test fallback when scrollTo throws or when top element focus throws
+    let scrolledX = null, scrolledY = null;
+    const throwingWin = {
+      location: { pathname: '/wrong-martin' },
+      history: { replaceState() { throw new Error('Restricted'); } },
+      scrollTo(opts, y) {
+        if (typeof opts === 'object') throw new Error('Legacy scrollTo');
+        scrolledX = opts;
+        scrolledY = y;
+      }
+    };
+    const docThrowing = createMockDocument();
+    const throwLink = createMockElement('throw-link', 'A');
+    docThrowing.querySelectorAll = () => [throwLink];
+    const throwTop = docThrowing.getElementById('top');
+    throwTop.focus = (opts) => {
+      if (opts && opts.preventScroll) throw new Error('Fallback focus');
+    };
+    app.initBackToTop(docThrowing, throwingWin);
+    assert.doesNotThrow(() => throwLink.dispatch('click', { preventDefault() {} }));
+    assert.equal(scrolledX, 0);
+    assert.equal(scrolledY, 0);
   });
 
   test('initTheme dynamically updates meta theme-color if present', () => {
