@@ -355,7 +355,7 @@ describe('Stage 5: HTML Template Builders & Facade Swapping', () => {
     assert.match(html, /WM-12/);
     assert.match(html, /YOUR MISDIRECTED EMAIL COULD BE NEXT/);
     assert.match(html, /REPORT MISDIRECTED EMAIL &darr;/);
-    assert.match(html, /href="\.\/contact\.html"/);
+    assert.match(html, /href="\.\/contact"/);
   });
 
   test('buildPlaylistCardHtml generates Spotify card with sanitized URLs', () => {
@@ -1047,21 +1047,21 @@ describe('Stage 6: DOM Mock Controller Integration', () => {
     mockWin.dispatch('keydown', { key: '1', target: { tagName: 'DIV' } });
     assert.equal(navigatedTo, './');
 
-    // Press '2' -> should navigate to experiments.html
+    // Press '2' -> should navigate to ./experiments
     mockWin.dispatch('keydown', { key: '2', target: { tagName: 'DIV' } });
-    assert.equal(navigatedTo, './experiments.html');
+    assert.equal(navigatedTo, './experiments');
 
-    // Press '3' -> should navigate to wrong-martin.html
+    // Press '3' -> should navigate to ./wrong-martin
     mockWin.dispatch('keydown', { key: '3', target: { tagName: 'DIV' } });
-    assert.equal(navigatedTo, './wrong-martin.html');
+    assert.equal(navigatedTo, './wrong-martin');
 
-    // Press '4' -> should navigate to playlists.html
+    // Press '4' -> should navigate to ./playlists
     mockWin.dispatch('keydown', { key: '4', target: { tagName: 'DIV' } });
-    assert.equal(navigatedTo, './playlists.html');
+    assert.equal(navigatedTo, './playlists');
 
-    // Press '5' -> should navigate to contact.html
+    // Press '5' -> should navigate to ./contact
     mockWin.dispatch('keydown', { key: '5', target: { tagName: 'DIV' } });
-    assert.equal(navigatedTo, './contact.html');
+    assert.equal(navigatedTo, './contact');
 
     // Press 'T' and 't' -> should toggle theme
     let toggleCount = 0;
@@ -1074,22 +1074,22 @@ describe('Stage 6: DOM Mock Controller Integration', () => {
 
     // Press while typing in input / textarea / select / contenteditable -> should be ignored
     mockWin.dispatch('keydown', { key: '1', target: { tagName: 'INPUT' } });
-    assert.equal(navigatedTo, './contact.html');
+    assert.equal(navigatedTo, './contact');
     mockWin.dispatch('keydown', { key: '1', target: { tagName: 'TEXTAREA' } });
-    assert.equal(navigatedTo, './contact.html');
+    assert.equal(navigatedTo, './contact');
     mockWin.dispatch('keydown', { key: '1', target: { tagName: 'SELECT' } });
-    assert.equal(navigatedTo, './contact.html');
+    assert.equal(navigatedTo, './contact');
     mockWin.dispatch('keydown', { key: '1', target: { tagName: 'DIV', isContentEditable: true } });
-    assert.equal(navigatedTo, './contact.html');
+    assert.equal(navigatedTo, './contact');
 
     // Press with modifier keys (ctrl, alt, meta) -> should be ignored
     mockWin.dispatch('keydown', { key: '1', ctrlKey: true, target: { tagName: 'DIV' } });
     mockWin.dispatch('keydown', { key: '1', altKey: true, target: { tagName: 'DIV' } });
     mockWin.dispatch('keydown', { key: '1', metaKey: true, target: { tagName: 'DIV' } });
-    assert.equal(navigatedTo, './contact.html');
+    assert.equal(navigatedTo, './contact');
   });
 
-  test('cleanIndexUrl strips index.html from URL bar and preserves search/hash', () => {
+  test('cleanIndexUrl strips .html and index.html from URL bar and preserves search/hash', () => {
     let replacedUrl = null;
     const mockWin = {
       location: {
@@ -1113,9 +1113,19 @@ describe('Stage 6: DOM Mock Controller Integration', () => {
     app.cleanIndexUrl(mockWin);
     assert.equal(replacedUrl, '/sub/dir/');
 
-    // Pathname NOT ending in index.html -> no replacement
+    // Page ending in .html -> strip .html
     replacedUrl = null;
     mockWin.location.pathname = '/contact.html';
+    mockWin.location.search = '?src=mail';
+    mockWin.location.hash = '#form';
+    app.cleanIndexUrl(mockWin);
+    assert.equal(replacedUrl, '/contact?src=mail#form');
+
+    // Page already without .html -> no replacement
+    replacedUrl = null;
+    mockWin.location.pathname = '/contact';
+    mockWin.location.search = '';
+    mockWin.location.hash = '';
     app.cleanIndexUrl(mockWin);
     assert.equal(replacedUrl, null);
 

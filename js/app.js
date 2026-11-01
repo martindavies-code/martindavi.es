@@ -675,7 +675,7 @@ function buildSubmissionCardHtml() {
       </div>
 
       <div class="short-footer">
-        <a href="./contact.html" class="yt-fallback-link dispatch-submit-link">
+        <a href="./contact" class="yt-fallback-link dispatch-submit-link">
           REPORT MISDIRECTED EMAIL &darr;
         </a>
       </div>
@@ -1221,13 +1221,13 @@ function initKeyboardNavigation(win = (typeof window !== 'undefined' ? window : 
     if (key === '1') {
       win.location.href = './';
     } else if (key === '2') {
-      win.location.href = './experiments.html';
+      win.location.href = './experiments';
     } else if (key === '3') {
-      win.location.href = './wrong-martin.html';
+      win.location.href = './wrong-martin';
     } else if (key === '4') {
-      win.location.href = './playlists.html';
+      win.location.href = './playlists';
     } else if (key === '5') {
-      win.location.href = './contact.html';
+      win.location.href = './contact';
     } else if (key === 't' || key === 'T') {
       const toggleBtn = doc.getElementById('theme-toggle');
       if (toggleBtn) {
@@ -1238,7 +1238,7 @@ function initKeyboardNavigation(win = (typeof window !== 'undefined' ? window : 
 }
 
 /**
- * Normalises the URL path in the browser address bar by removing trailing index.html.
+ * Normalises the URL path in the browser address bar by removing .html and trailing index.html.
  * @param {Window | null} [win=(typeof window !== 'undefined' ? window : null)]
  */
 function cleanIndexUrl(win = (typeof window !== 'undefined' ? window : null)) {
@@ -1247,6 +1247,9 @@ function cleanIndexUrl(win = (typeof window !== 'undefined' ? window : null)) {
     const pathname = win.location.pathname || '';
     if (pathname.endsWith('/index.html')) {
       const cleanPath = pathname.replace(/\/index\.html$/, '/') + (win.location.search || '') + (win.location.hash || '');
+      win.history.replaceState(null, '', cleanPath);
+    } else if (pathname.endsWith('.html')) {
+      const cleanPath = pathname.replace(/\.html$/, '') + (win.location.search || '') + (win.location.hash || '');
       win.history.replaceState(null, '', cleanPath);
     }
   } catch {

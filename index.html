@@ -100,11 +100,11 @@
   <link rel="stylesheet" href="./css/styles.css">
   <script>
     if (typeof window !== 'undefined' && window.location && window.history && window.history.replaceState) {
-      if (window.location.pathname.endsWith('/index.html')) {
-        try {
-          var cleanUrl = window.location.pathname.replace(/\/index\.html$/, '/') + window.location.search + window.location.hash;
-          window.history.replaceState(null, '', cleanUrl);
-        } catch (_) {}
+      var p = window.location.pathname;
+      if (p.endsWith('/index.html')) {
+        try { window.history.replaceState(null, '', p.replace(/\/index\.html$/, '/') + window.location.search + window.location.hash); } catch (_) {}
+      } else if (p.endsWith('.html')) {
+        try { window.history.replaceState(null, '', p.replace(/\.html$/, '') + window.location.search + window.location.hash); } catch (_) {}
       }
     }
   </script>
@@ -122,10 +122,10 @@
     <nav class="chassis-cell chassis-nav" aria-label="Main Navigation">
       <span class="nav-dir-label">SECTION DIRECTORY [1-5]:</span>
       <a href="./" class="nav-link active" aria-current="page"><span class="nav-num">MD-01</span> ABOUT</a>
-      <a href="./experiments.html" class="nav-link"><span class="nav-num">MD-02</span> EXPERIMENTS</a>
-      <a href="./wrong-martin.html" class="nav-link"><span class="nav-num">MD-03</span> WRONG MARTIN</a>
-      <a href="./playlists.html" class="nav-link"><span class="nav-num">MD-04</span> PLAYLISTS</a>
-      <a href="./contact.html" class="nav-link"><span class="nav-num">MD-05</span> CONTACT</a>
+      <a href="./experiments" class="nav-link"><span class="nav-num">MD-02</span> EXPERIMENTS</a>
+      <a href="./wrong-martin" class="nav-link"><span class="nav-num">MD-03</span> WRONG MARTIN</a>
+      <a href="./playlists" class="nav-link"><span class="nav-num">MD-04</span> PLAYLISTS</a>
+      <a href="./contact" class="nav-link"><span class="nav-num">MD-05</span> CONTACT</a>
     </nav>
     <div class="chassis-cell chassis-controls">
       <button id="theme-toggle" class="theme-toggle-btn" type="button" role="switch" aria-checked="true"
@@ -279,7 +279,7 @@
           playlists, or send me a message using the handy webform.
         </p>
         <div class="directory-links-grid">
-          <a href="./experiments.html" class="dir-card-link">
+          <a href="./experiments" class="dir-card-link">
             <div class="dir-card-top">
               <span class="dir-card-code">MD-02</span>
               <span class="dir-card-name">EXPERIMENTS &rarr;</span>
@@ -287,7 +287,7 @@
             <span class="dir-card-desc">Zero-dependency dashboards, agentic coding, and desktop utility
               workflows.</span>
           </a>
-          <a href="./wrong-martin.html" class="dir-card-link">
+          <a href="./wrong-martin" class="dir-card-link">
             <div class="dir-card-top">
               <span class="dir-card-code">MD-03</span>
               <span class="dir-card-name">WRONG MARTIN &rarr;</span>
@@ -295,7 +295,7 @@
             <span class="dir-card-desc">Misdirected emails from strangers converted into custom genre-hopping songs and
               YouTube shorts.</span>
           </a>
-          <a href="./playlists.html" class="dir-card-link">
+          <a href="./playlists" class="dir-card-link">
             <div class="dir-card-top">
               <span class="dir-card-code">MD-04</span>
               <span class="dir-card-name">PLAYLISTS &rarr;</span>
@@ -303,7 +303,7 @@
             <span class="dir-card-desc">Deeply opinionated, high-concept Spotify playlists curated over thousands of
               hours.</span>
           </a>
-          <a href="./contact.html" class="dir-card-link">
+          <a href="./contact" class="dir-card-link">
             <div class="dir-card-top">
               <span class="dir-card-code">MD-05</span>
               <span class="dir-card-name">CONTACT &rarr;</span>
