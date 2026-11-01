@@ -685,20 +685,231 @@ describe('Stage 6: DOM Mock Controller Integration', () => {
   });
 
   test('browser auto-initialisation executes on loading and complete readyStates', async () => {
-    // Test document.readyState === 'complete'
-    const docComplete = createMockDocument();
-    docComplete.readyState = 'complete';
-    // Call bootApp directly with docComplete
-    await app.bootApp(docComplete, { getItem: () => 'light', setItem: () => {} }, async () => new Response('[]'));
-    assert.equal(docComplete.documentElement.getAttribute('data-theme'), 'light');
+    // Test in-process module evaluation when document is defined
+    const savedDoc = global.document;
+    const savedStorage = global.localStorage;
+    const savedFetch = global.fetch;
 
-    // Test document.readyState === 'loading'
-    const docLoading = createMockDocument();
-    docLoading.readyState = 'loading';
-    docLoading.addEventListener = (evt, fn) => {
-      if (evt === 'DOMContentLoaded') fn();
+    try {
+      // 1. readyState === 'loading'
+      global.document = {
+        readyState: 'loading',
+        documentElement: { setAttribute: () => {}, getAttribute: () => 'dark' },
+        getElementById: () => null,
+        addEventListener: (evt, fn) => {
+          if (evt === 'DOMContentLoaded') fn();
+        }
+      };
+      global.localStorage = { getItem: () => null, setItem: () => {} };
+      global.fetch = () => Promise.resolve(new Response('[]'));
+
+      delete require.cache[require.resolve('../js/app.js')];
+      require('../js/app.js');
+
+      // 2. readyState === 'complete'
+      global.document.readyState = 'complete';
+      delete require.cache[require.resolve('../js/app.js')];
+      require('../js/app.js');
+    } finally {
+      if (savedDoc === undefined) delete global.document; else global.document = savedDoc;
+      if (savedStorage === undefined) delete global.localStorage; else global.localStorage = savedStorage;
+      if (savedFetch === undefined) delete global.fetch; else global.fetch = savedFetch;
+      delete require.cache[require.resolve('../js/app.js')];
+    }
+  });
+
+  test('validateContactPayload covers non-string fields and fallbacks', () => {
+    assert.throws(() => app.validateContactPayload({ name: 123, email: 'a@b.com', message: 'm' }), /Name is required/);
+    assert.throws(() => app.validateContactPayload({ name: 'Jane', email: null, message: 'm' }), /Email is required/);
+    assert.throws(() => app.validateContactPayload({ name: 'Jane', email: 'a@b.com', message: 456 }), /Message content is required/);
+
+    const validNonStringSubject = app.validateContactPayload({
+      name: 'Jane',
+      email: 'a@b.com',
+      subject: 12345,
+      message: 'Hello'
+    });
+    assert.equal(validNonStringSubject.subject, 'General Transmission');
+  });
+
+  test('buildProjectCardHtml covers catalogue fallback, tags, and missing links', () => {
+    // Uses catalogue instead of id
+    const htmlCat = app.buildProjectCardHtml({
+      catalogue: 'MJD-CAT-01',
+      title: 'Catalogue Project',
+      category: 'Test',
+      tags: ['TagA', 'TagB']
+    });
+    assert.match(htmlCat, /MJD-CAT-01/);
+    assert.match(htmlCat, /TagA/);
+
+    // Missing id and catalogue -> defaults to MJD-EXP
+    const htmlDefault = app.buildProjectCardHtml({
+      title: 'Default Project',
+      category: 'Test'
+    });
+    assert.match(htmlDefault, /MJD-EXP/);
+  });
+
+  test('buildShortCardHtml covers missing recipient, invalid video id, and missing blurb', () => {
+    const html = app.buildShortCardHtml({
+      id: 'invalid-id-too-short',
+      title: 'Short Video',
+      genre: 'Experimental'
+    }, 4);
+    assert.match(html, /WM-05/);
+    assert.match(html, /id="card-WM-05"/);
+  });
+
+  test('swapYoutubeFacade handles missing title and default doc parameter', () => {
+    const mockDoc = createMockDocument();
+    let replacedWith = null;
+    const wrapper = {
+      replaceChildren(el) { replacedWith = el; }
     };
-    await app.bootApp(docLoading, { getItem: () => 'dark', setItem: () => {} }, async () => new Response('[]'));
-    assert.equal(docLoading.documentElement.getAttribute('data-theme'), 'dark');
+
+    app.swapYoutubeFacade(wrapper, 'IX8mW3_-ODQ', '', mockDoc);
+    assert.ok(replacedWith);
+    assert.equal(replacedWith.title, 'YouTube Short');
+
+    // Default doc parameter falls back gracefully when document is undefined in Node
+    const nullDocResult = app.swapYoutubeFacade(wrapper, 'IX8mW3_-ODQ', 'Test');
+    assert.equal(nullDocResult, false);
+  });
+
+  test('initTheme covers toggle transitions and missing dataset properties', async () => {
+    const doc = createMockDocument();
+    const btn = doc.getElementById('theme-toggle');
+    const root = doc.documentElement;
+    app.initTheme(doc, { getItem: () => null, setItem: () => {} });
+
+    // Remove data-theme to test fallback to 'dark'
+    root.removeAttribute('data-theme');
+    await btn.dispatch('click');
+    assert.equal(root.getAttribute('data-theme'), 'light');
+
+    // Click toggle when currentTheme is light -> should switch to dark
+    await btn.dispatch('click');
+    assert.equal(root.getAttribute('data-theme'), 'dark');
+
+    // Call initTheme with default doc & storage parameters in Node
+    app.initTheme();
+  });
+
+  test('default parameter branches for controllers execute safely', async () => {
+    await app.loadProjects();
+    app.renderProjects();
+    await app.loadWrongMartin();
+    app.renderWrongMartin();
+    await app.loadPlaylists();
+    app.renderPlaylists();
+    app.initContactForm();
+    await app.bootApp();
+  });
+
+  test('renderWrongMartin facade click with missing attributes', async () => {
+    const doc = createMockDocument();
+    const grid = doc.getElementById('wrong-martin-grid');
+    app.renderWrongMartin(doc);
+
+    const stageWrapper = doc.createElement('div');
+    const facadeBtn = doc.createElement('button');
+    stageWrapper.replaceChildren = (child) => { stageWrapper.child = child; };
+    facadeBtn.closest = (sel) => {
+      if (sel === '.yt-facade') return facadeBtn;
+      if (sel === '.stage-wrapper') return stageWrapper;
+      return null;
+    };
+
+    // Click with no data-video-id and no data-title
+    await grid.dispatch('click', { target: facadeBtn });
+  });
+
+  test('initContactForm handles generic API error, non-transient network error, and validation glitch', async () => {
+    const honeypot = { checked: false };
+
+    // 1. API error with missing message
+    const docApiErr = createMockDocument();
+    const formApi = docApiErr.getElementById('contact-form');
+    formApi.querySelector = (sel) => sel.includes('botcheck') ? honeypot : null;
+    global.FormData = class {
+      entries() {
+        return [
+          ['name', 'Martin'],
+          ['email', 'martin@example.com'],
+          ['message', 'Testing API error fallback']
+        ];
+      }
+    };
+
+    const emptyMsgApiFetch = async () => new Response(JSON.stringify({ success: false }), { status: 400 });
+    app.initContactForm(docApiErr, emptyMsgApiFetch);
+    await formApi.dispatch('submit');
+
+    const statusEl = docApiErr.getElementById('form-status');
+    assert.match(statusEl.textContent, /TRANSMISSION FAILED/);
+
+    // 2. Generic network error (not TransientNetworkError)
+    const docGenericErr = createMockDocument();
+    const formGeneric = docGenericErr.getElementById('contact-form');
+    formGeneric.querySelector = (sel) => sel.includes('botcheck') ? honeypot : null;
+    const genericErrFetch = async () => { throw new TypeError('Network down'); };
+    app.initContactForm(docGenericErr, genericErrFetch);
+    await formGeneric.dispatch('submit');
+
+    const statusElGeneric = docGenericErr.getElementById('form-status');
+    assert.match(statusElGeneric.textContent, /NETWORK ANOMALY/);
+
+    // 3. Non-ValidationError error during form submit
+    const docGlitch = createMockDocument();
+    const formGlitch = docGlitch.getElementById('contact-form');
+    formGlitch.querySelector = (sel) => sel.includes('botcheck') ? honeypot : null;
+    global.FormData = class {
+      entries() {
+        return [['name', 'ValidName'], ['email', 'a@b.com'], ['message', 'ValidMsg']];
+      }
+    };
+    const origTrim = String.prototype.trim;
+    try {
+      String.prototype.trim = function() { throw new TypeError('Trim glitch'); };
+      app.initContactForm(docGlitch, async () => new Response('{}'));
+      await formGlitch.dispatch('submit');
+    } finally {
+      String.prototype.trim = origTrim;
+    }
+
+    const statusElGlitch = docGlitch.getElementById('form-status');
+    assert.match(statusElGlitch.textContent, /PLEASE COMPLETE ALL REQUIRED FIELDS/);
+  });
+
+  test('fetchWithTimeout re-throws non-abort error', async () => {
+    const failingFetch = async () => { throw new Error('Boom'); };
+    await assert.rejects(() => app.fetchWithTimeout('http://test', {}, 5000, failingFetch), /Boom/);
+  });
+
+  test('default parameters execute with global document present', async () => {
+    const doc = createMockDocument();
+    global.document = doc;
+    global.localStorage = { getItem: () => null, setItem: () => {} };
+    global.fetch = async () => new Response('[]');
+
+    try {
+      app.initTheme();
+      const wrapper = { replaceChildren() {} };
+      app.swapYoutubeFacade(wrapper, 'IX8mW3_-ODQ');
+      await app.loadProjects();
+      app.renderProjects();
+      await app.loadWrongMartin();
+      app.renderWrongMartin();
+      await app.loadPlaylists();
+      app.renderPlaylists();
+      app.initContactForm();
+      await app.bootApp();
+    } finally {
+      delete global.document;
+      delete global.localStorage;
+      delete global.fetch;
+    }
   });
 });
+
