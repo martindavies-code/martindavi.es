@@ -62,7 +62,8 @@
       </div>
 
       <div class="about-grid">
-        <div class="about-prose">
+        <!-- Column 1: Portrait Column -->
+        <div class="about-portrait-col">
           <figure class="about-portrait">
             <img class="portrait-dark" src="./assets/martin.jpg"
               alt="Stylised glitch-art portrait of Martin Davies, bald with a stubbled beard, wearing a knitted hoodie"
@@ -71,54 +72,107 @@
               alt="Stylised glitch-art portrait of Martin Davies, bald with a stubbled beard, wearing a knitted hoodie, in light colours"
               width="800" height="800" loading="lazy" decoding="async">
           </figure>
-          <p class="lead">Hello. I'm Martin.</p>
-          <p>
-            I live in South East London and for fifteen years, I've run massive science spectacles for <a
-              href="https://www.newscientist.com/" target="_blank" rel="noopener noreferrer">New Scientist magazine</a>
-            and <a href="https://www.rigb.org/" target="_blank" rel="noopener noreferrer">the Royal Institution</a>,
-            working with everyone from top scientists off the TV to members of the Royal Family.
-          </p>
-          <p>
-            Today, I curate events, write copy, code workflows, and rack up a mind-boggling amount of listening hours on
-            <a href="https://open.spotify.com/user/darcysarto?si=cfe6327275b54812" target="_blank"
-              rel="noopener noreferrer">Spotify</a>. I am a fast learner capable of mastering almost any system,
-            provided I am not simultaneously processing the psychological damage of watching <a
-              href="https://www.crewealex.net/" target="_blank" rel="noopener noreferrer">Crewe Alexandra</a> lose on a
-            freezing Tuesday night.
-          </p>
-          <p>
-            In my spare time, I <a href="https://carnivalcoffee.co.uk/" target="_blank" rel="noopener noreferrer">drink
-              single-origin coffee</a>, attempt to complete the <a href="https://www.nytimes.com/crosswords/game/mini"
-              target="_blank" rel="noopener noreferrer">NYT's daily mini-crossword</a> in under 30 seconds, and
-            occasionally convince my <a href="https://www.instagram.com/adogcalledbette/" target="_blank"
-              rel="noopener noreferrer">Shih Tzu, Bette</a>, to acknowledge my existence.
-          </p>
+          <div class="about-portrait-caption">
+            <span class="caption-label">FIG. 01 // VISUAL RECORD</span>
+            <span class="caption-meta">LOC: 51.4749&deg; N, 0.0247&deg; W // STATUS: ACTIVE</span>
+          </div>
         </div>
 
+        <!-- Column 2: Biography Text & Baseline Telemetry Strip -->
+        <div class="about-bio-col">
+          <div class="about-bio-body">
+            <p class="lead">Hello. I'm Martin.</p>
+            <p>
+              I live in South East London and for fifteen years, I've run massive science spectacles for <a
+                href="https://www.newscientist.com/" target="_blank" rel="noopener noreferrer">New Scientist magazine</a>
+              and <a href="https://www.rigb.org/" target="_blank" rel="noopener noreferrer">the Royal Institution</a>,
+              working with everyone from top scientists off the TV to members of the Royal Family.
+            </p>
+            <p>
+              Today, I curate events, write copy, code workflows, and rack up a mind-boggling amount of listening hours on
+              <a href="https://open.spotify.com/user/darcysarto?si=cfe6327275b54812" target="_blank"
+                rel="noopener noreferrer">Spotify</a>. I am a fast learner capable of mastering almost any system,
+              provided I am not simultaneously processing the psychological damage of watching <a
+                href="https://www.crewealex.net/" target="_blank" rel="noopener noreferrer">Crewe Alexandra</a> lose on a
+                freezing Tuesday night.
+            </p>
+            <p>
+              In my spare time, I <a href="https://carnivalcoffee.co.uk/" target="_blank" rel="noopener noreferrer">drink
+                single-origin coffee</a>, attempt to complete the <a href="https://www.nytimes.com/crosswords/game/mini"
+                target="_blank" rel="noopener noreferrer">NYT's daily mini-crossword</a> in under 30 seconds, and
+              occasionally convince my <a href="https://www.instagram.com/adogcalledbette/" target="_blank"
+                rel="noopener noreferrer">Shih Tzu, Bette</a>, to acknowledge my existence.
+            </p>
+          </div>
+
+          <!-- Bottom Telemetry Strip flush with column baselines -->
+          <div class="about-telemetry-strip" aria-label="Professional Experience Readouts">
+            <div class="telemetry-cell">
+              <span class="telemetry-label">EXPERIENCE</span>
+              <span class="telemetry-val">15+ Years Live &amp; Digital</span>
+            </div>
+            <div class="telemetry-cell">
+              <span class="telemetry-label">FLAGSHIP SCALE</span>
+              <span class="telemetry-val">8,000+ Daily Attendees</span>
+            </div>
+            <div class="telemetry-cell">
+              <span class="telemetry-label">RECOGNITION</span>
+              <span class="telemetry-val">PPA 2023 &amp; EN 2025 Winner</span>
+            </div>
+            <div class="telemetry-cell">
+              <span class="telemetry-label">CURRENT FOCUS</span>
+              <span class="telemetry-val">AI Workflows &amp; Events</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Column 3: Compressed Metadata Column -->
         <aside class="about-specs">
-          <dl class="spec-list">
-            <dt>CATALOGUE ID</dt>
-            <dd>MD-SE8-1980</dd>
-            <dt>BASE</dt>
-            <dd>London SE8</dd>
-            <dt>BACKGROUND</dt>
-            <dd>New Scientist / The Royal Institution / British Science Association</dd>
-            <dt>EDUCATION</dt>
-            <dd>Natural Sciences, King's College, Cambridge</dd>
-            <dt>CERTIFICATION</dt>
-            <dd>Google AI Professional Certificate</dd>
-            <dt>STACK</dt>
-            <dd>Python, PowerShell, Google Antigravity, HTML/CSS/JS, OBS</dd>
-            <dt>GITHUB</dt>
-            <dd><a href="https://github.com/martindavies-code" target="_blank"
-                rel="noopener noreferrer">github.com/martindavies-code</a></dd>
-            <dt>LINKEDIN</dt>
-            <dd><a href="https://www.linkedin.com/in/martin--davies/" target="_blank"
-                rel="noopener noreferrer">linkedin.com/in/martin--davies</a></dd>
-            <dt>BLUESKY</dt>
-            <dd><a href="https://bsky.app/profile/martindavi.es" target="_blank"
-                rel="noopener noreferrer">@martindavi.es</a></dd>
-          </dl>
+          <div class="spec-list">
+            <div class="spec-row-split">
+              <div class="spec-item">
+                <span class="spec-label">CATALOGUE ID</span>
+                <span class="spec-val">MD-SE8-1980</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">BASE</span>
+                <span class="spec-val">London SE8</span>
+              </div>
+            </div>
+            <div class="spec-item spec-row-full">
+              <span class="spec-label">BACKGROUND</span>
+              <span class="spec-val">New Scientist / The Royal Institution / British Science Association</span>
+            </div>
+            <div class="spec-item spec-row-full">
+              <span class="spec-label">EDUCATION</span>
+              <span class="spec-val">Natural Sciences, King's College, Cambridge</span>
+            </div>
+            <div class="spec-item spec-row-full">
+              <span class="spec-label">CERTIFICATION</span>
+              <span class="spec-val">Google AI Professional Certificate</span>
+            </div>
+            <div class="spec-item spec-row-full">
+              <span class="spec-label">STACK</span>
+              <span class="spec-val">Python, PowerShell, Google Antigravity, HTML/CSS/JS, OBS</span>
+            </div>
+            <div class="spec-row-social">
+              <div class="spec-item">
+                <span class="spec-label">GITHUB</span>
+                <span class="spec-val"><a href="https://github.com/martindavies-code" target="_blank"
+                    rel="noopener noreferrer">github.com/martindavies-code</a></span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">LINKEDIN</span>
+                <span class="spec-val"><a href="https://www.linkedin.com/in/martin--davies/" target="_blank"
+                    rel="noopener noreferrer">linkedin.com/in/martin--davies</a></span>
+              </div>
+              <div class="spec-item spec-item-full">
+                <span class="spec-label">BLUESKY</span>
+                <span class="spec-val"><a href="https://bsky.app/profile/martindavi.es" target="_blank"
+                    rel="noopener noreferrer">@martindavi.es</a></span>
+              </div>
+            </div>
+          </div>
         </aside>
       </div>
 
