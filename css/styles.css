@@ -164,7 +164,6 @@ body {
   align-items: center;
   overflow-x: auto;
   white-space: nowrap;
-  -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
   -ms-overflow-style: none;
   background-color: var(--bg-secondary);
