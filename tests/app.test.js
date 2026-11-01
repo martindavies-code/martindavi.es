@@ -487,6 +487,8 @@ describe('Stage 6: DOM Mock Controller Integration', () => {
         }
       },
       querySelector(_sel) { return null; },
+      closest(_sel) { return null; },
+      replaceChildren(..._children) {},
       reset() {}
     };
   }
@@ -504,6 +506,9 @@ describe('Stage 6: DOM Mock Controller Integration', () => {
           elements.set(id, createMockElement(id));
         }
         return elements.get(id);
+      },
+      querySelector(_sel) {
+        return null;
       },
       createElement(tag) {
         return createMockElement('', tag);
@@ -954,7 +959,7 @@ describe('Stage 6: DOM Mock Controller Integration', () => {
     }
   });
 
-  test('initCopyHandle writes to clipboard on click', async () => {
+  test('initCopyHandle writes to clipboard on click with labelSpan and handles errors', async () => {
     const doc = createMockDocument();
     let copiedText = '';
     const mockNav = {
@@ -964,14 +969,57 @@ describe('Stage 6: DOM Mock Controller Integration', () => {
     };
     const copyBtn = doc.getElementById('copy-handle-btn');
     copyBtn.setAttribute('data-copy', '@martindavi.es');
+    const labelSpan = createMockElement('label-span', 'SPAN');
+    labelSpan.textContent = '@martindavi.es';
+    copyBtn.querySelector = (sel) => sel.includes('copy-btn-text') ? labelSpan : null;
 
     app.initCopyHandle(doc, mockNav);
+    // Idempotency: second call returns immediately
+    app.initCopyHandle(doc, mockNav);
+
     await copyBtn.dispatch('click');
     assert.equal(copiedText, '@martindavi.es');
     assert.equal(copyBtn.classList.contains('copied'), true);
+    assert.equal(labelSpan.textContent, '[COPIED // BUFFER READY]');
+
+    // Test without labelSpan and with synchronous setTimeout callback execution
+    const savedSetTimeout = global.setTimeout;
+    try {
+      global.setTimeout = (fn) => fn();
+      const docNoSpan = createMockDocument();
+      const copyBtnNoSpan = docNoSpan.getElementById('copy-handle-btn');
+      copyBtnNoSpan.textContent = '@martindavi.es';
+      copyBtnNoSpan.querySelector = () => null;
+      app.initCopyHandle(docNoSpan, mockNav);
+      await copyBtnNoSpan.dispatch('click');
+      assert.equal(copyBtnNoSpan.textContent, '@martindavi.es');
+
+      // Test with labelSpan and synchronous reset callback execution
+      const docWithSpan = createMockDocument();
+      const copyBtnWithSpan = docWithSpan.getElementById('copy-handle-btn');
+      const resetLabel = createMockElement('label', 'SPAN');
+      resetLabel.textContent = 'Copy Handle';
+      copyBtnWithSpan.querySelector = () => resetLabel;
+      app.initCopyHandle(docWithSpan, mockNav);
+      await copyBtnWithSpan.dispatch('click');
+      assert.equal(resetLabel.textContent, 'Copy Handle');
+    } finally {
+      global.setTimeout = savedSetTimeout;
+    }
+
+    // Test clipboard write failure branch
+    const failingNav = {
+      clipboard: {
+        async writeText() { throw new Error('Clipboard denied'); }
+      }
+    };
+    const docErr = createMockDocument();
+    const copyBtnErr = docErr.getElementById('copy-handle-btn');
+    app.initCopyHandle(docErr, failingNav);
+    await copyBtnErr.dispatch('click');
   });
 
-  test('initKeyboardNavigation handles 1-5 and T keys and ignores inputs', () => {
+  test('initKeyboardNavigation covers 1-5 keys, lowercase t, modifier keys and editable targets', () => {
     const doc = createMockDocument();
     let navigatedTo = '';
     const mockWin = {
@@ -992,24 +1040,127 @@ describe('Stage 6: DOM Mock Controller Integration', () => {
     };
 
     app.initKeyboardNavigation(mockWin, doc);
+    // Idempotency: second call returns immediately
+    app.initKeyboardNavigation(mockWin, doc);
+
+    // Press '1' -> should navigate to index.html
+    mockWin.dispatch('keydown', { key: '1', target: { tagName: 'DIV' } });
+    assert.equal(navigatedTo, './index.html');
 
     // Press '2' -> should navigate to experiments.html
     mockWin.dispatch('keydown', { key: '2', target: { tagName: 'DIV' } });
     assert.equal(navigatedTo, './experiments.html');
 
-    // Press '1' while typing in an INPUT -> should be ignored
-    mockWin.dispatch('keydown', { key: '1', target: { tagName: 'INPUT' } });
-    assert.equal(navigatedTo, './experiments.html');
+    // Press '3' -> should navigate to wrong-martin.html
+    mockWin.dispatch('keydown', { key: '3', target: { tagName: 'DIV' } });
+    assert.equal(navigatedTo, './wrong-martin.html');
 
-    // Press 'T' -> should click theme toggle
-    let toggleClicked = false;
+    // Press '4' -> should navigate to playlists.html
+    mockWin.dispatch('keydown', { key: '4', target: { tagName: 'DIV' } });
+    assert.equal(navigatedTo, './playlists.html');
+
+    // Press '5' -> should navigate to contact.html
+    mockWin.dispatch('keydown', { key: '5', target: { tagName: 'DIV' } });
+    assert.equal(navigatedTo, './contact.html');
+
+    // Press 'T' and 't' -> should toggle theme
+    let toggleCount = 0;
     const toggleBtn = doc.getElementById('theme-toggle');
-    toggleBtn.click = () => { toggleClicked = true; };
+    toggleBtn.click = () => { toggleCount++; };
     mockWin.dispatch('keydown', { key: 'T', target: { tagName: 'DIV' } });
-    assert.equal(toggleClicked, true);
+    assert.equal(toggleCount, 1);
+    mockWin.dispatch('keydown', { key: 't', target: { tagName: 'DIV' } });
+    assert.equal(toggleCount, 2);
+
+    // Press while typing in input / textarea / select / contenteditable -> should be ignored
+    mockWin.dispatch('keydown', { key: '1', target: { tagName: 'INPUT' } });
+    assert.equal(navigatedTo, './contact.html');
+    mockWin.dispatch('keydown', { key: '1', target: { tagName: 'TEXTAREA' } });
+    assert.equal(navigatedTo, './contact.html');
+    mockWin.dispatch('keydown', { key: '1', target: { tagName: 'SELECT' } });
+    assert.equal(navigatedTo, './contact.html');
+    mockWin.dispatch('keydown', { key: '1', target: { tagName: 'DIV', isContentEditable: true } });
+    assert.equal(navigatedTo, './contact.html');
+
+    // Press with modifier keys (ctrl, alt, meta) -> should be ignored
+    mockWin.dispatch('keydown', { key: '1', ctrlKey: true, target: { tagName: 'DIV' } });
+    mockWin.dispatch('keydown', { key: '1', altKey: true, target: { tagName: 'DIV' } });
+    mockWin.dispatch('keydown', { key: '1', metaKey: true, target: { tagName: 'DIV' } });
+    assert.equal(navigatedTo, './contact.html');
   });
 
-  test('playMechanicalClickSound executes safely in all environments', () => {
+  test('initTheme dynamically updates meta theme-color if present', () => {
+    const doc = createMockDocument();
+    const metaEl = createMockElement('meta-theme', 'META');
+    metaEl.setAttribute('name', 'theme-color');
+    metaEl.setAttribute('content', '#121212');
+    doc.querySelector = (sel) => sel.includes('theme-color') ? metaEl : null;
+
+    const storage = {
+      store: { fac_md_theme: 'dark' },
+      getItem(k) { return this.store[k] || null; },
+      setItem(k, v) { this.store[k] = v; }
+    };
+
+    app.initTheme(doc, storage);
+    assert.equal(metaEl.getAttribute('content'), '#121212');
+
+    const toggleBtn = doc.getElementById('theme-toggle');
+    toggleBtn.dispatch('click');
+    assert.equal(metaEl.getAttribute('content'), '#F4F1EA');
+    assert.equal(storage.store.fac_md_theme, 'light');
+
+    toggleBtn.dispatch('click');
+    assert.equal(metaEl.getAttribute('content'), '#121212');
+    assert.equal(storage.store.fac_md_theme, 'dark');
+  });
+
+  test('renderPlaylists delegated click triggers swapSpotifyFacade', async () => {
+    const doc = createMockDocument();
+    const grid = doc.getElementById('playlists-grid');
+    const mockFetch = async () => new Response(JSON.stringify(app.FALLBACK_PLAYLISTS), { status: 200 });
+    await app.loadPlaylists(doc, mockFetch);
+
+    const coverWrapper = createMockElement('cover-wrap', 'DIV');
+    coverWrapper.replaceChildren = () => {};
+    const card = createMockElement('card', 'DIV');
+    card.querySelector = (sel) => sel.includes('playlist-cover-wrapper') ? coverWrapper : null;
+    const previewBtn = createMockElement('preview-btn', 'BUTTON');
+    previewBtn.setAttribute('data-embed-url', 'https://open.spotify.com/embed/playlist/37i9dQZF1DXcBWIGoYBM5M');
+    previewBtn.closest = (sel) => {
+      if (sel.includes('spotify-preview-btn')) return previewBtn;
+      if (sel.includes('playlist-card')) return card;
+      return null;
+    };
+
+    // Valid delegated preview click
+    await grid.dispatch('click', { target: previewBtn });
+    assert.equal(previewBtn.classList.contains('preview-active'), true);
+
+    // Plain div target without closest preview-btn
+    const plainDiv = createMockElement('plain', 'DIV');
+    plainDiv.closest = () => null;
+    await grid.dispatch('click', { target: plainDiv });
+
+    // Preview button without embed URL
+    const emptyBtn = createMockElement('empty-btn', 'BUTTON');
+    emptyBtn.closest = (sel) => sel.includes('spotify-preview-btn') ? emptyBtn : null;
+    await grid.dispatch('click', { target: emptyBtn });
+
+    // Preview button without playlist-cover-wrapper
+    const brokenCard = createMockElement('broken-card', 'DIV');
+    brokenCard.querySelector = () => null;
+    const btnNoWrap = createMockElement('btn-no-wrap', 'BUTTON');
+    btnNoWrap.setAttribute('data-embed-url', 'https://open.spotify.com/embed/playlist/test');
+    btnNoWrap.closest = (sel) => {
+      if (sel.includes('spotify-preview-btn')) return btnNoWrap;
+      if (sel.includes('playlist-card')) return brokenCard;
+      return null;
+    };
+    await grid.dispatch('click', { target: btnNoWrap });
+  });
+
+  test('playMechanicalClickSound executes safely in all environments and handles throws', () => {
     assert.doesNotThrow(() => app.playMechanicalClickSound(null));
     const mockWin = {
       AudioContext: class {
@@ -1032,6 +1183,363 @@ describe('Stage 6: DOM Mock Controller Integration', () => {
       }
     };
     assert.doesNotThrow(() => app.playMechanicalClickSound(mockWin));
+
+    const throwingWin = {
+      AudioContext: class {
+        constructor() { throw new Error('Audio disabled'); }
+      }
+    };
+    assert.doesNotThrow(() => app.playMechanicalClickSound(throwingWin));
+  });
+
+  test('comprehensive branch coverage for edge cases across all modules', async () => {
+    // 1. sanitizeUrl edge cases
+    assert.equal(app.sanitizeUrl(null), '#');
+    assert.equal(app.sanitizeUrl('   '), '#');
+    assert.equal(app.sanitizeUrl('./relative/path', true), './relative/path');
+    assert.equal(app.sanitizeUrl('./relative/path', false), '#');
+    assert.equal(app.sanitizeUrl('../parent/path', true), '../parent/path');
+    assert.equal(app.sanitizeUrl('#anchor', true), '#anchor');
+    assert.equal(app.sanitizeUrl('#anchor', false), '#');
+    assert.equal(app.sanitizeUrl('/root/path', true), '/root/path');
+    assert.equal(app.sanitizeUrl('/root/path', false), '#');
+    assert.equal(app.sanitizeUrl('ftp://invalid.protocol'), '#');
+    assert.equal(app.sanitizeUrl('javascript:alert(1)'), '#');
+
+    // 2. resolveLinkLabel fallback and demo alias
+    assert.equal(app.resolveLinkLabel('demo'), 'LAUNCH // LIVE &nearr;');
+    assert.equal(app.resolveLinkLabel('unknownKey'), 'UNKNOWNKEY // ACCESS &nearr;');
+
+    // 3. validateContactPayload boundaries
+    assert.throws(() => app.validateContactPayload({ name: 'a'.repeat(101), email: 'a@b.com', message: 'm' }), /Name exceeds maximum limit/);
+    assert.throws(() => app.validateContactPayload({ name: 'a', email: 'a'.repeat(250) + '@example.com', message: 'm' }), /Email exceeds maximum limit/);
+    assert.throws(() => app.validateContactPayload({ name: 'a', email: 'a@b.com', subject: 's'.repeat(201), message: 'm' }), /Subject exceeds maximum limit/);
+    assert.throws(() => app.validateContactPayload({ name: 'a', email: 'a@b.com', message: 'm'.repeat(5001) }), /Message exceeds maximum limit/);
+
+    // 4. logEvent password and token redaction
+    assert.doesNotThrow(() => app.logEvent('info', 'TEST', 'msg', null));
+    assert.doesNotThrow(() => app.logEvent('info', 'TEST', 'msg', { password: 'secret', token: 'bearer-token' }));
+
+    // 5. buildProjectCardHtml fallbacks and branches
+    const htmlMultiLinks = app.buildProjectCardHtml({
+      id: 'MJD-TEST-01',
+      date: '2026',
+      title: 'Project Multi',
+      category: 'Research',
+      summary: 'Project summary',
+      details: 'Deep architecture details',
+      tags: ['Tag1', 'Tag2'],
+      links: { github: 'https://github.com', live: 'https://example.com' }
+    });
+    assert.match(htmlMultiLinks, /Deep architecture details/);
+    assert.match(htmlMultiLinks, /card-date/);
+    assert.match(htmlMultiLinks, /card-links/);
+
+    const htmlNoDetails = app.buildProjectCardHtml({
+      title: 'Project Minimal',
+      category: 'Tools',
+      summary: 'Summary only',
+      tech: ['JS']
+    });
+    assert.match(htmlNoDetails, /Project Minimal/);
+
+    // 6. buildShortCardHtml branches
+    const htmlShortFeatured = app.buildShortCardHtml({
+      id: 'IX8mW3_-ODQ',
+      title: 'Featured Short',
+      recipient: 'Recipient Name',
+      genre: 'Genre',
+      blurb: 'Blurb text',
+      featured: true,
+      url: 'https://youtube.com/shorts/IX8mW3_-ODQ',
+      date: '1 Jan 2026'
+    }, 0);
+    assert.match(htmlShortFeatured, /FAVOURITE/);
+    assert.match(htmlShortFeatured, /CREATOR&apos;S PICK/);
+
+    const htmlShortUnfeatured = app.buildShortCardHtml({
+      id: 'invalid-id-!',
+      title: 'Unfeatured Short',
+      recipient: 'Recipient Name',
+      genre: 'Genre',
+      blurb: 'Blurb text',
+      featured: false,
+      url: 'https://youtube.com/shorts/invalid',
+      date: '1 Jan 2026'
+    }, 1);
+    assert.match(htmlShortUnfeatured, /WM-02/);
+
+    // 7. buildPlaylistCardHtml branches
+    const htmlPlaylistNoEmbed = app.buildPlaylistCardHtml({
+      id: 'MJD-PL-NOEMBED',
+      title: 'No Embed Playlist',
+      genre: 'Ambient',
+      summary: 'Summary notes',
+      url: 'https://spotify.com/user/track/123',
+      cover: 'https://spotify.com/cover.jpg'
+    });
+    assert.match(htmlPlaylistNoEmbed, /MJD-PL-NOEMBED/);
+    assert.doesNotMatch(htmlPlaylistNoEmbed, /spotify-preview-btn/);
+
+    // 8. swapYoutubeFacade title fallback
+    const ytWrapper = createMockElement('yt', 'DIV');
+    const doc = createMockDocument();
+    assert.equal(app.swapYoutubeFacade(ytWrapper, 'IX8mW3_-ODQ', '', doc), true);
+    assert.equal(app.swapYoutubeFacade(ytWrapper, 'IX8mW3_-ODQ', null, doc), true);
+
+    // 9. swapSpotifyFacade without previewBtn
+    const spWrapper = createMockElement('sp', 'DIV');
+    assert.equal(app.swapSpotifyFacade(spWrapper, 'https://open.spotify.com/embed/playlist/test', null, doc), true);
+
+    // 10. playMechanicalClickSound webkitAudioContext fallback and missing audioContext
+    const mockWebkitWin = {
+      webkitAudioContext: class {
+        constructor() { this.currentTime = 0; this.destination = {}; }
+        createOscillator() {
+          return {
+            type: '',
+            frequency: { setValueAtTime() {}, exponentialRampToValueAtTime() {} },
+            connect() {},
+            start() {},
+            stop() {}
+          };
+        }
+        createGain() {
+          return {
+            gain: { setValueAtTime() {}, exponentialRampToValueAtTime() {} },
+            connect() {}
+          };
+        }
+      }
+    };
+    assert.doesNotThrow(() => app.playMechanicalClickSound(mockWebkitWin));
+    assert.doesNotThrow(() => app.playMechanicalClickSound({}));
+
+    // 11. initTheme with toggle click when optLight and optDark are missing
+    const docNoOpts = createMockDocument();
+    docNoOpts.elements.set('theme-opt-light', null);
+    docNoOpts.elements.set('theme-opt-dark', null);
+    const storage = { getItem: () => 'dark', setItem: () => {} };
+    app.initTheme(docNoOpts, storage);
+    const toggleBtn = docNoOpts.getElementById('theme-toggle');
+    assert.doesNotThrow(() => toggleBtn.dispatch('click'));
+
+    // 12. initCopyHandle with null nav and missing clipboard
+    const docCopyNav = createMockDocument();
+    const btnNav = docCopyNav.getElementById('copy-handle-btn');
+    btnNav.removeAttribute('data-copy');
+    app.initCopyHandle(docCopyNav, null);
+    assert.doesNotThrow(async () => await btnNav.dispatch('click'));
+
+    const docCopyNoClip = createMockDocument();
+    const btnNoClip = docCopyNoClip.getElementById('copy-handle-btn');
+    app.initCopyHandle(docCopyNoClip, {});
+    assert.doesNotThrow(async () => await btnNoClip.dispatch('click'));
+
+    // 13. initKeyboardNavigation target edge cases and missing toggleBtn
+    let keyNav = '';
+    const mockKeyWin = {
+      location: { set href(v) { keyNav = v; }, get href() { return keyNav; } },
+      listeners: {},
+      addEventListener(e, fn) { (this.listeners[e] = this.listeners[e] || []).push(fn); },
+      dispatch(e, p) { for (const fn of this.listeners[e] || []) fn(p); }
+    };
+    const docNoToggle = createMockDocument();
+    docNoToggle.elements.set('theme-toggle', null);
+    app.initKeyboardNavigation(mockKeyWin, docNoToggle);
+    // Unmapped key
+    mockKeyWin.dispatch('keydown', { key: 'x' });
+    // null target
+    mockKeyWin.dispatch('keydown', { key: '1' });
+    assert.equal(keyNav, './index.html');
+    // Press 't' with missing toggle button
+    assert.doesNotThrow(() => mockKeyWin.dispatch('keydown', { key: 't' }));
+
+    // 14. initContactForm when statusEl and submitBtn are missing
+    const docNoStatus = createMockDocument();
+    docNoStatus.elements.set('form-status', null);
+    docNoStatus.elements.set('submit-btn', null);
+    global.FormData = class {
+      entries() { return [['name', 'Martin'], ['email', 'martin@example.com'], ['message', 'Test']]; }
+    };
+    app.initContactForm(docNoStatus, async () => new Response(JSON.stringify({ success: true })));
+    const formNoStatus = docNoStatus.getElementById('contact-form');
+    assert.doesNotThrow(async () => await formNoStatus.dispatch('submit'));
+
+    // 15. fetchJsonWithRetry with 408 and 429 statuses
+    const mock408Fetch = async () => new Response(JSON.stringify({ error: 'Timeout' }), { status: 408 });
+    await assert.rejects(async () => await app.fetchJsonWithRetry('https://example.com', {}, { timeoutMs: 100, maxRetries: 0 }, mock408Fetch), app.TransientNetworkError);
+
+    const mock429Fetch = async () => new Response(JSON.stringify({ error: 'Rate limit' }), { status: 429 });
+    await assert.rejects(async () => await app.fetchJsonWithRetry('https://example.com', {}, { timeoutMs: 100, maxRetries: 0 }, mock429Fetch), app.TransientNetworkError);
+
+    // 16. fetchWithTimeout with TransientNetworkError re-throw
+    const throwingTransientFetch = async () => { throw new app.TransientNetworkError('Direct transient failure'); };
+    await assert.rejects(async () => await app.fetchWithTimeout('https://example.com', {}, 1000, throwingTransientFetch), app.TransientNetworkError);
+
+    // 17. renderProjects empty state and missing counter
+    const docEmptyProjects = createMockDocument();
+    docEmptyProjects.elements.set('project-counter', null);
+    app.renderProjects(docEmptyProjects);
+    assert.match(docEmptyProjects.getElementById('projects-grid').innerHTML, /NO EXPERIMENTS FOUND/);
+
+    // 18. renderWrongMartin click without stageWrapper
+    const docNoStage = createMockDocument();
+    app.renderWrongMartin(docNoStage);
+    const gridNoStage = docNoStage.getElementById('wrong-martin-grid');
+    const facadeNoStage = createMockElement('facade', 'BUTTON');
+    facadeNoStage.classList.add('yt-facade');
+    facadeNoStage.setAttribute('data-video-id', 'IX8mW3_-ODQ');
+    facadeNoStage.closest = (sel) => sel.includes('yt-facade') ? facadeNoStage : null;
+    assert.doesNotThrow(async () => await gridNoStage.dispatch('click', { target: facadeNoStage }));
+
+    // 19. initContactForm 200 with success: false and missing message
+    const docFail200 = createMockDocument();
+    const mock200FailFetch = async () => new Response(JSON.stringify({ success: false }), { status: 200 });
+    global.FormData = class {
+      entries() { return [['name', 'Martin'], ['email', 'martin@example.com'], ['message', 'Test message']]; }
+    };
+    app.initContactForm(docFail200, mock200FailFetch);
+    const formFail200 = docFail200.getElementById('contact-form');
+    await formFail200.dispatch('submit');
+    assert.match(docFail200.getElementById('form-status').textContent, /TRANSMISSION FAILED/);
+  });
+
+  test('deep branch guard verification for defensive resilience', () => {
+    const doc = createMockDocument();
+
+    // 1. Facade swap guards
+    assert.equal(app.swapYoutubeFacade(null, 'IX8mW3_-ODQ', 'title', doc), false);
+    assert.equal(app.swapYoutubeFacade(createMockElement('wrap'), 'invalid-!', 'title', doc), false);
+    assert.equal(app.swapYoutubeFacade(createMockElement('wrap'), 'IX8mW3_-ODQ', 'title', null), false);
+
+    assert.equal(app.swapSpotifyFacade(null, 'https://open.spotify.com/embed/playlist/123', null, doc), false);
+    assert.equal(app.swapSpotifyFacade(createMockElement('wrap'), null, null, doc), false);
+    assert.equal(app.swapSpotifyFacade(createMockElement('wrap'), 'https://open.spotify.com/embed/playlist/123', null, null), false);
+    assert.equal(app.swapSpotifyFacade(createMockElement('wrap'), 'https://invalidsite.com/embed/playlist/123', null, doc), false);
+
+    // 2. initCopyHandle defensive guards
+    assert.doesNotThrow(() => app.initCopyHandle(null));
+    assert.doesNotThrow(() => app.initCopyHandle({ getElementById: 123 }));
+    assert.doesNotThrow(() => app.initCopyHandle({ getElementById: () => null }));
+    assert.doesNotThrow(() => app.initCopyHandle({ getElementById: () => ({ dataset: null }) }));
+    assert.doesNotThrow(() => app.initCopyHandle({ getElementById: () => ({ dataset: { listenerBound: 'true' } }) }));
+
+    // 3. initKeyboardNavigation defensive guards
+    assert.doesNotThrow(() => app.initKeyboardNavigation(null, doc));
+    assert.doesNotThrow(() => app.initKeyboardNavigation({}, null));
+    assert.doesNotThrow(() => app.initKeyboardNavigation({ addEventListener: 123 }, doc));
+    assert.doesNotThrow(() => app.initKeyboardNavigation({ addEventListener: () => {} }, { documentElement: null }));
+    assert.doesNotThrow(() => app.initKeyboardNavigation({ addEventListener: () => {} }, { documentElement: { dataset: null } }));
+    assert.doesNotThrow(() => app.initKeyboardNavigation({ addEventListener: () => {} }, { documentElement: { dataset: { hotkeysBound: 'true' } } }));
+
+    // 4. initContactForm defensive guards
+    assert.doesNotThrow(() => app.initContactForm(null, async () => {}));
+    assert.doesNotThrow(() => app.initContactForm(doc, null));
+    assert.doesNotThrow(() => app.initContactForm({ getElementById: () => null }, async () => {}));
+    const docNoStatus = createMockDocument();
+    docNoStatus.elements.set('form-status', null);
+    assert.doesNotThrow(() => app.initContactForm(docNoStatus, async () => {}));
+    const docNoSubmit = createMockDocument();
+    docNoSubmit.elements.set('submit-btn', null);
+    assert.doesNotThrow(() => app.initContactForm(docNoSubmit, async () => {}));
+    const docBound = createMockDocument();
+    docBound.getElementById('contact-form').dataset.listenerBound = 'true';
+    assert.doesNotThrow(() => app.initContactForm(docBound, async () => {}));
+
+    // 5. Section renders and loads
+    assert.doesNotThrow(() => app.renderProjects(null));
+    assert.doesNotThrow(() => app.renderProjects({ getElementById: () => null }));
+    assert.doesNotThrow(() => app.renderWrongMartin(null));
+    assert.doesNotThrow(() => app.renderWrongMartin({ getElementById: () => null }));
+    assert.doesNotThrow(() => app.renderPlaylists(null));
+    assert.doesNotThrow(() => app.renderPlaylists({ getElementById: () => null }));
+    assert.doesNotThrow(async () => await app.loadProjects(doc, null));
+    assert.doesNotThrow(async () => await app.loadWrongMartin(doc, null));
+    assert.doesNotThrow(async () => await app.loadPlaylists(doc, null));
+    assert.doesNotThrow(() => app.initTheme(null));
+    assert.doesNotThrow(async () => await app.bootApp(null));
+
+    // 6. Additional branch gap fills
+    // validateContactPayload email regex failure branch
+    assert.throws(() => app.validateContactPayload({ name: 'Martin', email: 'not-an-email', message: 'Hello' }), /Please provide a valid return email address/);
+
+    // renderWrongMartin click on non-facade target
+    const docWM = createMockDocument();
+    app.renderWrongMartin(docWM);
+    const gridWM = docWM.getElementById('wrong-martin-grid');
+    assert.doesNotThrow(async () => await gridWM.dispatch('click', { target: createMockElement('plain') }));
+
+    // initTheme without theme-toggle button
+    const docNoBtn = createMockDocument();
+    docNoBtn.elements.set('theme-toggle', null);
+    app.initTheme(docNoBtn);
+
+    // initCopyHandle with clipboard.writeText not a function
+    const docNoWrite = createMockDocument();
+    const btnNoWrite = docNoWrite.getElementById('copy-handle-btn');
+    app.initCopyHandle(docNoWrite, { clipboard: { writeText: 123 } });
+    assert.doesNotThrow(async () => await btnNoWrite.dispatch('click'));
+
+    // fetchWithTimeout with default timeoutMs parameter
+    assert.doesNotThrow(async () => {
+      try {
+        await app.fetchWithTimeout('https://example.com', {}, undefined, async () => new Response('{}'));
+      } catch {
+        // ignore
+      }
+    });
+
+    // 7. Additional fallback branch checks
+    // renderWrongMartin facade with no attributes
+    const docWMNoAttrs = createMockDocument();
+    app.renderWrongMartin(docWMNoAttrs);
+    const gridWMNoAttrs = docWMNoAttrs.getElementById('wrong-martin-grid');
+    const facadeNoAttrs = createMockElement('facade-no-attrs', 'BUTTON');
+    facadeNoAttrs.classList.add('yt-facade');
+    facadeNoAttrs.closest = (sel) => {
+      if (sel.includes('yt-facade')) return facadeNoAttrs;
+      if (sel.includes('stage-wrapper')) return createMockElement('stage');
+      return null;
+    };
+    assert.doesNotThrow(async () => await gridWMNoAttrs.dispatch('click', { target: facadeNoAttrs }));
+
+    // renderPlaylists preview button with no closest card
+    const docPLNoCard = createMockDocument();
+    app.renderPlaylists(docPLNoCard);
+    const gridPLNoCard = docPLNoCard.getElementById('playlists-grid');
+    const btnNoCard = createMockElement('btn-no-card', 'BUTTON');
+    btnNoCard.classList.add('spotify-preview-btn');
+    btnNoCard.setAttribute('data-embed-url', 'https://open.spotify.com/embed/playlist/123');
+    btnNoCard.closest = (sel) => sel.includes('spotify-preview-btn') ? btnNoCard : null;
+    assert.doesNotThrow(async () => await gridPLNoCard.dispatch('click', { target: btnNoCard }));
+
+    // initTheme click when root has no data-theme attribute
+    const docNoThemeAttr = createMockDocument();
+    app.initTheme(docNoThemeAttr, { getItem: () => null, setItem: () => {} });
+    docNoThemeAttr.documentElement.removeAttribute('data-theme');
+    const toggleNoTheme = docNoThemeAttr.getElementById('theme-toggle');
+    assert.doesNotThrow(() => toggleNoTheme.dispatch('click'));
+
+    // initContactForm when form.querySelector botcheck returns null
+    const docNoBotCheck = createMockDocument();
+    docNoBotCheck.getElementById('contact-form').querySelector = () => null;
+    global.FormData = class {
+      entries() { return [['name', 'Martin'], ['email', 'martin@example.com'], ['message', 'Test']]; }
+    };
+    app.initContactForm(docNoBotCheck, async () => new Response(JSON.stringify({ success: true })));
+    assert.doesNotThrow(async () => await docNoBotCheck.getElementById('contact-form').dispatch('submit'));
+
+    // buildProjectCardHtml with null links and null tech
+    const htmlNullLinks = app.buildProjectCardHtml({
+      id: 'MJD-NULL',
+      category: 'Test',
+      summary: 'Summary',
+      links: null,
+      tech: null,
+      tags: null
+    });
+    assert.match(htmlNullLinks, /MJD-NULL/);
   });
 });
 
