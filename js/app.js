@@ -1219,7 +1219,7 @@ function initKeyboardNavigation(win = (typeof window !== 'undefined' ? window : 
 
     const key = e.key;
     if (key === '1') {
-      win.location.href = './index.html';
+      win.location.href = './';
     } else if (key === '2') {
       win.location.href = './experiments.html';
     } else if (key === '3') {
@@ -1238,6 +1238,23 @@ function initKeyboardNavigation(win = (typeof window !== 'undefined' ? window : 
 }
 
 /**
+ * Normalises the URL path in the browser address bar by removing trailing index.html.
+ * @param {Window | null} [win=(typeof window !== 'undefined' ? window : null)]
+ */
+function cleanIndexUrl(win = (typeof window !== 'undefined' ? window : null)) {
+  if (!win || !win.location || !win.history || typeof win.history.replaceState !== 'function') return;
+  try {
+    const pathname = win.location.pathname || '';
+    if (pathname.endsWith('/index.html')) {
+      const cleanPath = pathname.replace(/\/index\.html$/, '/') + (win.location.search || '') + (win.location.hash || '');
+      win.history.replaceState(null, '', cleanPath);
+    }
+  } catch {
+    // Graceful no-op for file:// or restricted origins
+  }
+}
+
+/**
  * Boots the entire application lifecycle concurrently with isolated failure boundaries.
  * @param {Document | null} [doc=(typeof document !== 'undefined' ? document : null)]
  * @param {Storage | null} [storage=(typeof localStorage !== 'undefined' ? localStorage : null)]
@@ -1247,6 +1264,7 @@ function initKeyboardNavigation(win = (typeof window !== 'undefined' ? window : 
  */
 async function bootApp(doc = (typeof document !== 'undefined' ? document : null), storage = (typeof localStorage !== 'undefined' ? localStorage : null), customFetch = (typeof fetch !== 'undefined' ? fetch : null), win = (typeof window !== 'undefined' ? window : null), nav = (typeof navigator !== 'undefined' ? navigator : null)) {
   if (!doc) return;
+  cleanIndexUrl(win);
   initTheme(doc, storage);
   initKeyboardNavigation(win, doc);
   initCopyHandle(doc, nav);
@@ -1294,6 +1312,7 @@ if (typeof module !== 'undefined' && module.exports) {
     initTheme,
     initCopyHandle,
     initKeyboardNavigation,
+    cleanIndexUrl,
     loadProjects,
     renderProjects,
     loadWrongMartin,

@@ -1043,9 +1043,9 @@ describe('Stage 6: DOM Mock Controller Integration', () => {
     // Idempotency: second call returns immediately
     app.initKeyboardNavigation(mockWin, doc);
 
-    // Press '1' -> should navigate to index.html
+    // Press '1' -> should navigate to ./
     mockWin.dispatch('keydown', { key: '1', target: { tagName: 'DIV' } });
-    assert.equal(navigatedTo, './index.html');
+    assert.equal(navigatedTo, './');
 
     // Press '2' -> should navigate to experiments.html
     mockWin.dispatch('keydown', { key: '2', target: { tagName: 'DIV' } });
@@ -1087,6 +1087,52 @@ describe('Stage 6: DOM Mock Controller Integration', () => {
     mockWin.dispatch('keydown', { key: '1', altKey: true, target: { tagName: 'DIV' } });
     mockWin.dispatch('keydown', { key: '1', metaKey: true, target: { tagName: 'DIV' } });
     assert.equal(navigatedTo, './contact.html');
+  });
+
+  test('cleanIndexUrl strips index.html from URL bar and preserves search/hash', () => {
+    let replacedUrl = null;
+    const mockWin = {
+      location: {
+        pathname: '/index.html',
+        search: '?ref=test',
+        hash: '#top'
+      },
+      history: {
+        replaceState(_state, _title, url) {
+          replacedUrl = url;
+        }
+      }
+    };
+    app.cleanIndexUrl(mockWin);
+    assert.equal(replacedUrl, '/?ref=test#top');
+
+    // Subpath ending in /index.html
+    mockWin.location.pathname = '/sub/dir/index.html';
+    mockWin.location.search = '';
+    mockWin.location.hash = '';
+    app.cleanIndexUrl(mockWin);
+    assert.equal(replacedUrl, '/sub/dir/');
+
+    // Pathname NOT ending in index.html -> no replacement
+    replacedUrl = null;
+    mockWin.location.pathname = '/contact.html';
+    app.cleanIndexUrl(mockWin);
+    assert.equal(replacedUrl, null);
+
+    // Missing win, location, or history -> safe no-op
+    assert.doesNotThrow(() => app.cleanIndexUrl(null));
+    assert.doesNotThrow(() => app.cleanIndexUrl({}));
+    assert.doesNotThrow(() => app.cleanIndexUrl({ location: {} }));
+    assert.doesNotThrow(() => app.cleanIndexUrl({ location: { pathname: '/index.html' }, history: null }));
+
+    // replaceState throws (e.g. file:// restriction) -> handled gracefully
+    const throwingWin = {
+      location: { pathname: '/index.html' },
+      history: {
+        replaceState() { throw new Error('SecurityError'); }
+      }
+    };
+    assert.doesNotThrow(() => app.cleanIndexUrl(throwingWin));
   });
 
   test('initTheme dynamically updates meta theme-color if present', () => {
@@ -1351,7 +1397,7 @@ describe('Stage 6: DOM Mock Controller Integration', () => {
     mockKeyWin.dispatch('keydown', { key: 'x' });
     // null target
     mockKeyWin.dispatch('keydown', { key: '1' });
-    assert.equal(keyNav, './index.html');
+    assert.equal(keyNav, './');
     // Press 't' with missing toggle button
     assert.doesNotThrow(() => mockKeyWin.dispatch('keydown', { key: 't' }));
 
