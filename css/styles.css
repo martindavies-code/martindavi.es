@@ -712,25 +712,6 @@ main {
   border-bottom: 1px solid var(--border-color);
 }
 
-.spec-row-social {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  background-color: var(--bg-card);
-}
-
-.spec-row-social .spec-item:nth-child(1) {
-  border-right: 1px solid var(--border-color);
-  border-bottom: 1px solid var(--border-color);
-}
-
-.spec-row-social .spec-item:nth-child(2) {
-  border-bottom: 1px solid var(--border-color);
-}
-
-.spec-row-social .spec-item-full {
-  grid-column: 1 / -1;
-}
-
 .spec-label {
   font-family: var(--font-mono);
   font-size: var(--text-caption);
@@ -746,6 +727,7 @@ main {
   font-size: var(--text-caption);
   color: var(--ink-primary);
   line-height: 1.45;
+  overflow-wrap: break-word;
 }
 
 .spec-val a {
@@ -755,6 +737,8 @@ main {
   text-underline-offset: 3px;
   font-family: var(--font-mono);
   font-weight: 700;
+  overflow-wrap: break-word;
+  word-break: break-all;
   transition: color var(--transition-fast);
 }
 
