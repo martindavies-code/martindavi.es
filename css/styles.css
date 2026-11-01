@@ -84,6 +84,11 @@ body {
   font-variant-numeric: tabular-nums;
 }
 
+/* --- Global Utility Classes --- */
+.hidden {
+  display: none !important;
+}
+
 /* --- Chassis Header Bar --- */
 .chassis-header {
   position: sticky;
