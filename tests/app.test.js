@@ -410,6 +410,47 @@ describe('Stage 5: HTML Template Builders & Facade Swapping', () => {
     assert.equal(app.swapYoutubeFacade(stageWrapper, '<script>', 'Title'), false);
     assert.equal(app.swapYoutubeFacade(stageWrapper, '', 'Title'), false);
   });
+
+  test('swapSpotifyFacade replaces wrapper with iframe via DOM API', () => {
+    let replacedWith = null;
+    const coverWrapper = {
+      replaceChildren(child) {
+        replacedWith = child;
+      }
+    };
+    const mockDoc = {
+      createElement(tag) {
+        return {
+          tagName: tag.toUpperCase(),
+          attributes: {},
+          style: {},
+          setAttribute(k, v) { this.attributes[k] = v; }
+        };
+      }
+    };
+    const mockBtn = {
+      classList: {
+        classes: new Set(),
+        add(c) { this.classes.add(c); }
+      },
+      attributes: {},
+      setAttribute(k, v) { this.attributes[k] = v; },
+      innerHTML: ''
+    };
+
+    const success = app.swapSpotifyFacade(coverWrapper, 'https://open.spotify.com/embed/playlist/4hnCZBij1qGdPZRAiE71T0?utm_source=generator&theme=0', mockBtn, mockDoc);
+    assert.equal(success, true);
+    assert.equal(replacedWith.tagName, 'IFRAME');
+    assert.match(replacedWith.src, /https:\/\/open\.spotify\.com\/embed\/playlist\//);
+    assert.equal(mockBtn.classList.classes.has('preview-active'), true);
+  });
+
+  test('swapSpotifyFacade rejects invalid URL or null wrapper', () => {
+    const coverWrapper = { replaceChildren() {} };
+    assert.equal(app.swapSpotifyFacade(null, 'https://open.spotify.com/embed/playlist/test'), false);
+    assert.equal(app.swapSpotifyFacade(coverWrapper, 'https://malicious.com/embed'), false);
+    assert.equal(app.swapSpotifyFacade(coverWrapper, ''), false);
+  });
 });
 
 describe('Stage 6: DOM Mock Controller Integration', () => {
@@ -911,6 +952,86 @@ describe('Stage 6: DOM Mock Controller Integration', () => {
       delete global.localStorage;
       delete global.fetch;
     }
+  });
+
+  test('initCopyHandle writes to clipboard on click', async () => {
+    const doc = createMockDocument();
+    let copiedText = '';
+    const mockNav = {
+      clipboard: {
+        async writeText(t) { copiedText = t; }
+      }
+    };
+    const copyBtn = doc.getElementById('copy-handle-btn');
+    copyBtn.setAttribute('data-copy', '@martindavi.es');
+
+    app.initCopyHandle(doc, mockNav);
+    await copyBtn.dispatch('click');
+    assert.equal(copiedText, '@martindavi.es');
+    assert.equal(copyBtn.classList.contains('copied'), true);
+  });
+
+  test('initKeyboardNavigation handles 1-5 and T keys and ignores inputs', () => {
+    const doc = createMockDocument();
+    let navigatedTo = '';
+    const mockWin = {
+      location: {
+        set href(val) { navigatedTo = val; },
+        get href() { return navigatedTo; }
+      },
+      listeners: {},
+      addEventListener(event, fn) {
+        if (!this.listeners[event]) this.listeners[event] = [];
+        this.listeners[event].push(fn);
+      },
+      dispatch(event, payload) {
+        if (this.listeners[event]) {
+          for (const fn of this.listeners[event]) fn(payload);
+        }
+      }
+    };
+
+    app.initKeyboardNavigation(mockWin, doc);
+
+    // Press '2' -> should navigate to experiments.html
+    mockWin.dispatch('keydown', { key: '2', target: { tagName: 'DIV' } });
+    assert.equal(navigatedTo, './experiments.html');
+
+    // Press '1' while typing in an INPUT -> should be ignored
+    mockWin.dispatch('keydown', { key: '1', target: { tagName: 'INPUT' } });
+    assert.equal(navigatedTo, './experiments.html');
+
+    // Press 'T' -> should click theme toggle
+    let toggleClicked = false;
+    const toggleBtn = doc.getElementById('theme-toggle');
+    toggleBtn.click = () => { toggleClicked = true; };
+    mockWin.dispatch('keydown', { key: 'T', target: { tagName: 'DIV' } });
+    assert.equal(toggleClicked, true);
+  });
+
+  test('playMechanicalClickSound executes safely in all environments', () => {
+    assert.doesNotThrow(() => app.playMechanicalClickSound(null));
+    const mockWin = {
+      AudioContext: class {
+        constructor() { this.currentTime = 0; this.destination = {}; }
+        createOscillator() {
+          return {
+            type: '',
+            frequency: { setValueAtTime() {}, exponentialRampToValueAtTime() {} },
+            connect() {},
+            start() {},
+            stop() {}
+          };
+        }
+        createGain() {
+          return {
+            gain: { setValueAtTime() {}, exponentialRampToValueAtTime() {} },
+            connect() {}
+          };
+        }
+      }
+    };
+    assert.doesNotThrow(() => app.playMechanicalClickSound(mockWin));
   });
 });
 

@@ -20,6 +20,7 @@ export default [
         FormData: "readonly",
         URL: "readonly",
         URLSearchParams: "readonly",
+        navigator: "readonly",
         global: "writable",
         globalThis: "readonly"
       }

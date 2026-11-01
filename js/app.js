@@ -696,6 +696,10 @@ function buildPlaylistCardHtml(item) {
   const safeUrl = sanitizeUrl(item.url, true);
   const safeCover = sanitizeUrl(item.cover, true);
 
+  const playlistMatch = (item.url || '').match(/playlist\/([a-zA-Z0-9]+)/);
+  const playlistId = playlistMatch ? playlistMatch[1] : '';
+  const embedUrl = playlistId ? `https://open.spotify.com/embed/playlist/${playlistId}?utm_source=generator&theme=0` : '';
+
   return `
     <article class="playlist-card" id="card-${escapedId}">
       <div class="playlist-top-bar">
@@ -720,6 +724,15 @@ function buildPlaylistCardHtml(item) {
       </div>
 
       <div class="playlist-footer">
+        ${embedUrl ? `
+          <button
+            type="button"
+            class="spotify-preview-btn"
+            data-embed-url="${escapeHtml(embedUrl)}"
+            aria-label="Load instant audio preview player for ${escapedTitle}">
+            <span class="preview-btn-icon">&#9654;</span> INSTANT PREVIEW
+          </button>
+        ` : ''}
         <a
           href="${escapeHtml(safeUrl)}"
           target="_blank"
@@ -761,6 +774,79 @@ function swapYoutubeFacade(stageWrapper, videoId, title, doc = (typeof document 
   return true;
 }
 
+/**
+ * Swaps playlist artwork with a live Spotify embed player.
+ * @param {HTMLElement | null} coverWrapper
+ * @param {string} embedUrl
+ * @param {HTMLElement | null} [previewBtn=null]
+ * @param {Document | null} [doc=(typeof document !== 'undefined' ? document : null)]
+ * @returns {boolean}
+ */
+function swapSpotifyFacade(coverWrapper, embedUrl, previewBtn = null, doc = (typeof document !== 'undefined' ? document : null)) {
+  if (!coverWrapper || !embedUrl || !doc) return false;
+  const safeEmbedUrl = sanitizeUrl(embedUrl, false);
+  if (!safeEmbedUrl || !safeEmbedUrl.startsWith('https://open.spotify.com/embed/')) return false;
+
+  const iframe = doc.createElement('iframe');
+  iframe.src = safeEmbedUrl;
+  iframe.width = '100%';
+  iframe.height = '100%';
+  iframe.frameBorder = '0';
+  iframe.allow = 'autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture';
+  iframe.loading = 'lazy';
+  iframe.className = 'spotify-embed-iframe';
+  iframe.title = 'Spotify Playlist Preview Player';
+
+  coverWrapper.replaceChildren(iframe);
+
+  if (previewBtn) {
+    previewBtn.classList.add('preview-active');
+    previewBtn.innerHTML = 'STREAMING ACTIVE &bull;';
+    previewBtn.setAttribute('aria-pressed', 'true');
+  }
+  return true;
+}
+
+/**
+ * Synthesises a crisp mechanical micro-switch relay click via Web Audio API.
+ * @param {Window | null} [win=(typeof window !== 'undefined' ? window : null)]
+ */
+function playMechanicalClickSound(win = (typeof window !== 'undefined' ? window : null)) {
+  if (!win) return;
+  try {
+    const AudioCtx = win.AudioContext || win.webkitAudioContext;
+    if (!AudioCtx) return;
+    const ctx = new AudioCtx();
+    const now = ctx.currentTime;
+
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(140, now);
+    osc.frequency.exponentialRampToValueAtTime(40, now + 0.025);
+    gain.gain.setValueAtTime(0.12, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.025);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start(now);
+    osc.stop(now + 0.03);
+
+    const snap = ctx.createOscillator();
+    const snapGain = ctx.createGain();
+    snap.type = 'square';
+    snap.frequency.setValueAtTime(920, now + 0.005);
+    snap.frequency.exponentialRampToValueAtTime(180, now + 0.02);
+    snapGain.gain.setValueAtTime(0.08, now + 0.005);
+    snapGain.gain.exponentialRampToValueAtTime(0.001, now + 0.02);
+    snap.connect(snapGain);
+    snapGain.connect(ctx.destination);
+    snap.start(now + 0.005);
+    snap.stop(now + 0.025);
+  } catch {
+    // Fail silently if audio context cannot be initialized
+  }
+}
+
 /* --- Section Controller Initialisers --- */
 
 /**
@@ -786,6 +872,7 @@ function initTheme(doc = (typeof document !== 'undefined' ? document : null), st
       const newTheme = currentTheme === 'light' ? 'dark' : 'light';
       applyTheme(newTheme);
       safeSetStorage(storage, 'fac_md_theme', newTheme);
+      playMechanicalClickSound(typeof window !== 'undefined' ? window : null);
     });
   }
 
@@ -795,6 +882,13 @@ function initTheme(doc = (typeof document !== 'undefined' ? document : null), st
   function applyTheme(theme) {
     const isDark = theme === 'dark';
     root.setAttribute('data-theme', theme);
+
+    if (typeof doc.querySelector === 'function') {
+      const metaThemeColor = doc.querySelector('meta[name="theme-color"]');
+      if (metaThemeColor && typeof metaThemeColor.setAttribute === 'function') {
+        metaThemeColor.setAttribute('content', isDark ? '#121212' : '#F4F1EA');
+      }
+    }
 
     if (toggleBtn) {
       toggleBtn.setAttribute('aria-checked', isDark ? 'true' : 'false');
@@ -939,6 +1033,24 @@ function renderPlaylists(doc = (typeof document !== 'undefined' ? document : nul
   }
 
   container.innerHTML = playlistsData.map(buildPlaylistCardHtml).join('');
+
+  if (container.dataset && !container.dataset.listenerBound && typeof container.addEventListener === 'function') {
+    container.dataset.listenerBound = 'true';
+    container.addEventListener('click', (e) => {
+      const target = /** @type {HTMLElement | null} */ (e.target);
+      const previewBtn = target && typeof target.closest === 'function' ? /** @type {HTMLElement | null} */ (target.closest('.spotify-preview-btn')) : null;
+      if (!previewBtn) return;
+
+      const embedUrl = previewBtn.getAttribute('data-embed-url') || '';
+      if (!embedUrl) return;
+
+      const card = previewBtn.closest('.playlist-card');
+      const coverWrapper = card && typeof card.querySelector === 'function' ? /** @type {HTMLElement | null} */ (card.querySelector('.playlist-cover-wrapper')) : null;
+      if (!coverWrapper) return;
+
+      swapSpotifyFacade(coverWrapper, embedUrl, previewBtn, doc);
+    });
+  }
 }
 
 /**
@@ -1049,14 +1161,95 @@ function initContactForm(doc = (typeof document !== 'undefined' ? document : nul
 }
 
 /**
+ * Initialises copy-to-clipboard functionality for contact handles.
+ * @param {Document | null} [doc=(typeof document !== 'undefined' ? document : null)]
+ * @param {Navigator | null} [nav=(typeof navigator !== 'undefined' ? navigator : null)]
+ */
+function initCopyHandle(doc = (typeof document !== 'undefined' ? document : null), nav = (typeof navigator !== 'undefined' ? navigator : null)) {
+  if (!doc || typeof doc.getElementById !== 'function') return;
+  const copyBtn = doc.getElementById('copy-handle-btn');
+  if (!copyBtn || !copyBtn.dataset || copyBtn.dataset.listenerBound) return;
+
+  copyBtn.dataset.listenerBound = 'true';
+  copyBtn.addEventListener('click', async () => {
+    const textToCopy = copyBtn.getAttribute('data-copy') || '@martindavi.es';
+    try {
+      if (nav && nav.clipboard && typeof nav.clipboard.writeText === 'function') {
+        await nav.clipboard.writeText(textToCopy);
+      }
+      const labelSpan = copyBtn.querySelector('.copy-btn-text');
+      const originalText = labelSpan ? labelSpan.textContent : copyBtn.textContent;
+      copyBtn.classList.add('copied');
+      if (labelSpan) {
+        labelSpan.textContent = '[COPIED // BUFFER READY]';
+      } else {
+        copyBtn.textContent = '[COPIED // BUFFER READY]';
+      }
+
+      setTimeout(() => {
+        copyBtn.classList.remove('copied');
+        if (labelSpan) {
+          labelSpan.textContent = originalText;
+        } else {
+          copyBtn.textContent = originalText;
+        }
+      }, 2000);
+    } catch (err) {
+      logEvent('warn', 'CLIPBOARD_COPY_FAILED', 'Failed to copy handle to clipboard', { error: String(err) });
+    }
+  });
+}
+
+/**
+ * Initialises tactile keyboard shortcuts (1-5 for navigation, T for theme toggle).
+ * @param {Window | null} [win=(typeof window !== 'undefined' ? window : null)]
+ * @param {Document | null} [doc=(typeof document !== 'undefined' ? document : null)]
+ */
+function initKeyboardNavigation(win = (typeof window !== 'undefined' ? window : null), doc = (typeof document !== 'undefined' ? document : null)) {
+  if (!win || !doc || typeof win.addEventListener !== 'function') return;
+  const root = doc.documentElement;
+  if (!root || !root.dataset || root.dataset.hotkeysBound) return;
+  root.dataset.hotkeysBound = 'true';
+
+  win.addEventListener('keydown', (e) => {
+    if (e.target && (['INPUT', 'TEXTAREA', 'SELECT'].includes(/** @type {HTMLElement} */ (e.target).tagName) || /** @type {HTMLElement} */ (e.target).isContentEditable)) {
+      return;
+    }
+    if (e.ctrlKey || e.altKey || e.metaKey) return;
+
+    const key = e.key;
+    if (key === '1') {
+      win.location.href = './index.html';
+    } else if (key === '2') {
+      win.location.href = './experiments.html';
+    } else if (key === '3') {
+      win.location.href = './wrong-martin.html';
+    } else if (key === '4') {
+      win.location.href = './playlists.html';
+    } else if (key === '5') {
+      win.location.href = './contact.html';
+    } else if (key === 't' || key === 'T') {
+      const toggleBtn = doc.getElementById('theme-toggle');
+      if (toggleBtn) {
+        toggleBtn.click();
+      }
+    }
+  });
+}
+
+/**
  * Boots the entire application lifecycle concurrently with isolated failure boundaries.
  * @param {Document | null} [doc=(typeof document !== 'undefined' ? document : null)]
  * @param {Storage | null} [storage=(typeof localStorage !== 'undefined' ? localStorage : null)]
  * @param {typeof fetch | null} [customFetch=(typeof fetch !== 'undefined' ? fetch : null)]
+ * @param {Window | null} [win=(typeof window !== 'undefined' ? window : null)]
+ * @param {Navigator | null} [nav=(typeof navigator !== 'undefined' ? navigator : null)]
  */
-async function bootApp(doc = (typeof document !== 'undefined' ? document : null), storage = (typeof localStorage !== 'undefined' ? localStorage : null), customFetch = (typeof fetch !== 'undefined' ? fetch : null)) {
+async function bootApp(doc = (typeof document !== 'undefined' ? document : null), storage = (typeof localStorage !== 'undefined' ? localStorage : null), customFetch = (typeof fetch !== 'undefined' ? fetch : null), win = (typeof window !== 'undefined' ? window : null), nav = (typeof navigator !== 'undefined' ? navigator : null)) {
   if (!doc) return;
   initTheme(doc, storage);
+  initKeyboardNavigation(win, doc);
+  initCopyHandle(doc, nav);
   initContactForm(doc, customFetch);
 
   await Promise.allSettled([
@@ -1096,7 +1289,11 @@ if (typeof module !== 'undefined' && module.exports) {
     buildSubmissionCardHtml,
     buildPlaylistCardHtml,
     swapYoutubeFacade,
+    swapSpotifyFacade,
+    playMechanicalClickSound,
     initTheme,
+    initCopyHandle,
+    initKeyboardNavigation,
     loadProjects,
     renderProjects,
     loadWrongMartin,
