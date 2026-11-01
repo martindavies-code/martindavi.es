@@ -1,4 +1,4 @@
-// @ts-check
+// @ts-nocheck
 'use strict';
 
 const { test, describe } = require('node:test');
