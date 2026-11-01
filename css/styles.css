@@ -95,7 +95,7 @@ body {
   top: 0;
   z-index: 1000;
   display: grid;
-  grid-template-columns: 1fr auto;
+  grid-template-columns: minmax(0, 1fr) auto;
   align-items: stretch;
   background-color: var(--bg-primary);
   border-bottom: 2px solid var(--border-color);
@@ -116,12 +116,15 @@ body {
   grid-column: 1;
   grid-row: 1;
   gap: var(--space-xs);
+  min-width: 0;
 }
 
 .chassis-controls {
   grid-column: 2;
   grid-row: 1;
   border-right: none;
+  flex-shrink: 0;
+  justify-content: flex-end;
 }
 
 .catalogue-tag {
@@ -880,13 +883,6 @@ main {
   color: var(--ink-secondary);
   font-family: var(--font-mono);
   font-size: var(--text-caption);
-}
-
-.card-status {
-  font-family: var(--font-mono);
-  font-weight: 700;
-  font-size: var(--text-caption);
-  color: var(--signal-ok);
 }
 
 .card-content {
@@ -1803,11 +1799,34 @@ main {
     gap: 4px;
     padding: var(--space-xs);
   }
+  .chassis-controls {
+    padding: var(--space-xs);
+  }
   .site-title {
     white-space: normal;
     display: inline;
     line-height: 1.25;
     font-size: var(--text-caption);
+  }
+  .page-status-badge {
+    font-size: 0.6875rem;
+    padding: 2px 6px;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .theme-prefix {
+    display: none;
+  }
+  .theme-toggle-btn {
+    padding: 0 6px;
+    gap: 4px;
+    min-height: 40px;
+  }
+  .theme-opt {
+    padding: 3px 5px;
+    font-size: 0.75rem;
+    gap: 3px;
   }
   .section-intro {
     padding: var(--space-sm);
@@ -1839,8 +1858,16 @@ main {
 
 /* Extra small mobile (< 480px) */
 @media (max-width: 480px) {
-  .theme-prefix {
-    display: none;
+  .chassis-controls {
+    padding: 4px 6px;
+  }
+  .theme-toggle-btn {
+    padding: 0 4px;
+  }
+  .theme-opt {
+    font-size: 0.6875rem;
+    letter-spacing: 0.02em;
+    padding: 2px 4px;
   }
 }
 

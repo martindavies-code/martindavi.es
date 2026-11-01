@@ -307,7 +307,8 @@ describe('Stage 5: HTML Template Builders & Facade Swapping', () => {
     const html = app.buildProjectCardHtml(item);
     assert.match(html, /EXP-99/);
     assert.match(html, /Test Experiment/);
-    assert.match(html, /\[LIVE\]/);
+    assert.doesNotMatch(html, /\[LIVE\]/);
+    assert.doesNotMatch(html, /card-status/);
     assert.match(html, /GITHUB \/\/ REPO &nearr;/);
     assert.match(html, /NFL RADAR \/\/ GITHUB &nearr;/);
     assert.match(html, /Python/);

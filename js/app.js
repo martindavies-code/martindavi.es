@@ -526,7 +526,6 @@ async function fetchJsonWithRetry(url, options = {}, { timeoutMs = 5000, maxRetr
 function buildProjectCardHtml(item) {
   const itemId = item.id || item.catalogue || 'MJD-EXP';
   const itemDate = item.date || '';
-  const itemStatus = (item.status || 'Active').toUpperCase();
   const itemTech = Array.isArray(item.tech) ? item.tech : (Array.isArray(item.tags) ? item.tags : []);
 
   const linkKeys = item.links && typeof item.links === 'object' ? Object.keys(item.links) : [];
@@ -555,7 +554,6 @@ function buildProjectCardHtml(item) {
           <span class="card-cat">${escapeHtml(itemId)}</span>
           ${itemDate ? `<span class="card-date">${escapeHtml(itemDate)}</span>` : ''}
         </div>
-        <span class="card-status">[${escapeHtml(itemStatus)}]</span>
       </div>
       <div class="card-content">
         <div class="card-category-tag">${escapeHtml(item.category)}</div>
