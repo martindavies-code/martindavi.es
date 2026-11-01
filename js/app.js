@@ -677,7 +677,7 @@ function buildSubmissionCardHtml() {
       </div>
 
       <div class="short-footer">
-        <a href="#contact" class="yt-fallback-link dispatch-submit-link">
+        <a href="./contact.html" class="yt-fallback-link dispatch-submit-link">
           REPORT MISDIRECTED EMAIL &darr;
         </a>
       </div>

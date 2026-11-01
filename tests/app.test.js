@@ -354,6 +354,7 @@ describe('Stage 5: HTML Template Builders & Facade Swapping', () => {
     assert.match(html, /WM-12/);
     assert.match(html, /YOUR MISDIRECTED EMAIL COULD BE NEXT/);
     assert.match(html, /REPORT MISDIRECTED EMAIL &darr;/);
+    assert.match(html, /href="\.\/contact\.html"/);
   });
 
   test('buildPlaylistCardHtml generates Spotify card with sanitized URLs', () => {
