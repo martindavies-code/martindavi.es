@@ -183,6 +183,7 @@ body {
   color: var(--ink-secondary);
   letter-spacing: 0.05em;
   padding-right: 4px;
+  -webkit-user-select: none;
   user-select: none;
 }
 
@@ -360,6 +361,7 @@ body {
   letter-spacing: 0.08em;
   padding-right: 6px;
   border-right: 1px solid var(--border-color);
+  -webkit-user-select: none;
   user-select: none;
 }
 
@@ -377,6 +379,7 @@ body {
   font-size: var(--text-caption);
   letter-spacing: 0.04em;
   transition: all var(--transition-fast);
+  -webkit-user-select: none;
   user-select: none;
 }
 
@@ -419,6 +422,7 @@ body {
 .theme-sep {
   color: var(--border-color);
   font-size: var(--text-caption);
+  -webkit-user-select: none;
   user-select: none;
 }
 
