@@ -1268,8 +1268,10 @@ function initBackToTop(doc = (typeof document !== 'undefined' ? document : null)
   if (!backToTopLinks || backToTopLinks.length === 0) return;
 
   backToTopLinks.forEach(link => {
-    if (!link || !link.dataset || link.dataset.backToTopBound) return;
-    link.dataset.backToTopBound = 'true';
+    if (!link || typeof link.getAttribute !== 'function' || link.getAttribute('data-back-to-top-bound')) return;
+    if (typeof link.setAttribute === 'function') {
+      link.setAttribute('data-back-to-top-bound', 'true');
+    }
 
     link.addEventListener('click', (e) => {
       if (e && typeof e.preventDefault === 'function') {
