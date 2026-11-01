@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en-GB" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact & Dispatch // The Official Martin Davies Homepage</title>
+  <meta name="description" content="Get in touch with Martin Davies for science and technology event production, AI workflow development, or speaking engagements.">
+  <meta property="og:title" content="Contact & Dispatch // The Official Martin Davies Homepage">
+  <meta property="og:site_name" content="The Official Martin Davies Homepage">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./css/styles.css">
+</head>
+<body>
+  <!-- Top Chassis & Industrial Header -->
+  <header class="chassis-header">
+    <div class="chassis-cell chassis-id">
+      <span class="catalogue-tag">MJD-MD // SE8-LON</span>
+      <h1 class="site-title"><span class="title-prefix">THE OFFICIAL</span> MARTIN DAVIES <span class="title-suffix">HOMEPAGE</span></h1>
+    </div>
+    <nav class="chassis-cell chassis-nav" aria-label="Main Navigation">
+      <a href="./index.html" class="nav-link"><span class="nav-num">MD-01</span> ABOUT</a>
+      <a href="./experiments.html" class="nav-link"><span class="nav-num">MD-02</span> EXPERIMENTS</a>
+      <a href="./wrong-martin.html" class="nav-link"><span class="nav-num">MD-03</span> WRONG MARTIN</a>
+      <a href="./playlists.html" class="nav-link"><span class="nav-num">MD-04</span> PLAYLISTS</a>
+      <a href="./contact.html" class="nav-link active" aria-current="page"><span class="nav-num">MD-05</span> CONTACT</a>
+    </nav>
+    <div class="chassis-cell chassis-controls">
+      <button id="theme-toggle" class="theme-toggle-btn" type="button" role="switch" aria-checked="false" aria-label="Light mode active. Click to switch to dark mode." title="Switch to dark mode">
+        <span class="theme-prefix">THEME</span>
+        <span class="theme-switch-frame">
+          <span class="theme-opt opt-light active" id="theme-opt-light">
+            <span class="theme-led" aria-hidden="true"></span>
+            <span class="opt-icon">&#9728;</span> LIGHT
+          </span>
+          <span class="theme-sep" aria-hidden="true">//</span>
+          <span class="theme-opt opt-dark inactive" id="theme-opt-dark">
+            <span class="theme-led" aria-hidden="true"></span>
+            <span class="opt-icon">&#9789;</span> DARK
+          </span>
+        </span>
+      </button>
+    </div>
+  </header>
+
+  <main id="main-content">
+    <!-- SECTION 05: CONTACT ME -->
+    <section id="contact" class="grid-section" data-cat="MJD-005">
+      <div class="section-intro">
+        <div class="intro-top">
+          <span class="cat-num">MJD-005 // EXTERNAL COMMUNICATIONS</span>
+          <span class="status-indicator">LINE OPEN</span>
+        </div>
+        <h2>05 // CONTACT &amp; DISPATCH</h2>
+        <p>
+          Get in touch for science and technology event production, AI workflow development, or speaking engagements.
+        </p>
+      </div>
+
+      <div class="split-grid contact-layout">
+        <!-- Left: Web3Forms Dispatch Terminal -->
+        <div class="grid-column">
+          <div class="terminal-panel">
+            <div class="panel-header">
+              <span class="mono-label">DISPATCH TERMINAL // SECURE FORM</span>
+              <span class="mono-code">W3F-DIRECT</span>
+            </div>
+
+            <form id="contact-form" class="industrial-form" novalidate>
+              <!-- Web3Forms Access Key & Honeypot -->
+              <input type="hidden" name="access_key" value="f186f71c-0c63-4ea6-b656-9c6cecf4888b">
+              <input type="checkbox" name="botcheck" class="hidden" style="display:none;" tabindex="-1" autocomplete="off">
+              <input type="hidden" name="from_name" value="The Official Martin Davies Homepage Dispatch">
+
+              <div class="form-group">
+                <label for="form-name" class="form-label">
+                  <span class="label-code">01</span> NAME // SENDER
+                </label>
+                <input type="text" id="form-name" name="name" class="form-input" required placeholder="Paige Turner" autocomplete="name">
+              </div>
+
+              <div class="form-group">
+                <label for="form-email" class="form-label">
+                  <span class="label-code">02</span> EMAIL // RETURN ADDRESS
+                </label>
+                <input type="email" id="form-email" name="email" class="form-input" required placeholder="sender@organisation.ac.uk" autocomplete="email">
+              </div>
+
+              <div class="form-group">
+                <label for="form-subject" class="form-label">
+                  <span class="label-code">03</span> SUBJECT // CLASSIFICATION
+                </label>
+                <input type="text" id="form-subject" name="subject" class="form-input" required placeholder="Event Production / AI Workflows / Wrong Martin Enquiry">
+              </div>
+
+              <div class="form-group">
+                <label for="form-message" class="form-label">
+                  <span class="label-code">04</span> MESSAGE // TRANSMISSION BODY
+                </label>
+                <textarea id="form-message" name="message" class="form-textarea" rows="5" required placeholder="Please state your enquiry, project requirements, or misdirected invoice details..."></textarea>
+              </div>
+
+              <div class="form-footer">
+                <button type="submit" id="submit-btn" class="btn btn-primary submit-btn">
+                  <span class="btn-text">TRANSMIT MESSAGE &rarr;</span>
+                </button>
+              </div>
+
+              <div id="form-status" class="form-status" role="status" aria-live="polite"></div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Right: Bluesky Handle Card & Misdirected Senders Notice -->
+        <div class="grid-column">
+          <!-- Bluesky Card -->
+          <div class="dossier-card bsky-card">
+            <div class="dossier-header">
+              <span class="mono-label">PRIMARY SOCIAL CHANNEL</span>
+              <span class="badge">[ACTIVE]</span>
+            </div>
+            <div class="bsky-body">
+              <div class="platform-meta">BLUESKY // SOCIAL NETWORK</div>
+              <div class="bsky-handle">@martindavi.es</div>
+              <p class="bsky-desc">
+                Follow for high quality posts, reskeets, and ephemera.
+              </p>
+              <a href="https://bsky.app/profile/martindavi.es" target="_blank" rel="noopener noreferrer" class="btn btn-primary bsky-btn">
+                CONNECT ON BLUESKY &nearr;
+              </a>
+            </div>
+          </div>
+
+          <!-- Misdirected Mail Warning Box -->
+          <div class="notice-box">
+            <div class="notice-header">
+              <span class="hazard-symbol">&#9888;</span>
+              <span class="mono-label">DISPATCH ADVISORY // LOST SENDERS</span>
+            </div>
+            <p class="notice-text">
+              If you are attempting to settle a Welsh golf club subscription, book tree surgery, inspect East Gosford real estate, or challenge Tony Tooley to summer indoor bowls, you have reached the wrong Martin Davies.
+            </p>
+            <p class="notice-sub">
+              You are welcome to transmit anyway, but your message may be converted into a genre-hopping dance track.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Technical Footer -->
+  <footer class="chassis-footer">
+    <div class="footer-left">
+      <span class="footer-cat">MJD-999 // END OF SYSTEM SPECIFICATION</span>
+      <span class="footer-copy">&copy; 2026 THE OFFICIAL MARTIN DAVIES HOMEPAGE // LONDON SE8</span>
+    </div>
+    <div class="footer-center">
+      <span class="footer-tech">STATIC ES6 // CSS GRID // 0-BUILD ARCHITECTURE</span>
+    </div>
+    <div class="footer-right">
+      <a href="./index.html" class="back-to-top">BACK TO TOP &uarr;</a>
+    </div>
+  </footer>
+
+  <script src="./js/app.js"></script>
+</body>
+</html>
