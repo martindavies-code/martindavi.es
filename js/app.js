@@ -392,7 +392,7 @@ function safeSetStorage(storage, key, value) {
  * @returns {'light' | 'dark'}
  */
 function normalizeTheme(value) {
-  return value === 'dark' ? 'dark' : 'light';
+  return value === 'light' ? 'light' : 'dark';
 }
 
 /**
@@ -777,14 +777,14 @@ function initTheme(doc = (typeof document !== 'undefined' ? document : null), st
   const optLight = doc.getElementById('theme-opt-light');
   const optDark = doc.getElementById('theme-opt-dark');
 
-  const rawTheme = safeGetStorage(storage, 'fac_md_theme', 'light');
+  const rawTheme = safeGetStorage(storage, 'fac_md_theme', 'dark');
   const initialTheme = normalizeTheme(rawTheme);
   applyTheme(initialTheme);
 
   if (toggleBtn && !toggleBtn.dataset.listenerBound) {
     toggleBtn.dataset.listenerBound = 'true';
     toggleBtn.addEventListener('click', () => {
-      const currentTheme = normalizeTheme(root.getAttribute('data-theme') || 'light');
+      const currentTheme = normalizeTheme(root.getAttribute('data-theme') || 'dark');
       const newTheme = currentTheme === 'light' ? 'dark' : 'light';
       applyTheme(newTheme);
       safeSetStorage(storage, 'fac_md_theme', newTheme);

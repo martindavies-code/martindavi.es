@@ -107,12 +107,12 @@ describe('Stage 1 & 2: Pure Domain Logic & Sanitisation', () => {
   });
 
   describe('normalizeTheme()', () => {
-    test('strictly maps dark to dark and defaults all others to light', () => {
+    test('strictly maps light to light and defaults all others to dark', () => {
       assert.equal(app.normalizeTheme('dark'), 'dark');
       assert.equal(app.normalizeTheme('light'), 'light');
-      assert.equal(app.normalizeTheme(''), 'light');
-      assert.equal(app.normalizeTheme('cyberpunk'), 'light');
-      assert.equal(app.normalizeTheme(null), 'light');
+      assert.equal(app.normalizeTheme(''), 'dark');
+      assert.equal(app.normalizeTheme('cyberpunk'), 'dark');
+      assert.equal(app.normalizeTheme(null), 'dark');
     });
   });
 

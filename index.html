@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en-GB" data-theme="light">
+<html lang="en-GB" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,8 +18,10 @@
     <div class="chassis-cell chassis-id">
       <span class="catalogue-tag">MJD-MD // SE8-LON</span>
       <h1 class="site-title"><span class="title-prefix">THE OFFICIAL</span> MARTIN DAVIES <span class="title-suffix">HOMEPAGE</span></h1>
+      <span class="page-status-badge">PAGE 01/05 // ABOUT</span>
     </div>
     <nav class="chassis-cell chassis-nav" aria-label="Main Navigation">
+      <span class="nav-dir-label">SECTION DIRECTORY [1-5]:</span>
       <a href="./index.html" class="nav-link active" aria-current="page"><span class="nav-num">MD-01</span> ABOUT</a>
       <a href="./experiments.html" class="nav-link"><span class="nav-num">MD-02</span> EXPERIMENTS</a>
       <a href="./wrong-martin.html" class="nav-link"><span class="nav-num">MD-03</span> WRONG MARTIN</a>
@@ -27,15 +29,15 @@
       <a href="./contact.html" class="nav-link"><span class="nav-num">MD-05</span> CONTACT</a>
     </nav>
     <div class="chassis-cell chassis-controls">
-      <button id="theme-toggle" class="theme-toggle-btn" type="button" role="switch" aria-checked="false" aria-label="Light mode active. Click to switch to dark mode." title="Switch to dark mode">
+      <button id="theme-toggle" class="theme-toggle-btn" type="button" role="switch" aria-checked="true" aria-label="Dark mode active. Click to switch to light mode." title="Switch to light mode">
         <span class="theme-prefix">THEME</span>
         <span class="theme-switch-frame">
-          <span class="theme-opt opt-light active" id="theme-opt-light">
+          <span class="theme-opt opt-light inactive" id="theme-opt-light">
             <span class="theme-led" aria-hidden="true"></span>
             <span class="opt-icon">&#9728;</span> LIGHT
           </span>
           <span class="theme-sep" aria-hidden="true">//</span>
-          <span class="theme-opt opt-dark inactive" id="theme-opt-dark">
+          <span class="theme-opt opt-dark active" id="theme-opt-dark">
             <span class="theme-led" aria-hidden="true"></span>
             <span class="opt-icon">&#9789;</span> DARK
           </span>
@@ -92,6 +94,47 @@
             <dd><a href="https://bsky.app/profile/martindavi.es" target="_blank" rel="noopener noreferrer">@martindavi.es</a></dd>
           </dl>
         </aside>
+      </div>
+
+      <!-- SECTION DIRECTORY GUIDE BOX -->
+      <div class="directory-guide-box">
+        <div class="dir-header">
+          <span class="dir-title">ARCHIVAL DIRECTORY // 4 OTHER SECTIONS TO EXPLORE</span>
+          <span class="dir-meta">INDEX MD-02 &rarr; MD-05</span>
+        </div>
+        <p>
+          Beyond this biography, the archive is partitioned into four specialised sections. Explore live coding experiments, investigate twenty years of mistaken identity emails transformed into music, listen to high-concept curated playlists, or open a line to the direct dispatch terminal:
+        </p>
+        <div class="directory-links-grid">
+          <a href="./experiments.html" class="dir-card-link">
+            <div class="dir-card-top">
+              <span class="dir-card-code">MD-02</span>
+              <span class="dir-card-name">EXPERIMENTS &rarr;</span>
+            </div>
+            <span class="dir-card-desc">Zero-dependency dashboards, Antigravity agent skills, and desktop utility workflows.</span>
+          </a>
+          <a href="./wrong-martin.html" class="dir-card-link">
+            <div class="dir-card-top">
+              <span class="dir-card-code">MD-03</span>
+              <span class="dir-card-name">WRONG MARTIN &rarr;</span>
+            </div>
+            <span class="dir-card-desc">Misdirected emails from strangers converted into custom genre-hopping songs and YouTube shorts.</span>
+          </a>
+          <a href="./playlists.html" class="dir-card-link">
+            <div class="dir-card-top">
+              <span class="dir-card-code">MD-04</span>
+              <span class="dir-card-name">PLAYLISTS &rarr;</span>
+            </div>
+            <span class="dir-card-desc">Deeply opinionated, high-concept Spotify playlists curated over thousands of hours.</span>
+          </a>
+          <a href="./contact.html" class="dir-card-link">
+            <div class="dir-card-top">
+              <span class="dir-card-code">MD-05</span>
+              <span class="dir-card-name">CONTACT &rarr;</span>
+            </div>
+            <span class="dir-card-desc">Web3Forms direct dispatch terminal for event production, AI workflows, or speaking queries.</span>
+          </a>
+        </div>
       </div>
     </section>
   </main>

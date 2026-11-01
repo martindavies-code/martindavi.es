@@ -152,24 +152,38 @@ body {
   letter-spacing: 0.04em;
 }
 
+/* --- Industrial Navigation Bar & Tab Architecture --- */
 .chassis-nav {
   grid-column: 1 / -1;
   grid-row: 2;
   border-top: 1px solid var(--border-color);
   border-right: none;
-  padding: 0 var(--space-sm);
-  gap: var(--space-md);
+  padding: 8px var(--space-sm);
+  gap: var(--space-xs);
+  display: flex;
+  align-items: center;
   overflow-x: auto;
   white-space: nowrap;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
   -ms-overflow-style: none;
+  background-color: var(--bg-secondary);
 }
 
 .chassis-nav::-webkit-scrollbar {
   display: none;
   width: 0;
   height: 0;
+}
+
+.nav-dir-label {
+  font-family: var(--font-mono);
+  font-size: var(--text-caption);
+  font-weight: 700;
+  color: var(--ink-secondary);
+  letter-spacing: 0.05em;
+  padding-right: 4px;
+  user-select: none;
 }
 
 .nav-link {
@@ -181,9 +195,11 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  min-height: 44px;
-  padding: 0 var(--space-xs);
-  transition: color var(--transition-fast);
+  min-height: 36px;
+  padding: 4px 12px;
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-card);
+  transition: all var(--transition-fast);
 }
 
 .nav-link .nav-num {
@@ -193,18 +209,125 @@ body {
 
 .nav-link:hover, .nav-link:focus {
   color: var(--ink-primary);
+  border-color: var(--accent);
+  background-color: var(--bg-primary);
 }
 
-/* Active navigation link styling */
+/* High-Contrast Prominent Active Page Highlight */
 .nav-link.active,
 .nav-link[aria-current="page"] {
-  color: var(--ink-primary);
-  border-bottom: 2px solid var(--accent);
+  background-color: var(--accent) !important;
+  color: #FFFFFF !important;
+  border-color: var(--accent) !important;
+  font-weight: 700;
+  box-shadow: 0 0 10px rgba(255, 79, 0, 0.4);
 }
 
 .nav-link.active .nav-num,
 .nav-link[aria-current="page"] .nav-num {
+  color: #FFFFFF !important;
+  background-color: rgba(0, 0, 0, 0.35);
+  padding: 1px 6px;
+}
+
+/* Active Page Badge in Chassis Header */
+.page-status-badge {
+  font-family: var(--font-mono);
+  font-size: var(--text-caption);
+  font-weight: 700;
+  background-color: var(--bg-card);
   color: var(--accent);
+  border: 1px solid var(--border-color);
+  padding: 4px var(--space-xs);
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+/* About Page: Section Directory Guide Box */
+.directory-guide-box {
+  grid-column: 1 / -1;
+  margin-top: var(--space-md);
+  padding: var(--space-md);
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-card);
+}
+
+.directory-guide-box .dir-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-xs);
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: var(--space-xs);
+}
+
+.directory-guide-box .dir-title {
+  font-family: var(--font-mono);
+  font-size: var(--text-caption);
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.05em;
+}
+
+.directory-guide-box .dir-meta {
+  font-family: var(--font-mono);
+  font-size: var(--text-caption);
+  color: var(--ink-secondary);
+}
+
+.directory-guide-box p {
+  font-size: var(--text-body);
+  line-height: 1.6;
+  color: var(--ink-primary);
+  margin-bottom: var(--space-sm);
+}
+
+.directory-links-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--space-xs);
+}
+
+.dir-card-link {
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-xs) var(--space-sm);
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-primary);
+  text-decoration: none;
+  transition: all var(--transition-fast);
+}
+
+.dir-card-link:hover {
+  border-color: var(--accent);
+  background-color: var(--bg-secondary);
+}
+
+.dir-card-link .dir-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 2px;
+}
+
+.dir-card-link .dir-card-code {
+  font-family: var(--font-mono);
+  font-size: var(--text-caption);
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.dir-card-link .dir-card-name {
+  font-family: var(--font-mono);
+  font-size: var(--text-caption);
+  font-weight: 700;
+  color: var(--ink-primary);
+}
+
+.dir-card-link .dir-card-desc {
+  font-size: 0.8125rem;
+  color: var(--ink-secondary);
+  line-height: 1.35;
 }
 
 /* Mechanical Theme Toggle Button (44px hit area) */
@@ -1676,11 +1799,18 @@ main {
     border-bottom: none;
   }
 
+  .chassis-nav .nav-dir-label {
+    display: block;
+    margin-bottom: 4px;
+    font-size: var(--text-caption);
+  }
+
   .chassis-nav .nav-link.active,
   .chassis-nav .nav-link[aria-current="page"] {
-    border-left: 3px solid var(--accent);
-    border-bottom: 1px solid var(--border-color);
-    background-color: var(--bg-secondary);
+    border-left: 4px solid var(--accent);
+    border-color: var(--accent) !important;
+    background-color: var(--accent) !important;
+    color: #FFFFFF !important;
   }
 
   .chassis-nav .nav-link:last-child.active,
