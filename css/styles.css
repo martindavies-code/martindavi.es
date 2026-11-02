@@ -306,7 +306,9 @@ body {
   transition: all var(--transition-fast);
 }
 
-.dir-card-link:hover {
+.dir-card-link:hover,
+.dir-card-link:focus,
+.dir-card-link:focus-visible {
   border-color: var(--accent);
   background-color: var(--bg-secondary);
 }
@@ -778,11 +780,14 @@ main {
   flex-direction: column;
   border-right: 1px solid var(--border-color);
   border-bottom: 1px solid var(--border-color);
+  outline-offset: -2px;
   transition: outline var(--transition-fast);
 }
 
-.project-card:hover {
+.project-card:hover,
+.project-card:focus-within {
   outline: 2px solid var(--accent);
+  outline-offset: -2px;
   z-index: 2;
 }
 
@@ -992,11 +997,15 @@ main {
   flex-direction: column;
   border-right: 1px solid var(--border-color);
   border-bottom: 1px solid var(--border-color);
+  outline-offset: -2px;
   transition: outline var(--transition-fast);
 }
 
-.short-card.featured {
+.short-card.featured,
+.short-card:hover,
+.short-card:focus-within {
   outline: 2px solid var(--accent);
+  outline-offset: -2px;
   position: relative;
   z-index: 2;
 }
@@ -1285,11 +1294,14 @@ main {
   flex-direction: column;
   border-right: 1px solid var(--border-color);
   border-bottom: 1px solid var(--border-color);
+  outline-offset: -2px;
   transition: outline var(--transition-fast);
 }
 
-.playlist-card:hover {
+.playlist-card:hover,
+.playlist-card:focus-within {
   outline: 2px solid var(--accent);
+  outline-offset: -2px;
   z-index: 2;
 }
 

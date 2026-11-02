@@ -3,6 +3,8 @@
 
 const { test, describe } = require('node:test');
 const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
 const app = require('../js/app.js');
 
 describe('Stage 1 & 2: Pure Domain Logic & Sanitisation', () => {
@@ -1690,6 +1692,21 @@ describe('Stage 6: DOM Mock Controller Integration', () => {
       tags: null
     });
     assert.match(htmlNullLinks, /MJD-NULL/);
+  });
+});
+
+describe('Stage 7: CSS Architecture & Mobile Viewport Boundary Regression', () => {
+  test('verifies all interactive card grids enforce outline-offset: -2px site-wide', () => {
+    const cssPath = path.resolve(process.cwd(), 'css/styles.css');
+    const cssContent = fs.readFileSync(cssPath, 'utf8');
+
+    // Verify .project-card, .short-card, and .playlist-card have outline-offset: -2px
+    assert.match(cssContent, /\.project-card\s*\{[^}]*outline-offset:\s*-2px;/);
+    assert.match(cssContent, /\.project-card:hover[^{]*\{[^}]*outline-offset:\s*-2px;/);
+    assert.match(cssContent, /\.short-card\s*\{[^}]*outline-offset:\s*-2px;/);
+    assert.match(cssContent, /\.short-card\.featured[^{]*\{[^}]*outline-offset:\s*-2px;/);
+    assert.match(cssContent, /\.playlist-card\s*\{[^}]*outline-offset:\s*-2px;/);
+    assert.match(cssContent, /\.playlist-card:hover[^{]*\{[^}]*outline-offset:\s*-2px;/);
   });
 });
 
