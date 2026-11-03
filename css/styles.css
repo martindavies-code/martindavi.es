@@ -26,9 +26,10 @@
   --ink-secondary: #4A4843;
   --border-color: #121212;
   --accent: #FF4F00;                                 /* International Orange */
-  --accent-contrast: #FFFFFF;
-  --signal-ok: #008F5A;
-  --signal-err: #D92B2B;
+  --accent-contrast: #121212;                        /* WCAG AA (5.74:1) on International Orange */
+  --accent-text: #B83800;                            /* WCAG AA (5.20:1) on warm archival paper */
+  --signal-ok: #00754A;                              /* WCAG AA (4.65:1) on warm archival paper */
+  --signal-err: #C02020;                             /* WCAG AA (5.20:1) on warm archival paper */
 
   /* Typography Stacks */
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
@@ -45,6 +46,7 @@
   --border-color: #383632;
   --accent: #FF4F00;
   --accent-contrast: #121212;
+  --accent-text: #FF4F00;                            /* WCAG AA (5.74:1) on matte cassette carbon */
   --signal-ok: #10B981;
   --signal-err: #EF4444;
 }
@@ -89,13 +91,60 @@ body {
   display: none !important;
 }
 
+.visually-hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+/* --- Skip to Main Content Link (Keyboard Navigation) --- */
+.skip-link {
+  position: absolute;
+  top: -100px;
+  left: var(--space-sm);
+  z-index: 9999;
+  background-color: var(--accent);
+  color: var(--accent-contrast);
+  padding: 8px 16px;
+  font-family: var(--font-mono);
+  font-size: var(--text-caption);
+  font-weight: 700;
+  text-decoration: none;
+  border: 2px solid var(--border-color);
+  box-shadow: 2px 2px 0 var(--border-color);
+  transition: top var(--transition-fast);
+}
+
+.skip-link:focus,
+.skip-link:focus-visible {
+  top: var(--space-xs);
+  outline: 2px solid var(--border-color);
+  outline-offset: 2px;
+}
+
+main:focus {
+  outline: none;
+}
+
+/* Form Placeholders High Contrast */
+::placeholder {
+  color: var(--ink-secondary);
+  opacity: 1;
+}
+
 /* --- Chassis Header Bar --- */
 .chassis-header {
   position: sticky;
   top: 0;
   z-index: 1000;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+  display: flex;
+  flex-wrap: wrap;
   align-items: stretch;
   background-color: var(--bg-primary);
   border-bottom: 2px solid var(--border-color);
@@ -105,26 +154,27 @@ body {
   display: flex;
   align-items: center;
   padding: var(--space-xs) var(--space-sm);
-  border-right: 1px solid var(--border-color);
-}
-
-.chassis-cell:last-child {
-  border-right: none;
 }
 
 .chassis-id {
-  grid-column: 1;
-  grid-row: 1;
+  order: 1;
+  flex: 1 1 auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
   gap: var(--space-xs);
   min-width: 0;
+  border-right: 1px solid var(--border-color);
 }
 
 .chassis-controls {
-  grid-column: 2;
-  grid-row: 1;
-  border-right: none;
-  flex-shrink: 0;
+  order: 2;
+  flex: 0 0 auto;
+  margin-left: auto;
+  display: flex;
+  align-items: center;
   justify-content: flex-end;
+  border-right: none;
 }
 
 .catalogue-tag {
@@ -162,18 +212,16 @@ body {
 
 /* --- Industrial Navigation Bar & Tab Architecture --- */
 .chassis-nav {
-  grid-column: 1 / -1;
-  grid-row: 2;
+  order: 3;
+  width: 100%;
+  flex: 1 0 100%;
   border-top: 1px solid var(--border-color);
   border-right: none;
   padding: 8px var(--space-sm);
   gap: var(--space-xs);
   display: flex;
   align-items: center;
-  overflow-x: auto;
-  white-space: nowrap;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
+  flex-wrap: wrap;
   background-color: var(--bg-secondary);
 }
 
@@ -211,7 +259,7 @@ body {
 }
 
 .nav-link .nav-num {
-  color: var(--accent);
+  color: var(--accent-text);
   font-weight: 700;
 }
 
@@ -225,7 +273,7 @@ body {
 .nav-link.active,
 .nav-link[aria-current="page"] {
   background-color: var(--accent) !important;
-  color: #FFFFFF !important;
+  color: var(--accent-contrast) !important;
   border-color: var(--accent) !important;
   font-weight: 700;
   box-shadow: 0 0 10px rgba(255, 79, 0, 0.4);
@@ -234,7 +282,7 @@ body {
 .nav-link.active .nav-num,
 .nav-link[aria-current="page"] .nav-num {
   color: #FFFFFF !important;
-  background-color: rgba(0, 0, 0, 0.35);
+  background-color: #121212 !important;
   padding: 1px 6px;
 }
 
@@ -244,7 +292,7 @@ body {
   font-size: var(--text-caption);
   font-weight: 700;
   background-color: var(--bg-card);
-  color: var(--accent);
+  color: var(--accent-text);
   border: 1px solid var(--border-color);
   padding: 4px var(--space-xs);
   letter-spacing: 0.04em;
@@ -1016,7 +1064,7 @@ main {
   left: 0;
   right: 0;
   background-color: var(--accent);
-  color: #FFFFFF;
+  color: var(--accent-contrast);
   font-family: var(--font-mono);
   font-size: var(--text-caption);
   font-weight: 700;
@@ -1031,7 +1079,7 @@ main {
 .featured-tag {
   display: inline-block;
   background-color: var(--accent);
-  color: #FFFFFF;
+  color: var(--accent-contrast);
   font-size: var(--text-caption);
   font-weight: 700;
   padding: 1px 6px;
@@ -1115,7 +1163,7 @@ main {
 
 .play-badge {
   background-color: var(--accent);
-  color: #FFFFFF;
+  color: var(--accent-contrast);
   font-family: var(--font-mono);
   font-size: var(--text-caption);
   font-weight: 700;
@@ -1697,6 +1745,16 @@ main {
   border-color: var(--signal-ok);
 }
 
+[data-theme="dark"] .copy-handle-btn.copied {
+  color: #121212;
+}
+
+.copy-handle-btn.copy-failed {
+  background-color: var(--bg-card);
+  color: var(--signal-err);
+  border-color: var(--signal-err);
+}
+
 /* Notice Box */
 .notice-box {
   padding: var(--space-sm);
@@ -1778,13 +1836,30 @@ main {
   font-family: var(--font-mono);
   font-size: 0.6875rem;
   font-weight: 700;
-  color: var(--accent);
+  color: var(--accent-text);
   background-color: var(--bg-card);
   border: 1px solid var(--border-color);
-  padding: 2px 6px;
+  padding: 3px 8px;
   letter-spacing: 0.05em;
   display: inline-block;
   margin-top: 2px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.hotkeys-toggle-btn:hover,
+.hotkeys-toggle-btn:focus-visible {
+  border-color: var(--accent);
+  color: var(--ink-primary);
+  background-color: var(--bg-secondary);
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.hotkeys-toggle-btn[aria-checked="false"] {
+  opacity: 0.65;
+  color: var(--ink-secondary);
+  border-style: dashed;
 }
 
 .back-to-top {
@@ -1897,19 +1972,27 @@ main {
   }
 }
 
-/* Mobile (< 640px) */
-@media (max-width: 639px) {
+/* Mobile & Small Tablets (<= 640px) */
+@media (max-width: 640px) {
   body {
     border-left: none;
     border-right: none;
   }
   .chassis-id {
+    width: 100%;
+    flex: 1 0 100%;
+    border-right: none;
+    border-bottom: 1px solid var(--border-color);
     flex-wrap: wrap;
     gap: 4px;
     padding: var(--space-xs);
   }
   .chassis-controls {
+    width: 100%;
+    flex: 1 0 100%;
+    border-bottom: 1px solid var(--border-color);
     padding: var(--space-xs);
+    justify-content: flex-end;
   }
   .site-title {
     white-space: normal;
@@ -1920,9 +2003,10 @@ main {
   .page-status-badge {
     font-size: 0.6875rem;
     padding: 2px 6px;
-    max-width: 100%;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    max-width: none;
+    overflow: visible;
+    text-overflow: clip;
+    white-space: nowrap;
   }
   .theme-prefix {
     display: none;
@@ -2000,21 +2084,41 @@ main {
 [data-theme="dark"] .about-portrait .portrait-light { display: none; }
 [data-theme="dark"] .about-portrait .portrait-dark { display: block; }
 
-/* Mobile Navigation Overflow Remediation (Viewport <= 768px) */
-@media screen and (max-width: 768px) {
-  /* Step 10: Constrain Header and Navigation Wrapper Dimensions */
+/* Responsive Navigation Architecture */
+/* Compact wrapping directory pills for tablet/intermediate viewports (481px - 1024px) */
+@media (min-width: 481px) and (max-width: 1024px) {
+  .chassis-nav {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    padding: 8px var(--space-sm);
+    gap: var(--space-xs);
+    white-space: normal;
+  }
+
+  .chassis-nav .nav-link {
+    display: inline-flex;
+    width: auto;
+    max-width: 100%;
+    min-height: 36px;
+    padding: 4px 12px;
+    border: 1px solid var(--border-color);
+    white-space: nowrap;
+  }
+}
+
+/* Preserved full-width 5-row directory for phone screens (<= 480px) */
+@media screen and (max-width: 480px) {
   .chassis-header {
     width: 100%;
     max-width: 100vw;
-    overflow-x: hidden;
   }
 
   .chassis-nav {
     width: 100%;
     max-width: 100vw;
-    overflow-x: hidden;
     padding: 0.75rem 1rem;
-    /* Step 11: Eliminate Horizontal Overflow on the Navigation List */
     display: flex;
     flex-direction: column;
     min-width: 0;
@@ -2023,7 +2127,6 @@ main {
     white-space: normal;
   }
 
-  /* Step 12: Ensure Individual Menu Items and Links Wrap and Fit Within the Viewport */
   .chassis-nav .nav-link {
     display: flex;
     width: 100%;
@@ -2034,11 +2137,7 @@ main {
     justify-content: flex-start;
     padding: 0.75rem 1rem;
     min-height: 44px;
-    border-bottom: 1px solid var(--border-color);
-  }
-
-  .chassis-nav .nav-link:last-child {
-    border-bottom: none;
+    border: 1px solid var(--border-color);
   }
 
   .chassis-nav .nav-dir-label {
@@ -2049,15 +2148,17 @@ main {
 
   .chassis-nav .nav-link.active,
   .chassis-nav .nav-link[aria-current="page"] {
-    border-left: 4px solid var(--accent);
+    border-left: 4px solid var(--border-color);
     border-color: var(--accent) !important;
     background-color: var(--accent) !important;
-    color: #FFFFFF !important;
+    color: var(--accent-contrast) !important;
   }
 
-  .chassis-nav .nav-link:last-child.active,
-  .chassis-nav .nav-link:last-child[aria-current="page"] {
-    border-bottom: none;
+  .chassis-nav .nav-link.active .nav-num,
+  .chassis-nav .nav-link[aria-current="page"] .nav-num {
+    background-color: #121212 !important;
+    color: #FFFFFF !important;
+    padding: 1px 6px;
   }
 }
 

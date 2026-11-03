@@ -99,6 +99,8 @@
   </script>
 </head>
 <body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
   <!-- Top Chassis & Industrial Header -->
   <header class="chassis-header" id="top">
     <div class="chassis-cell chassis-id">
@@ -132,7 +134,7 @@
     </div>
   </header>
 
-  <main id="main-content">
+  <main id="main-content" tabindex="-1">
     <!-- SECTION 05: CONTACT ME -->
     <section id="contact" class="grid-section" data-cat="MJD-005">
       <div class="section-intro">
@@ -166,28 +168,28 @@
                 <label for="form-name" class="form-label">
                   <span class="label-code">01</span> NAME // SENDER
                 </label>
-                <input type="text" id="form-name" name="name" class="form-input" required placeholder="Paige Turner" autocomplete="name">
+                <input type="text" id="form-name" name="name" class="form-input" required maxlength="100" placeholder="Paige Turner" autocomplete="name">
               </div>
 
               <div class="form-group">
                 <label for="form-email" class="form-label">
                   <span class="label-code">02</span> EMAIL // RETURN ADDRESS
                 </label>
-                <input type="email" id="form-email" name="email" class="form-input" required placeholder="sender@organisation.ac.uk" autocomplete="email">
+                <input type="email" id="form-email" name="email" class="form-input" required maxlength="254" placeholder="sender@organisation.ac.uk" autocomplete="email">
               </div>
 
               <div class="form-group">
                 <label for="form-subject" class="form-label">
-                  <span class="label-code">03</span> SUBJECT // CLASSIFICATION
+                  <span class="label-code">03</span> SUBJECT // CLASSIFICATION <span class="label-meta">[OPTIONAL]</span>
                 </label>
-                <input type="text" id="form-subject" name="subject" class="form-input" required placeholder="Event Production / AI Workflows / Wrong Martin Enquiry">
+                <input type="text" id="form-subject" name="subject" class="form-input" maxlength="200" placeholder="Event Production / AI Workflows / Wrong Martin Enquiry">
               </div>
 
               <div class="form-group">
                 <label for="form-message" class="form-label">
                   <span class="label-code">04</span> MESSAGE // TRANSMISSION BODY
                 </label>
-                <textarea id="form-message" name="message" class="form-textarea" rows="5" required placeholder="Please state your enquiry, project requirements, or misdirected invoice details..."></textarea>
+                <textarea id="form-message" name="message" class="form-textarea" rows="5" required maxlength="5000" placeholder="Please state your enquiry, project requirements, or misdirected invoice details..."></textarea>
               </div>
 
               <div class="form-footer">
@@ -222,6 +224,7 @@
                 <button type="button" class="btn btn-secondary copy-handle-btn" id="copy-handle-btn" data-copy="@martindavi.es" aria-label="Copy Bluesky handle to clipboard">
                   <span class="copy-btn-text">[COPY HANDLE]</span>
                 </button>
+                <span id="copy-status" class="visually-hidden" role="status" aria-live="polite"></span>
               </div>
             </div>
           </div>
@@ -252,7 +255,7 @@
     </div>
     <div class="footer-center">
       <span class="footer-tech">STATIC ES6 // CSS GRID // 0-BUILD ARCHITECTURE</span>
-      <span class="footer-key-badge" aria-label="Keyboard shortcuts: Press keys 1 through 5 for navigation, T for theme toggle">[HOTKEYS: 1-5 NAV // T THEME]</span>
+      <button id="hotkeys-toggle-btn" class="footer-key-badge hotkeys-toggle-btn" type="button" role="switch" aria-checked="true" aria-label="Keyboard shortcuts: Press 1-5 for navigation, T for theme toggle. Currently active. Click to disable.">[HOTKEYS: 1-5 NAV // T THEME (ON)]</button>
     </div>
     <div class="footer-right">
       <a href="#top" class="back-to-top">BACK TO TOP &uarr;</a>

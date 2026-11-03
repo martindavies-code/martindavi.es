@@ -1085,14 +1085,51 @@ function initContactForm(doc = (typeof document !== 'undefined' ? document : nul
       return;
     }
 
+    const nameInput = /** @type {HTMLInputElement | null} */ (form.querySelector('input[name="name"]') || (doc && typeof doc.getElementById === 'function' ? doc.getElementById('form-name') : null));
+    const emailInput = /** @type {HTMLInputElement | null} */ (form.querySelector('input[name="email"]') || (doc && typeof doc.getElementById === 'function' ? doc.getElementById('form-email') : null));
+    const subjectInput = /** @type {HTMLInputElement | null} */ (form.querySelector('input[name="subject"]') || (doc && typeof doc.getElementById === 'function' ? doc.getElementById('form-subject') : null));
+    const messageInput = /** @type {HTMLTextAreaElement | null} */ (form.querySelector('textarea[name="message"]') || (doc && typeof doc.getElementById === 'function' ? doc.getElementById('form-message') : null));
+
+    const clearValidationErrors = () => {
+      [nameInput, emailInput, subjectInput, messageInput].forEach(input => {
+        if (input && typeof input.removeAttribute === 'function') {
+          input.removeAttribute('aria-invalid');
+        }
+      });
+    };
+
     const formData = new FormData(form);
     const rawObject = Object.fromEntries(formData.entries());
 
     let payload;
     try {
       payload = validateContactPayload(rawObject);
+      clearValidationErrors();
     } catch (err) {
+      clearValidationErrors();
       const msg = err instanceof ValidationError ? err.message : 'Please complete all required fields.';
+
+      // Link field errors to the relevant controls and focus the first invalid field
+      let targetInput = null;
+      if (/name/i.test(msg)) {
+        targetInput = nameInput;
+      } else if (/email/i.test(msg)) {
+        targetInput = emailInput;
+      } else if (/subject/i.test(msg)) {
+        targetInput = subjectInput;
+      } else if (/message/i.test(msg)) {
+        targetInput = messageInput;
+      }
+
+      if (targetInput) {
+        if (typeof targetInput.setAttribute === 'function') {
+          targetInput.setAttribute('aria-invalid', 'true');
+        }
+        if (typeof targetInput.focus === 'function') {
+          targetInput.focus();
+        }
+      }
+
       showStatus(`[ STATUS ERR: ${msg.toUpperCase()} ]`, 'error');
       return;
     }
@@ -1127,6 +1164,7 @@ function initContactForm(doc = (typeof document !== 'undefined' ? document : nul
 
       if (response.status === 200 && result.success) {
         showStatus('[ STATUS 200: TRANSMISSION RECEIVED. THANK YOU. ]', 'success');
+        clearValidationErrors();
         form.reset();
       } else {
         const errorMsg = result && result.message
@@ -1161,7 +1199,7 @@ function initContactForm(doc = (typeof document !== 'undefined' ? document : nul
 }
 
 /**
- * Initialises copy-to-clipboard functionality for contact handles.
+ * Initialises copy-to-clipboard functionality for contact handles with truthful feedback and failure recovery.
  * @param {Document | null} [doc=(typeof document !== 'undefined' ? document : null)]
  * @param {Navigator | null} [nav=(typeof navigator !== 'undefined' ? navigator : null)]
  */
@@ -1171,47 +1209,125 @@ function initCopyHandle(doc = (typeof document !== 'undefined' ? document : null
   if (!copyBtn || !copyBtn.dataset || copyBtn.dataset.listenerBound) return;
 
   copyBtn.dataset.listenerBound = 'true';
+  const labelSpan = copyBtn.querySelector('.copy-btn-text');
+  const defaultText = labelSpan ? labelSpan.textContent : copyBtn.textContent;
+  const copyStatus = doc.getElementById('copy-status');
+
+  /** @type {ReturnType<typeof setTimeout> | null} */
+  let resetTimer = null;
+
   copyBtn.addEventListener('click', async () => {
     const textToCopy = copyBtn.getAttribute('data-copy') || '@martindavi.es';
-    try {
-      if (nav && nav.clipboard && typeof nav.clipboard.writeText === 'function') {
-        await nav.clipboard.writeText(textToCopy);
-      }
-      const labelSpan = copyBtn.querySelector('.copy-btn-text');
-      const originalText = labelSpan ? labelSpan.textContent : copyBtn.textContent;
-      copyBtn.classList.add('copied');
-      if (labelSpan) {
-        labelSpan.textContent = '[COPIED // BUFFER READY]';
-      } else {
-        copyBtn.textContent = '[COPIED // BUFFER READY]';
+    if (resetTimer) {
+      clearTimeout(resetTimer);
+      resetTimer = null;
+    }
+
+    const hasClipboardApi = !!(nav && nav.clipboard && typeof nav.clipboard.writeText === 'function');
+
+    if (!hasClipboardApi) {
+      logEvent('warn', 'CLIPBOARD_UNSUPPORTED', 'Clipboard API unavailable; prompting manual selection');
+      copyBtn.classList.remove('copied');
+      copyBtn.classList.add('copy-failed');
+      const failText = '[COPY FAILED // SELECT TEXT]';
+      if (labelSpan) labelSpan.textContent = failText;
+      else copyBtn.textContent = failText;
+
+      if (copyStatus) {
+        copyStatus.textContent = 'Automatic copy unavailable. Please select and copy @martindavi.es manually.';
       }
 
-      setTimeout(() => {
+      resetTimer = setTimeout(() => {
+        copyBtn.classList.remove('copy-failed');
+        if (labelSpan) labelSpan.textContent = defaultText;
+        else copyBtn.textContent = defaultText;
+      }, 3000);
+      return;
+    }
+
+    try {
+      await nav.clipboard.writeText(textToCopy);
+      copyBtn.classList.remove('copy-failed');
+      copyBtn.classList.add('copied');
+      const successText = '[COPIED // BUFFER READY]';
+      if (labelSpan) labelSpan.textContent = successText;
+      else copyBtn.textContent = successText;
+
+      if (copyStatus) {
+        copyStatus.textContent = 'Bluesky handle @martindavi.es copied to clipboard.';
+      }
+
+      resetTimer = setTimeout(() => {
         copyBtn.classList.remove('copied');
-        if (labelSpan) {
-          labelSpan.textContent = originalText;
-        } else {
-          copyBtn.textContent = originalText;
-        }
+        if (labelSpan) labelSpan.textContent = defaultText;
+        else copyBtn.textContent = defaultText;
       }, 2000);
     } catch (err) {
       logEvent('warn', 'CLIPBOARD_COPY_FAILED', 'Failed to copy handle to clipboard', { error: String(err) });
+      copyBtn.classList.remove('copied');
+      copyBtn.classList.add('copy-failed');
+      const failText = '[COPY FAILED // SELECT TEXT]';
+      if (labelSpan) labelSpan.textContent = failText;
+      else copyBtn.textContent = failText;
+
+      if (copyStatus) {
+        copyStatus.textContent = 'Copy permission rejected. Please select and copy @martindavi.es manually.';
+      }
+
+      resetTimer = setTimeout(() => {
+        copyBtn.classList.remove('copy-failed');
+        if (labelSpan) labelSpan.textContent = defaultText;
+        else copyBtn.textContent = defaultText;
+      }, 3000);
     }
   });
 }
 
 /**
- * Initialises tactile keyboard shortcuts (1-5 for navigation, T for theme toggle).
+ * Initialises tactile keyboard shortcuts (1-5 for navigation, T for theme toggle) with persisted preference.
  * @param {Window | null} [win=(typeof window !== 'undefined' ? window : null)]
  * @param {Document | null} [doc=(typeof document !== 'undefined' ? document : null)]
+ * @param {Storage | null} [storage=(typeof localStorage !== 'undefined' ? localStorage : null)]
  */
-function initKeyboardNavigation(win = (typeof window !== 'undefined' ? window : null), doc = (typeof document !== 'undefined' ? document : null)) {
+function initKeyboardNavigation(win = (typeof window !== 'undefined' ? window : null), doc = (typeof document !== 'undefined' ? document : null), storage = (typeof localStorage !== 'undefined' ? localStorage : null)) {
   if (!win || !doc || typeof win.addEventListener !== 'function') return;
   const root = doc.documentElement;
   if (!root || !root.dataset || root.dataset.hotkeysBound) return;
   root.dataset.hotkeysBound = 'true';
 
+  let hotkeysEnabled = safeGetStorage(storage, 'mjd_hotkeys_enabled', 'true') === 'true';
+  const toggleBtn = doc.getElementById('hotkeys-toggle-btn');
+
+  function updateToggleUI() {
+    if (!toggleBtn) return;
+    if (hotkeysEnabled) {
+      toggleBtn.textContent = '[HOTKEYS: 1-5 NAV // T THEME (ON)]';
+      if (typeof toggleBtn.setAttribute === 'function') {
+        toggleBtn.setAttribute('aria-checked', 'true');
+        toggleBtn.setAttribute('aria-label', 'Keyboard shortcuts: Press 1-5 for navigation, T for theme toggle. Currently active. Click to disable.');
+      }
+    } else {
+      toggleBtn.textContent = '[HOTKEYS: 1-5 NAV // T THEME (OFF)]';
+      if (typeof toggleBtn.setAttribute === 'function') {
+        toggleBtn.setAttribute('aria-checked', 'false');
+        toggleBtn.setAttribute('aria-label', 'Keyboard shortcuts disabled. Click to enable.');
+      }
+    }
+  }
+
+  updateToggleUI();
+
+  if (toggleBtn && typeof toggleBtn.addEventListener === 'function') {
+    toggleBtn.addEventListener('click', () => {
+      hotkeysEnabled = !hotkeysEnabled;
+      safeSetStorage(storage, 'mjd_hotkeys_enabled', String(hotkeysEnabled));
+      updateToggleUI();
+    });
+  }
+
   win.addEventListener('keydown', (e) => {
+    if (!hotkeysEnabled) return;
+    if (e.isComposing || e.repeat) return;
     if (e.target && (['INPUT', 'TEXTAREA', 'SELECT'].includes(/** @type {HTMLElement} */ (e.target).tagName) || /** @type {HTMLElement} */ (e.target).isContentEditable)) {
       return;
     }
@@ -1229,9 +1345,9 @@ function initKeyboardNavigation(win = (typeof window !== 'undefined' ? window : 
     } else if (key === '5') {
       win.location.href = './contact';
     } else if (key === 't' || key === 'T') {
-      const toggleBtn = doc.getElementById('theme-toggle');
-      if (toggleBtn) {
-        toggleBtn.click();
+      const themeBtn = doc.getElementById('theme-toggle');
+      if (themeBtn) {
+        themeBtn.click();
       }
     }
   });
@@ -1333,7 +1449,7 @@ async function bootApp(doc = (typeof document !== 'undefined' ? document : null)
   if (!doc) return;
   cleanIndexUrl(win);
   initTheme(doc, storage);
-  initKeyboardNavigation(win, doc);
+  initKeyboardNavigation(win, doc, storage);
   initCopyHandle(doc, nav);
   initBackToTop(doc, win);
   initContactForm(doc, customFetch);

@@ -139,6 +139,8 @@
 </head>
 
 <body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
   <!-- Top Chassis & Industrial Header -->
   <header class="chassis-header" id="top">
     <div class="chassis-cell chassis-id">
@@ -174,7 +176,7 @@
     </div>
   </header>
 
-  <main id="main-content">
+  <main id="main-content" tabindex="-1">
     <!-- SECTION 01: ABOUT ME -->
     <section id="about" class="grid-section" data-cat="MJD-001">
       <div class="section-header">
@@ -302,7 +304,7 @@
           <span class="dir-meta">INDEX MD-02 &rarr; MD-05</span>
         </div>
         <p>
-          If your need for Official Martin Davies content is not satisfied, you can check out my adventures in coding,
+          If your need for Official Martin Davies content is not satisfied, you can see my adventures in coding,
           investigate twenty years of mistaken identity emails transformed into music, listen to my high-concept curated
           playlists, or send me a message using the handy webform.
         </p>
@@ -336,7 +338,7 @@
               <span class="dir-card-code">MD-05</span>
               <span class="dir-card-name">CONTACT &rarr;</span>
             </div>
-            <span class="dir-card-desc">If you want to get in touch this is your place to do exactly that.</span>
+            <span class="dir-card-desc">Send me a message using this handy form.</span>
           </a>
         </div>
       </div>
@@ -351,7 +353,7 @@
     </div>
     <div class="footer-center">
       <span class="footer-tech">STATIC ES6 // CSS GRID // 0-BUILD ARCHITECTURE</span>
-      <span class="footer-key-badge" aria-label="Keyboard shortcuts: Press keys 1 through 5 for navigation, T for theme toggle">[HOTKEYS: 1-5 NAV // T THEME]</span>
+      <button id="hotkeys-toggle-btn" class="footer-key-badge hotkeys-toggle-btn" type="button" role="switch" aria-checked="true" aria-label="Keyboard shortcuts: Press 1-5 for navigation, T for theme toggle. Currently active. Click to disable.">[HOTKEYS: 1-5 NAV // T THEME (ON)]</button>
     </div>
     <div class="footer-right">
       <a href="#top" class="back-to-top">BACK TO TOP &uarr;</a>

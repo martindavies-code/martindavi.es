@@ -7,6 +7,69 @@ const fs = require('node:fs');
 const path = require('node:path');
 const app = require('../js/app.js');
 
+function createMockElement(id, tagName = 'DIV') {
+  return {
+    id,
+    tagName: tagName.toUpperCase(),
+    dataset: {},
+    innerHTML: '',
+    textContent: '',
+    className: '',
+    style: {},
+    classList: {
+      classes: new Set(),
+      add(c) { this.classes.add(c); },
+      remove(c) { this.classes.delete(c); },
+      contains(c) { return this.classes.has(c); }
+    },
+    attributes: {},
+    setAttribute(k, v) { this.attributes[k] = String(v); },
+    getAttribute(k) { return this.attributes[k] !== undefined ? this.attributes[k] : null; },
+    hasAttribute(k) { return this.attributes[k] !== undefined; },
+    removeAttribute(k) { delete this.attributes[k]; },
+    listeners: {},
+    addEventListener(event, fn) {
+      if (!this.listeners[event]) this.listeners[event] = [];
+      this.listeners[event].push(fn);
+    },
+    async dispatch(event, payload = {}) {
+      if (this.listeners[event]) {
+        for (const fn of this.listeners[event]) {
+          await fn({ preventDefault: () => {}, target: this, ...payload });
+        }
+      }
+    },
+    querySelector(_sel) { return null; },
+    closest(_sel) { return null; },
+    replaceChildren(..._children) {},
+    reset() {},
+    focus() { this.focused = true; }
+  };
+}
+
+function createMockDocument() {
+  const elements = new Map();
+  const root = createMockElement('html', 'HTML');
+  elements.set('html', root);
+
+  return {
+    documentElement: root,
+    elements,
+    getElementById(id) {
+      if (!elements.has(id)) {
+        elements.set(id, createMockElement(id));
+      }
+      return elements.get(id);
+    },
+    querySelector(_sel) {
+      return null;
+    },
+    createElement(tag) {
+      return createMockElement('', tag);
+    }
+  };
+}
+
 describe('Stage 1 & 2: Pure Domain Logic & Sanitisation', () => {
 
   describe('escapeHtml()', () => {
@@ -456,68 +519,6 @@ describe('Stage 5: HTML Template Builders & Facade Swapping', () => {
 });
 
 describe('Stage 6: DOM Mock Controller Integration', () => {
-
-  function createMockElement(id, tagName = 'DIV') {
-    return {
-      id,
-      tagName: tagName.toUpperCase(),
-      dataset: {},
-      innerHTML: '',
-      textContent: '',
-      className: '',
-      style: {},
-      classList: {
-        classes: new Set(),
-        add(c) { this.classes.add(c); },
-        remove(c) { this.classes.delete(c); },
-        contains(c) { return this.classes.has(c); }
-      },
-      attributes: {},
-      setAttribute(k, v) { this.attributes[k] = String(v); },
-      getAttribute(k) { return this.attributes[k] !== undefined ? this.attributes[k] : null; },
-      hasAttribute(k) { return this.attributes[k] !== undefined; },
-      removeAttribute(k) { delete this.attributes[k]; },
-      listeners: {},
-      addEventListener(event, fn) {
-        if (!this.listeners[event]) this.listeners[event] = [];
-        this.listeners[event].push(fn);
-      },
-      async dispatch(event, payload = {}) {
-        if (this.listeners[event]) {
-          for (const fn of this.listeners[event]) {
-            await fn({ preventDefault: () => {}, target: this, ...payload });
-          }
-        }
-      },
-      querySelector(_sel) { return null; },
-      closest(_sel) { return null; },
-      replaceChildren(..._children) {},
-      reset() {}
-    };
-  }
-
-  function createMockDocument() {
-    const elements = new Map();
-    const root = createMockElement('html', 'HTML');
-    elements.set('html', root);
-
-    return {
-      documentElement: root,
-      elements,
-      getElementById(id) {
-        if (!elements.has(id)) {
-          elements.set(id, createMockElement(id));
-        }
-        return elements.get(id);
-      },
-      querySelector(_sel) {
-        return null;
-      },
-      createElement(tag) {
-        return createMockElement('', tag);
-      }
-    };
-  }
 
   test('initTheme binds listener once and toggles theme', () => {
     const doc = createMockDocument();
@@ -1709,4 +1710,414 @@ describe('Stage 7: CSS Architecture & Mobile Viewport Boundary Regression', () =
     assert.match(cssContent, /\.playlist-card:hover[^{]*\{[^}]*outline-offset:\s*-2px;/);
   });
 });
+
+describe('Stage 8: Regression Suite for Audit Priorities 1-5', () => {
+  const htmlFiles = ['index.html', 'experiments.html', 'wrong-martin.html', 'playlists.html', 'contact.html'];
+
+  function calcLuminance(r, g, b) {
+    const [rs, gs, bs] = [r, g, b].map(c => {
+      c = c / 255;
+      return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+    });
+    return 0.2126 * rs + 0.7152 * gs + 0.0722 * bs;
+  }
+
+  function hexToRgb(hex) {
+    hex = hex.replace('#', '');
+    if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
+    const num = parseInt(hex, 16);
+    return [(num >> 16) & 255, (num >> 8) & 255, num & 255];
+  }
+
+  function contrastRatio(hex1, hex2) {
+    const [r1, g1, b1] = hexToRgb(hex1);
+    const [r2, g2, b2] = hexToRgb(hex2);
+    const l1 = calcLuminance(r1, g1, b1);
+    const l2 = calcLuminance(r2, g2, b2);
+    const brightest = Math.max(l1, l2);
+    const darkest = Math.min(l1, l2);
+    return (brightest + 0.05) / (darkest + 0.05);
+  }
+
+  describe('Priority 1: Responsive Header & Navigation', () => {
+    test('all 5 HTML pages contain all 5 catalogue navigation links', () => {
+      for (const file of htmlFiles) {
+        const filePath = path.resolve(process.cwd(), file);
+        const content = fs.readFileSync(filePath, 'utf8');
+        assert.match(content, /<nav class="[^"]*chassis-nav[^"]*"/, `${file} missing nav.chassis-nav`);
+        assert.match(content, /href="\.\/"[^>]*class="nav-link/, `${file} missing MD-01 index link`);
+        assert.match(content, /href="\.\/experiments"[^>]*class="nav-link/, `${file} missing MD-02 experiments link`);
+        assert.match(content, /href="\.\/wrong-martin"[^>]*class="nav-link/, `${file} missing MD-03 wrong-martin link`);
+        assert.match(content, /href="\.\/playlists"[^>]*class="nav-link/, `${file} missing MD-04 playlists link`);
+        assert.match(content, /href="\.\/contact"[^>]*class="nav-link/, `${file} missing MD-05 contact link`);
+      }
+    });
+
+    test('CSS ensures flex-wrap on header and nav without hiding overflow destinations', () => {
+      const cssPath = path.resolve(process.cwd(), 'css/styles.css');
+      const cssContent = fs.readFileSync(cssPath, 'utf8');
+
+      // Header uses flex-wrap to prevent status badge and theme controls from overlapping
+      assert.match(cssContent, /\.chassis-header\s*\{[^}]*display:\s*flex;/);
+      assert.match(cssContent, /\.chassis-header\s*\{[^}]*flex-wrap:\s*wrap;/);
+
+      // Chassis nav wraps so all five destinations remain discoverable
+      assert.match(cssContent, /\.chassis-nav\s*\{[^}]*flex-wrap:\s*wrap;/);
+      assert.doesNotMatch(cssContent, /\.chassis-nav\s*\{[^}]*overflow-x:\s*auto;[^}]*scrollbar-width:\s*none;/);
+    });
+  });
+
+  describe('Priority 2: Text Contrast without Losing Orange Identity', () => {
+    test('verifies WCAG AA contrast for active navigation text (#121212 on #FF4F00 >= 4.5:1)', () => {
+      const orangeBg = '#FF4F00';
+      const activeText = '#121212';
+      const ratio = contrastRatio(orangeBg, activeText);
+      assert.ok(ratio >= 4.5, `Contrast ${ratio.toFixed(2)} must be >= 4.5:1 for WCAG AA normal text`);
+      assert.ok(ratio >= 5.5, `Contrast ${ratio.toFixed(2)} should achieve ~5.74:1`);
+    });
+
+    test('verifies WCAG AAA contrast for nav number badge text (#FFFFFF on #121212 >= 7.0:1)', () => {
+      const chipBg = '#121212';
+      const chipText = '#FFFFFF';
+      const ratio = contrastRatio(chipBg, chipText);
+      assert.ok(ratio >= 7.0, `Contrast ${ratio.toFixed(2)} must be >= 7.0:1 for high legibility`);
+    });
+
+    test('verifies WCAG AA contrast for light mode status green and accent text against paper', () => {
+      const paperBg = '#F5F5F0';
+      const statusOk = '#00754A';
+      const accentText = '#B83800';
+      const statusErr = '#C02020';
+
+      const okRatio = contrastRatio(paperBg, statusOk);
+      const accentRatio = contrastRatio(paperBg, accentText);
+      const errRatio = contrastRatio(paperBg, statusErr);
+
+      assert.ok(okRatio >= 4.5, `Status OK contrast ${okRatio.toFixed(2)} must be >= 4.5:1`);
+      assert.ok(accentRatio >= 4.5, `Accent text contrast ${accentRatio.toFixed(2)} must be >= 4.5:1`);
+      assert.ok(errRatio >= 4.5, `Status Err contrast ${errRatio.toFixed(2)} must be >= 4.5:1`);
+    });
+
+    test('CSS defines --accent-contrast as #121212 and styles active links and placeholders', () => {
+      const cssPath = path.resolve(process.cwd(), 'css/styles.css');
+      const cssContent = fs.readFileSync(cssPath, 'utf8');
+
+      assert.match(cssContent, /--accent-contrast:\s*#121212;/);
+      assert.match(cssContent, /\.nav-link\.active[^{]*\{[^}]*color:\s*var\(--accent-contrast\)\s*!important;/);
+      assert.match(cssContent, /::placeholder\s*\{[^}]*color:\s*var\(--ink-secondary\);/);
+    });
+  });
+
+  describe('Priority 3: Accessible Keyboard Navigation & Skip Links', () => {
+    test('all 5 HTML pages include skip-to-main-content link and accessible main landmark', () => {
+      for (const file of htmlFiles) {
+        const filePath = path.resolve(process.cwd(), file);
+        const content = fs.readFileSync(filePath, 'utf8');
+        assert.match(content, /<a\s+href="#main-content"\s+class="skip-link">Skip to main content<\/a>/, `${file} missing skip link`);
+        assert.match(content, /<main\s+id="main-content"[^>]*tabindex="-1"/, `${file} missing main#main-content with tabindex="-1"`);
+        assert.match(content, /<button\s+id="hotkeys-toggle-btn"[^>]*role="switch"/, `${file} missing hotkeys toggle button`);
+      }
+    });
+
+    test('initKeyboardNavigation respects persisted preference and toggles hotkeys on/off', () => {
+      const doc = createMockDocument();
+      let navigatedTo = '';
+      let toggleCount = 0;
+      const toggleBtn = doc.getElementById('theme-toggle');
+      toggleBtn.click = () => { toggleCount++; };
+
+      const mockWin = {
+        location: {
+          set href(val) { navigatedTo = val; },
+          get href() { return navigatedTo; }
+        },
+        listeners: {},
+        addEventListener(event, fn) {
+          if (!this.listeners[event]) this.listeners[event] = [];
+          this.listeners[event].push(fn);
+        },
+        dispatch(event, payload) {
+          if (this.listeners[event]) {
+            for (const fn of this.listeners[event]) fn(payload);
+          }
+        }
+      };
+
+      const storage = {
+        store: { mjd_hotkeys_enabled: 'true' },
+        getItem(k) { return this.store[k] !== undefined ? this.store[k] : null; },
+        setItem(k, v) { this.store[k] = String(v); }
+      };
+
+      const hotkeysBtn = doc.getElementById('hotkeys-toggle-btn');
+      app.initKeyboardNavigation(mockWin, doc, storage);
+
+      // Initial state: enabled
+      assert.equal(hotkeysBtn.getAttribute('aria-checked'), 'true');
+      assert.match(hotkeysBtn.textContent, /\(ON\)/);
+
+      // Press '2' while enabled -> navigates
+      mockWin.dispatch('keydown', { key: '2', target: { tagName: 'DIV' } });
+      assert.equal(navigatedTo, './experiments');
+
+      // Click toggle button to disable shortcuts
+      hotkeysBtn.dispatch('click');
+      assert.equal(hotkeysBtn.getAttribute('aria-checked'), 'false');
+      assert.match(hotkeysBtn.textContent, /\(OFF\)/);
+      assert.equal(storage.store.mjd_hotkeys_enabled, 'false');
+
+      // Press '3' while disabled -> does NOT navigate
+      mockWin.dispatch('keydown', { key: '3', target: { tagName: 'DIV' } });
+      assert.equal(navigatedTo, './experiments'); // still './experiments', unchanged
+
+      // Press 't' while disabled -> does NOT trigger theme toggle
+      mockWin.dispatch('keydown', { key: 't', target: { tagName: 'DIV' } });
+      assert.equal(toggleCount, 0);
+
+      // Click toggle button to re-enable shortcuts
+      hotkeysBtn.dispatch('click');
+      assert.equal(hotkeysBtn.getAttribute('aria-checked'), 'true');
+      assert.match(hotkeysBtn.textContent, /\(ON\)/);
+      assert.equal(storage.store.mjd_hotkeys_enabled, 'true');
+
+      // Press '3' while re-enabled -> navigates
+      mockWin.dispatch('keydown', { key: '3', target: { tagName: 'DIV' } });
+      assert.equal(navigatedTo, './wrong-martin');
+
+      // Ignores IME composition and key repeat
+      mockWin.dispatch('keydown', { key: '4', isComposing: true, target: { tagName: 'DIV' } });
+      assert.equal(navigatedTo, './wrong-martin'); // unchanged
+      mockWin.dispatch('keydown', { key: '4', repeat: true, target: { tagName: 'DIV' } });
+      assert.equal(navigatedTo, './wrong-martin'); // unchanged
+    });
+
+    test('initKeyboardNavigation gracefully handles throwing storage (SecurityError)', () => {
+      const doc = createMockDocument();
+      doc.documentElement.dataset = {};
+      const mockWin = {
+        location: { href: '' },
+        addEventListener() {}
+      };
+      const throwingStorage = {
+        getItem() { throw new Error('SecurityError: Local storage disabled'); },
+        setItem() { throw new Error('SecurityError: Local storage disabled'); }
+      };
+
+      assert.doesNotThrow(() => {
+        app.initKeyboardNavigation(mockWin, doc, throwingStorage);
+      });
+    });
+  });
+
+  describe('Priority 4: Truthful Clipboard Feedback', () => {
+    test('successful copy updates text, sets copied class, announces status, and resets cleanly', async () => {
+      let copiedText = '';
+      const mockNav = {
+        clipboard: {
+          async writeText(text) { copiedText = text; }
+        }
+      };
+
+      const doc = createMockDocument();
+      const copyBtn = doc.getElementById('copy-handle-btn');
+      copyBtn.setAttribute('data-copy', '@martindavi.es');
+      const labelSpan = createMockElement('label-span', 'SPAN');
+      labelSpan.classList.add('copy-btn-text');
+      labelSpan.textContent = '[COPY HANDLE]';
+      copyBtn.querySelector = (sel) => sel.includes('copy-btn-text') ? labelSpan : null;
+
+      const copyStatus = doc.getElementById('copy-status');
+
+      app.initCopyHandle(doc, mockNav);
+      await copyBtn.dispatch('click');
+
+      assert.equal(copiedText, '@martindavi.es');
+      assert.equal(labelSpan.textContent, '[COPIED // BUFFER READY]');
+      assert.ok(copyBtn.classList.contains('copied'));
+      assert.ok(!copyBtn.classList.contains('copy-failed'));
+      assert.match(copyStatus.textContent, /copied to clipboard/i);
+    });
+
+    test('missing clipboard API displays calm failure and fallback selection hint', async () => {
+      const mockNavNoApi = {}; // No clipboard object
+      const doc = createMockDocument();
+      const copyBtn = doc.getElementById('copy-handle-btn');
+      const labelSpan = createMockElement('label-span', 'SPAN');
+      labelSpan.classList.add('copy-btn-text');
+      labelSpan.textContent = '[COPY HANDLE]';
+      copyBtn.querySelector = (sel) => sel.includes('copy-btn-text') ? labelSpan : null;
+
+      const copyStatus = doc.getElementById('copy-status');
+
+      app.initCopyHandle(doc, mockNavNoApi);
+      await copyBtn.dispatch('click');
+
+      assert.equal(labelSpan.textContent, '[COPY FAILED // SELECT TEXT]');
+      assert.ok(copyBtn.classList.contains('copy-failed'));
+      assert.ok(!copyBtn.classList.contains('copied'));
+      assert.match(copyStatus.textContent, /Automatic copy unavailable/i);
+    });
+
+    test('permission rejection displays failure and does not claim success', async () => {
+      const mockNavRejected = {
+        clipboard: {
+          async writeText() { throw new Error('NotAllowedError: Read/write permission denied'); }
+        }
+      };
+      const doc = createMockDocument();
+      const copyBtn = doc.getElementById('copy-handle-btn');
+      const labelSpan = createMockElement('label-span', 'SPAN');
+      labelSpan.classList.add('copy-btn-text');
+      labelSpan.textContent = '[COPY HANDLE]';
+      copyBtn.querySelector = (sel) => sel.includes('copy-btn-text') ? labelSpan : null;
+
+      const copyStatus = doc.getElementById('copy-status');
+
+      app.initCopyHandle(doc, mockNavRejected);
+      await copyBtn.dispatch('click');
+
+      assert.equal(labelSpan.textContent, '[COPY FAILED // SELECT TEXT]');
+      assert.ok(copyBtn.classList.contains('copy-failed'));
+      assert.ok(!copyBtn.classList.contains('copied'));
+      assert.match(copyStatus.textContent, /Copy permission rejected/i);
+    });
+
+    test('rapid successive clicks clear pending reset timer to prevent race conditions', async () => {
+      let timerCleared = false;
+      const originalClearTimeout = global.clearTimeout;
+      global.clearTimeout = (id) => {
+        timerCleared = true;
+        originalClearTimeout(id);
+      };
+
+      try {
+        const mockNav = {
+          clipboard: {
+            async writeText() {}
+          }
+        };
+        const doc = createMockDocument();
+        const copyBtn = doc.getElementById('copy-handle-btn');
+        app.initCopyHandle(doc, mockNav);
+
+        await copyBtn.dispatch('click');
+        await copyBtn.dispatch('click');
+
+        assert.ok(timerCleared, 'clearTimeout should be invoked on successive clicks');
+      } finally {
+        global.clearTimeout = originalClearTimeout;
+      }
+    });
+  });
+
+  describe('Priority 5: Consistent Contact-Form Semantics', () => {
+    test('contact.html marks Subject optional and aligns HTML maxlength attributes with validator caps', () => {
+      const contactPath = path.resolve(process.cwd(), 'contact.html');
+      const contactHtml = fs.readFileSync(contactPath, 'utf8');
+
+      // Subject must NOT be required
+      assert.match(contactHtml, /id="form-subject"[^>]*maxlength="200"/);
+      assert.doesNotMatch(contactHtml, /id="form-subject"[^>]*required/);
+      assert.match(contactHtml, /<span class="label-meta">\[OPTIONAL\]<\/span>/);
+
+      // Name, Email, Message required and aligned with caps
+      assert.match(contactHtml, /id="form-name"[^>]*required/);
+      assert.match(contactHtml, /id="form-name"[^>]*maxlength="100"/);
+      assert.match(contactHtml, /id="form-email"[^>]*required/);
+      assert.match(contactHtml, /id="form-email"[^>]*maxlength="254"/);
+      assert.match(contactHtml, /id="form-message"[^>]*required/);
+      assert.match(contactHtml, /id="form-message"[^>]*maxlength="5000"/);
+    });
+
+    test('validateContactPayload substitutes General Transmission for empty or omitted subject', () => {
+      const resEmpty = app.validateContactPayload({ name: 'Martin', email: 'm@example.com', subject: '', message: 'Test message' });
+      assert.equal(resEmpty.subject, 'General Transmission');
+
+      const resWhitespace = app.validateContactPayload({ name: 'Martin', email: 'm@example.com', subject: '   ', message: 'Test message' });
+      assert.equal(resWhitespace.subject, 'General Transmission');
+
+      const resOmitted = app.validateContactPayload({ name: 'Martin', email: 'm@example.com', message: 'Test message' });
+      assert.equal(resOmitted.subject, 'General Transmission');
+
+      const resProvided = app.validateContactPayload({ name: 'Martin', email: 'm@example.com', subject: 'Keynote Query', message: 'Test message' });
+      assert.equal(resProvided.subject, 'Keynote Query');
+    });
+
+    test('validation error links field error to relevant input, marks aria-invalid and focuses it', async () => {
+      const doc = createMockDocument();
+      const form = doc.getElementById('contact-form');
+      const nameInput = doc.getElementById('form-name');
+      const emailInput = doc.getElementById('form-email');
+      const messageInput = doc.getElementById('form-message');
+
+      nameInput.focus = () => { nameInput.focused = true; };
+      emailInput.focus = () => { emailInput.focused = true; };
+      messageInput.focus = () => { messageInput.focused = true; };
+
+      app.initContactForm(doc, async () => new Response(JSON.stringify({ success: true })));
+
+      // 1. Missing name -> marks nameInput aria-invalid and focuses it
+      global.FormData = class {
+        entries() { return [['name', ''], ['email', 'martin@example.com'], ['message', 'Hello world']]; }
+      };
+      await form.dispatch('submit');
+      assert.equal(nameInput.getAttribute('aria-invalid'), 'true');
+      assert.equal(nameInput.focused, true);
+
+      // 2. Invalid email -> marks emailInput aria-invalid and focuses it
+      global.FormData = class {
+        entries() { return [['name', 'Martin'], ['email', 'invalid-email'], ['message', 'Hello world']]; }
+      };
+      await form.dispatch('submit');
+      assert.equal(emailInput.getAttribute('aria-invalid'), 'true');
+      assert.equal(emailInput.focused, true);
+
+      // 3. Missing message -> marks messageInput aria-invalid and focuses it
+      global.FormData = class {
+        entries() { return [['name', 'Martin'], ['email', 'martin@example.com'], ['message', '']]; }
+      };
+      await form.dispatch('submit');
+      assert.equal(messageInput.getAttribute('aria-invalid'), 'true');
+      assert.equal(messageInput.focused, true);
+    });
+
+    test('network failure or timeout preserves user entered data and re-enables submit button', async () => {
+      const doc = createMockDocument();
+      const form = doc.getElementById('contact-form');
+      const submitBtn = doc.getElementById('submit-btn');
+      const statusEl = doc.getElementById('form-status');
+
+      let formResetCalled = false;
+      form.reset = () => { formResetCalled = true; };
+
+      // Mock transport that throws a timeout error
+      const timeoutFetch = async () => {
+        throw new app.TransientNetworkError('Request timed out after 10000ms');
+      };
+
+      global.FormData = class {
+        entries() { return [['name', 'Martin'], ['email', 'martin@example.com'], ['subject', 'Query'], ['message', 'Hello from test']]; }
+      };
+
+      let currentFetch = timeoutFetch;
+      app.initContactForm(doc, (url, opts) => currentFetch(url, opts));
+      await form.dispatch('submit');
+
+      // Submit button must be re-enabled
+      assert.equal(submitBtn.disabled, false);
+      // Form must NOT be reset (preserves input for user to retry)
+      assert.equal(formResetCalled, false);
+      // Status message must report timeout
+      assert.match(statusEl.textContent, /TRANSMISSION TIMEOUT/);
+
+      // Mock transport that returns 500 error
+      currentFetch = async () => new Response(JSON.stringify({ success: false, message: 'Server under maintenance' }), { status: 500 });
+      await form.dispatch('submit');
+      assert.equal(submitBtn.disabled, false);
+      assert.equal(formResetCalled, false);
+      assert.match(statusEl.textContent, /SERVER UNDER MAINTENANCE/);
+    });
+  });
+});
+
 
