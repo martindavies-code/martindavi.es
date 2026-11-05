@@ -18,8 +18,20 @@
     content="The Official Martin Davies Homepage. London SE8. Science and technology event producer, AI workflow architect, and recipient of misdirected emails.">
   <meta name="theme-color" content="#121212">
   <link rel="canonical" href="https://martindavi.es/">
-  <link rel="icon" type="image/jpeg" href="./assets/martin.jpg">
-  <link rel="apple-touch-icon" href="./assets/martin.jpg">
+  <script>
+    (function() {
+      var isAcad = false;
+      try {
+        if (localStorage.getItem('mjd_academic_mode') === 'true') {
+          isAcad = true;
+          document.documentElement.classList.add('academic-mode');
+        }
+      } catch (_) {}
+      var fav = isAcad ? './assets/martin-academic.jpg' : './assets/martin.jpg';
+      document.write('<link rel="icon" type="image/jpeg" href="' + fav + '">');
+      document.write('<link rel="apple-touch-icon" href="' + fav + '">');
+    })();
+  </script>
   <link rel="manifest" href="./site.webmanifest">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://martindavi.es/">
@@ -126,7 +138,15 @@
     href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap"
     rel="stylesheet">
   <link rel="stylesheet" href="./css/styles.css">
+  <link rel="stylesheet" href="./css/academic.css">
   <script>
+    (function() {
+      try {
+        if (localStorage.getItem('mjd_academic_mode') === 'true') {
+          document.documentElement.classList.add('academic-mode');
+        }
+      } catch (_) {}
+    })();
     if (typeof window !== 'undefined' && window.location && window.history && window.history.replaceState) {
       var p = window.location.pathname;
       if (p.endsWith('/index.html')) {
@@ -158,6 +178,11 @@
       <a href="./contact" class="nav-link"><span class="nav-num">MD-05</span> CONTACT</a>
     </nav>
     <div class="chassis-cell chassis-controls">
+      <button id="academic-toggle" class="academic-toggle-btn" type="button" role="switch" aria-pressed="false"
+        aria-label="Distinguished Academic Mode. Click to switch to plain academic mode." title="Switch to Distinguished Academic Mode">
+        <span class="academic-status-dot" aria-hidden="true"></span>
+        <span class="academic-toggle-label">Distinguished Academic Mode</span>
+      </button>
       <button id="theme-toggle" class="theme-toggle-btn" type="button" role="switch" aria-checked="true"
         aria-label="Dark mode active. Click to switch to light mode." title="Switch to light mode">
         <span class="theme-prefix">THEME</span>
@@ -188,12 +213,26 @@
         <!-- Column 1: Portrait Column -->
         <div class="about-portrait-col">
           <figure class="about-portrait">
-            <img class="portrait-dark" src="./assets/martin.jpg"
-              alt="Stylised glitch-art portrait of Martin Davies, bald with a stubbled beard, wearing a knitted hoodie"
-              width="800" height="800" decoding="async" loading="eager">
-            <img class="portrait-light" src="./assets/martin-light.jpg"
-              alt="Stylised glitch-art portrait of Martin Davies, bald with a stubbled beard, wearing a knitted hoodie, in light colours"
-              width="800" height="800" decoding="async" loading="eager">
+            <script>
+              (function() {
+                var isAcad = false;
+                try { isAcad = (localStorage.getItem('mjd_academic_mode') === 'true'); } catch (_) {}
+                if (isAcad) {
+                  document.write('<img class="portrait-academic" src="./assets/martin-academic.jpg" alt="Portrait of Martin Davies in academic mode" width="360" height="360" decoding="async">');
+                } else {
+                  document.write('<img class="portrait-dark" src="./assets/martin.jpg" alt="Stylised glitch-art portrait of Martin Davies, bald with a stubbled beard, wearing a knitted hoodie" width="800" height="800" decoding="async" loading="eager">');
+                  document.write('<img class="portrait-light" src="./assets/martin-light.jpg" alt="Stylised glitch-art portrait of Martin Davies, bald with a stubbled beard, wearing a knitted hoodie, in light colours" width="800" height="800" decoding="async" loading="eager">');
+                }
+              })();
+            </script>
+            <noscript>
+              <img class="portrait-dark" src="./assets/martin.jpg"
+                alt="Stylised glitch-art portrait of Martin Davies, bald with a stubbled beard, wearing a knitted hoodie"
+                width="800" height="800" decoding="async" loading="eager">
+              <img class="portrait-light" src="./assets/martin-light.jpg"
+                alt="Stylised glitch-art portrait of Martin Davies, bald with a stubbled beard, wearing a knitted hoodie, in light colours"
+                width="800" height="800" decoding="async" loading="eager">
+            </noscript>
           </figure>
           <div class="about-portrait-caption">
             <span class="caption-label">FIG. 01 // VISUAL RECORD</span>

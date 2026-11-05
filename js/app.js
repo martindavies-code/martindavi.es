@@ -606,7 +606,7 @@ function buildProjectCardHtml(item) {
  * @param {number} index
  * @returns {string}
  */
-function buildShortCardHtml(item, index) {
+function buildShortCardHtml(item, index, doc = (typeof document !== 'undefined' ? document : null)) {
   const paddedIndex = `WM-${String(index + 1).padStart(2, '0')}`;
   const escapedTitle = escapeHtml(item.title);
   const escapedRecipient = escapeHtml(item.recipient);
@@ -616,6 +616,11 @@ function buildShortCardHtml(item, index) {
   const videoId = isValidVideoId(item.id) ? item.id : '';
   const dateStr = escapeHtml(item.date);
   const isFeatured = Boolean(item.featured);
+  const academic = isAcademicMode(doc);
+
+  const thumbSrc = videoId
+    ? (academic ? `./assets/shorts-academic/${escapeHtml(videoId)}.jpg` : `https://i.ytimg.com/vi/${escapeHtml(videoId)}/hqdefault.jpg`)
+    : '';
 
   return `
     <article class="short-card ${isFeatured ? 'featured' : ''}" id="card-${escapeHtml(videoId || paddedIndex)}">
@@ -640,12 +645,12 @@ function buildShortCardHtml(item, index) {
           data-title="${escapedTitle}"
           aria-label="Play YouTube Short: ${escapedTitle}">
           <img
-            src="${videoId ? `https://i.ytimg.com/vi/${escapeHtml(videoId)}/hqdefault.jpg` : ''}"
+            src="${thumbSrc}"
             alt="Thumbnail for ${escapedTitle}"
             loading="lazy"
             decoding="async"
-            width="480"
-            height="854">
+            width="${academic ? 240 : 480}"
+            height="${academic ? 426 : 854}">
           <div class="play-overlay">
             <span class="play-badge">
               <span class="play-icon">&#9654;</span> PLAY SHORTS
@@ -715,13 +720,17 @@ function buildSubmissionCardHtml() {
  * @param {any} item
  * @returns {string}
  */
-function buildPlaylistCardHtml(item) {
+function buildPlaylistCardHtml(item, doc = (typeof document !== 'undefined' ? document : null)) {
   const escapedId = escapeHtml(item.id);
   const escapedTitle = escapeHtml(item.title);
   const escapedGenre = escapeHtml(item.genre);
   const escapedSummary = escapeHtml(item.summary);
   const safeUrl = sanitizeUrl(item.url, true);
-  const safeCover = sanitizeUrl(item.cover, true);
+  const academic = isAcademicMode(doc);
+
+  const safeCover = academic
+    ? `./assets/playlists-academic/${escapedId}.jpg`
+    : sanitizeUrl(item.cover, true);
 
   const playlistMatch = (item.url || '').match(/playlist\/([a-zA-Z0-9]+)/);
   const playlistId = playlistMatch ? playlistMatch[1] : '';
@@ -740,8 +749,8 @@ function buildPlaylistCardHtml(item) {
           class="playlist-cover-img"
           loading="lazy"
           decoding="async"
-          width="640"
-          height="640"></a>
+          width="${academic ? 260 : 640}"
+          height="${academic ? 260 : 640}"></a>
       </div>
 
       <div class="playlist-body">
@@ -876,6 +885,65 @@ function playMechanicalClickSound(win = (typeof window !== 'undefined' ? window 
 
 /* --- Section Controller Initialisers --- */
 
+function isAcademicMode(doc = (typeof document !== 'undefined' ? document : null)) {
+  if (!doc) return false;
+  return doc.documentElement.classList.contains('academic-mode');
+}
+
+/**
+ * Initialises Distinguished Academic Mode toggle with persistent preference and truthful accessibility state.
+ * @param {Document | null} [doc=(typeof document !== 'undefined' ? document : null)]
+ * @param {Storage | null} [storage=(typeof localStorage !== 'undefined' ? localStorage : null)]
+ */
+function initAcademicMode(doc = (typeof document !== 'undefined' ? document : null), storage = (typeof localStorage !== 'undefined' ? localStorage : null)) {
+  if (!doc) return;
+  const root = doc.documentElement;
+  const toggleBtn = doc.getElementById('academic-toggle');
+
+  const rawPref = safeGetStorage(storage, 'mjd_academic_mode', 'false');
+  const isAcademic = rawPref === 'true';
+  applyAcademicMode(isAcademic);
+
+  if (toggleBtn && !toggleBtn.dataset.listenerBound) {
+    toggleBtn.dataset.listenerBound = 'true';
+    toggleBtn.addEventListener('click', () => {
+      const currentlyOn = root.classList.contains('academic-mode');
+      const newMode = !currentlyOn;
+      applyAcademicMode(newMode);
+      safeSetStorage(storage, 'mjd_academic_mode', String(newMode));
+      playMechanicalClickSound(typeof window !== 'undefined' ? window : null);
+    });
+  }
+
+  /**
+   * @param {boolean} enabled
+   */
+  function applyAcademicMode(enabled) {
+    if (root && root.classList) {
+      if (enabled) {
+        root.classList.add('academic-mode');
+      } else {
+        root.classList.remove('academic-mode');
+      }
+    }
+
+    if (toggleBtn) {
+      toggleBtn.setAttribute('aria-pressed', enabled ? 'true' : 'false');
+      toggleBtn.title = enabled
+        ? 'Distinguished Academic Mode is active. Click to switch to normal styled mode.'
+        : 'Distinguished Academic Mode is inactive. Click to switch to plain academic mode.';
+    }
+
+    // Dynamic re-render if data already present
+    if (doc.getElementById('wrong-martin-grid') && wrongMartinData && wrongMartinData.length > 0) {
+      renderWrongMartin(doc);
+    }
+    if (doc.getElementById('playlists-grid') && playlistsData && playlistsData.length > 0) {
+      renderPlaylists(doc);
+    }
+  }
+}
+
 /**
  * Initialises theme management with safe storage handling and accessibility labels.
  * @param {Document | null} [doc=(typeof document !== 'undefined' ? document : null)]
@@ -1007,7 +1075,7 @@ function renderWrongMartin(doc = (typeof document !== 'undefined' ? document : n
   const container = doc.getElementById('wrong-martin-grid');
   if (!container) return;
 
-  const cardsHtml = wrongMartinData.map(buildShortCardHtml).join('');
+  const cardsHtml = wrongMartinData.map((item, index) => buildShortCardHtml(item, index, doc)).join('');
   const submissionCardHtml = buildSubmissionCardHtml();
 
   container.innerHTML = cardsHtml + submissionCardHtml;
@@ -1059,7 +1127,7 @@ function renderPlaylists(doc = (typeof document !== 'undefined' ? document : nul
     counterEl.textContent = `${playlistsData.length} SOUND ARCHIVES`;
   }
 
-  container.innerHTML = playlistsData.map(buildPlaylistCardHtml).join('');
+  container.innerHTML = playlistsData.map(item => buildPlaylistCardHtml(item, doc)).join('');
 
   if (container.dataset && !container.dataset.listenerBound && typeof container.addEventListener === 'function') {
     container.dataset.listenerBound = 'true';
@@ -1475,6 +1543,7 @@ function initBackToTop(doc = (typeof document !== 'undefined' ? document : null)
 async function bootApp(doc = (typeof document !== 'undefined' ? document : null), storage = (typeof localStorage !== 'undefined' ? localStorage : null), customFetch = (typeof fetch !== 'undefined' ? fetch : null), win = (typeof window !== 'undefined' ? window : null), nav = (typeof navigator !== 'undefined' ? navigator : null)) {
   if (!doc) return;
   cleanIndexUrl(win);
+  initAcademicMode(doc, storage);
   initTheme(doc, storage);
   initKeyboardNavigation(win, doc, storage);
   initCopyHandle(doc, nav);
@@ -1490,10 +1559,18 @@ async function bootApp(doc = (typeof document !== 'undefined' ? document : null)
 
 /* --- DOM Ready Initialisation --- */
 if (typeof document !== 'undefined') {
+  const getSafeStorage = () => {
+    try {
+      return typeof localStorage !== 'undefined' ? localStorage : null;
+    } catch {
+      return null;
+    }
+  };
+
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => bootApp(document));
+    document.addEventListener('DOMContentLoaded', () => bootApp(document, getSafeStorage()));
   } else {
-    bootApp(document);
+    bootApp(document, getSafeStorage());
   }
 }
 
@@ -1520,6 +1597,8 @@ if (typeof module !== 'undefined' && module.exports) {
     swapYoutubeFacade,
     swapSpotifyFacade,
     playMechanicalClickSound,
+    isAcademicMode,
+    initAcademicMode,
     initTheme,
     initCopyHandle,
     initKeyboardNavigation,

@@ -1,0 +1,860 @@
+/* ==========================================================================
+   DISTINGUISHED ACADEMIC MODE STYLESHEET
+   Aesthetic: Motherfucking Website / Berkshire Hathaway / 1990s York Academic
+   Pure browser defaults: Times New Roman serif, single column, black text on
+   white background, standard blue/purple underlined links, no animations.
+   ========================================================================== */
+
+html.academic-mode,
+html.academic-mode body {
+  background-color: #FFFFFF !important;
+  color: #000000 !important;
+  font-family: "Times New Roman", Times, Georgia, serif !important;
+  font-size: 16px !important;
+  line-height: 1.5 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  max-width: 800px !important;
+  border-left: none !important;
+  border-right: none !important;
+  display: block !important;
+  text-transform: none !important;
+  letter-spacing: normal !important;
+}
+
+html.academic-mode *,
+html.academic-mode *::before,
+html.academic-mode *::after {
+  box-sizing: border-box !important;
+  font-family: inherit !important;
+  animation: none !important;
+  transition: none !important;
+  transform: none !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+  border-radius: 0 !important;
+  letter-spacing: normal !important;
+}
+
+/* Page Container Padding */
+html.academic-mode body {
+  padding: 16px 20px 40px 20px !important;
+}
+
+/* Links: standard browser blue / purple */
+html.academic-mode a,
+html.academic-mode a:link {
+  color: #0000EE !important;
+  text-decoration: underline !important;
+  background: transparent !important;
+  font-weight: normal !important;
+}
+
+html.academic-mode a:visited {
+  color: #551A8B !important;
+}
+
+html.academic-mode a:hover,
+html.academic-mode a:focus {
+  color: #0000EE !important;
+  text-decoration: underline !important;
+  background: transparent !important;
+}
+
+/* Top Academic Bar & Controls */
+html.academic-mode .chassis-header {
+  position: static !important;
+  display: block !important;
+  background: transparent !important;
+  border: none !important;
+  border-bottom: 2px solid #000000 !important;
+  padding: 0 0 12px 0 !important;
+  margin-bottom: 20px !important;
+}
+
+html.academic-mode .chassis-cell {
+  display: block !important;
+  padding: 0 !important;
+  border: none !important;
+  margin-bottom: 8px !important;
+}
+
+html.academic-mode .catalogue-tag,
+html.academic-mode .page-status-badge {
+  display: inline-block !important;
+  font-family: "Times New Roman", Times, serif !important;
+  font-size: 0.9rem !important;
+  background: transparent !important;
+  color: #000000 !important;
+  border: 1px solid #000000 !important;
+  padding: 2px 6px !important;
+  margin-bottom: 6px !important;
+}
+
+html.academic-mode .site-title {
+  display: block !important;
+  font-size: 1.8rem !important;
+  font-weight: bold !important;
+  margin: 6px 0 !important;
+  text-transform: none !important;
+}
+
+html.academic-mode .site-title .title-prefix,
+html.academic-mode .site-title .title-suffix {
+  font-size: 1rem !important;
+  font-weight: normal !important;
+  color: #000000 !important;
+}
+
+/* Chassis Controls: Keep toggle buttons accessible & clean */
+html.academic-mode .chassis-controls {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  margin: 8px 0 !important;
+}
+
+/* Distinguished Academic Mode Toggle Button */
+.academic-toggle-btn {
+  font-family: var(--font-mono, monospace);
+  font-size: var(--text-caption, 0.8125rem);
+  font-weight: 700;
+  background: var(--bg-card, #FAF8F3);
+  color: var(--ink-primary, #121212);
+  border: 1px solid var(--border-color, #121212);
+  min-height: 44px;
+  padding: 0 12px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  text-decoration: none;
+  transition: border-color var(--transition-fast, 0.15s), background-color var(--transition-fast, 0.15s);
+}
+
+.academic-toggle-btn:hover,
+.academic-toggle-btn:focus-visible {
+  border-color: var(--accent, #FF4F00);
+  outline: none;
+}
+
+.academic-toggle-btn .academic-status-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background-color: transparent;
+  border: 1px solid var(--ink-secondary, #4A4843);
+}
+
+.academic-toggle-btn[aria-pressed="true"] .academic-status-dot {
+  background-color: var(--accent, #FF4F00);
+  border-color: var(--accent, #FF4F00);
+  box-shadow: 0 0 6px var(--accent, #FF4F00);
+}
+
+/* In academic mode: plain browser button styling */
+html.academic-mode .academic-toggle-btn {
+  font-family: "Times New Roman", Times, serif !important;
+  font-size: 1rem !important;
+  font-weight: bold !important;
+  background: #EFEFEF !important;
+  color: #000000 !important;
+  border: 2px outset #767676 !important;
+  padding: 4px 10px !important;
+  min-height: auto !important;
+  cursor: pointer !important;
+}
+
+html.academic-mode .academic-toggle-btn:active {
+  border-style: inset !important;
+}
+
+html.academic-mode .academic-toggle-btn .academic-status-dot {
+  display: none !important;
+}
+
+/* Theme toggle in academic mode */
+html.academic-mode #theme-toggle {
+  display: none !important;
+}
+
+/* Navigation as a simple list / horizontal bar */
+html.academic-mode .chassis-nav {
+  display: block !important;
+  background: transparent !important;
+  border: none !important;
+  padding: 8px 0 !important;
+  margin: 6px 0 !important;
+}
+
+html.academic-mode .nav-dir-label {
+  display: inline !important;
+  font-weight: bold !important;
+  color: #000000 !important;
+}
+
+html.academic-mode .nav-link {
+  display: inline !important;
+  background: transparent !important;
+  border: none !important;
+  color: #0000EE !important;
+  text-decoration: underline !important;
+  padding: 0 6px !important;
+  min-height: auto !important;
+  font-weight: normal !important;
+}
+
+html.academic-mode .nav-link.active,
+html.academic-mode .nav-link[aria-current="page"] {
+  background: transparent !important;
+  color: #000000 !important;
+  font-weight: bold !important;
+  text-decoration: none !important;
+  box-shadow: none !important;
+}
+
+html.academic-mode .nav-link .nav-num {
+  color: inherit !important;
+  background: transparent !important;
+  padding: 0 !important;
+  font-weight: normal !important;
+}
+
+/* Headings & Main Layout */
+html.academic-mode main {
+  display: block !important;
+}
+
+html.academic-mode .grid-section {
+  display: block !important;
+  border: none !important;
+  margin-bottom: 30px !important;
+}
+
+html.academic-mode .section-header,
+html.academic-mode .section-intro {
+  display: block !important;
+  background: transparent !important;
+  border: none !important;
+  padding: 0 0 12px 0 !important;
+  margin-bottom: 12px !important;
+}
+
+html.academic-mode .cat-num,
+html.academic-mode .mono-meta {
+  display: block !important;
+  font-size: 0.9rem !important;
+  color: #444444 !important;
+  margin-bottom: 4px !important;
+}
+
+html.academic-mode h1,
+html.academic-mode h2,
+html.academic-mode h3,
+html.academic-mode h4 {
+  color: #000000 !important;
+  font-weight: bold !important;
+  text-transform: none !important;
+  margin-top: 14px !important;
+  margin-bottom: 8px !important;
+}
+
+html.academic-mode h2 {
+  font-size: 1.4rem !important;
+  border-bottom: 1px solid #CCCCCC !important;
+  padding-bottom: 4px !important;
+}
+
+html.academic-mode h3 {
+  font-size: 1.15rem !important;
+}
+
+html.academic-mode p {
+  color: #000000 !important;
+  font-size: 1rem !important;
+  line-height: 1.5 !important;
+  margin: 10px 0 !important;
+  max-width: none !important;
+}
+
+html.academic-mode .lead {
+  font-size: 1.1rem !important;
+  font-weight: bold !important;
+  border-left: none !important;
+  padding-left: 0 !important;
+}
+
+/* SECTION 01: ABOUT ME in Academic Mode */
+html.academic-mode .about-grid {
+  display: block !important;
+  background: transparent !important;
+}
+
+html.academic-mode .about-portrait-col,
+html.academic-mode .about-bio-col,
+html.academic-mode .about-specs {
+  display: block !important;
+  padding: 0 !important;
+  border: none !important;
+  background: transparent !important;
+  margin-bottom: 20px !important;
+}
+
+html.academic-mode .about-portrait {
+  border: 1px solid #888888 !important;
+  background: transparent !important;
+  max-width: 360px !important;
+  margin: 12px 0 !important;
+}
+
+html.academic-mode .about-portrait img {
+  max-width: 100% !important;
+  height: auto !important;
+  aspect-ratio: auto !important;
+}
+
+html.academic-mode .about-portrait .portrait-dark,
+html.academic-mode .about-portrait .portrait-light {
+  display: none !important;
+}
+
+html.academic-mode .about-portrait .portrait-academic {
+  display: block !important;
+}
+
+html.academic-mode .about-portrait-caption {
+  border: none !important;
+  background: transparent !important;
+  padding: 4px 0 !important;
+  font-size: 0.85rem !important;
+  color: #444444 !important;
+}
+
+html.academic-mode .caption-label,
+html.academic-mode .caption-meta {
+  display: inline !important;
+  color: #444444 !important;
+  font-size: 0.85rem !important;
+}
+
+html.academic-mode .about-telemetry-strip {
+  display: block !important;
+  border: 1px solid #888888 !important;
+  background: #F9F9F9 !important;
+  padding: 8px 12px !important;
+  margin: 16px 0 !important;
+}
+
+html.academic-mode .telemetry-cell {
+  display: block !important;
+  border: none !important;
+  padding: 4px 0 !important;
+}
+
+html.academic-mode .telemetry-label {
+  font-weight: bold !important;
+  color: #000000 !important;
+  display: inline !important;
+}
+
+html.academic-mode .telemetry-label::after {
+  content: ": " !important;
+}
+
+html.academic-mode .telemetry-val {
+  display: inline !important;
+  color: #000000 !important;
+}
+
+html.academic-mode .spec-list {
+  display: block !important;
+  border: 1px solid #888888 !important;
+  background: transparent !important;
+  padding: 8px 12px !important;
+}
+
+html.academic-mode .spec-row-split,
+html.academic-mode .spec-row-full,
+html.academic-mode .spec-item {
+  display: block !important;
+  border: none !important;
+  padding: 3px 0 !important;
+}
+
+html.academic-mode .spec-label {
+  font-weight: bold !important;
+  color: #000000 !important;
+  display: inline !important;
+}
+
+html.academic-mode .spec-label::after {
+  content: ": " !important;
+}
+
+html.academic-mode .spec-val {
+  display: inline !important;
+  color: #000000 !important;
+}
+
+html.academic-mode .directory-guide-box {
+  display: block !important;
+  border: 1px solid #888888 !important;
+  background: #FAFAFA !important;
+  padding: 12px !important;
+  margin-top: 20px !important;
+}
+
+html.academic-mode .dir-header {
+  border-bottom: 1px solid #CCCCCC !important;
+  padding-bottom: 4px !important;
+  margin-bottom: 8px !important;
+  font-weight: bold !important;
+}
+
+html.academic-mode .directory-links-grid {
+  display: block !important;
+}
+
+html.academic-mode .dir-card-link {
+  display: block !important;
+  border: none !important;
+  background: transparent !important;
+  padding: 4px 0 !important;
+  margin-bottom: 6px !important;
+}
+
+html.academic-mode .dir-card-link .dir-card-code {
+  font-weight: bold !important;
+  color: #000000 !important;
+}
+
+html.academic-mode .dir-card-link .dir-card-name {
+  color: #0000EE !important;
+  text-decoration: underline !important;
+}
+
+html.academic-mode .dir-card-link .dir-card-desc {
+  display: block !important;
+  color: #333333 !important;
+  font-size: 0.9rem !important;
+}
+
+/* SECTION 02: CODING EXPERIMENTS in Academic Mode */
+html.academic-mode .projects-grid {
+  display: block !important;
+  border: none !important;
+  background: transparent !important;
+}
+
+html.academic-mode .project-card {
+  display: block !important;
+  border: 1px solid #888888 !important;
+  background: #FFFFFF !important;
+  margin-bottom: 18px !important;
+  padding: 12px !important;
+  outline: none !important;
+}
+
+html.academic-mode .project-card:first-child {
+  border-left: 1px solid #888888 !important;
+}
+
+html.academic-mode .project-card:first-child .card-content {
+  display: block !important;
+  padding: 0 !important;
+}
+
+html.academic-mode .project-card:first-child .card-details {
+  border-left: none !important;
+  background: transparent !important;
+  padding: 6px 0 !important;
+  height: auto !important;
+}
+
+html.academic-mode .card-top-bar {
+  display: block !important;
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  margin-bottom: 6px !important;
+}
+
+html.academic-mode .card-cat-group {
+  display: inline !important;
+}
+
+html.academic-mode .card-cat {
+  font-weight: bold !important;
+  color: #000000 !important;
+}
+
+html.academic-mode .card-date {
+  color: #444444 !important;
+  margin-left: 8px !important;
+}
+
+html.academic-mode .card-content {
+  display: block !important;
+  padding: 0 !important;
+}
+
+html.academic-mode .card-category-tag {
+  color: #555555 !important;
+  font-size: 0.85rem !important;
+  margin-bottom: 4px !important;
+}
+
+html.academic-mode .card-details {
+  background: #F9F9F9 !important;
+  border: 1px solid #E0E0E0 !important;
+  border-left: 3px solid #888888 !important;
+  padding: 6px 10px !important;
+  margin: 8px 0 !important;
+  color: #222222 !important;
+}
+
+html.academic-mode .card-tags {
+  display: block !important;
+  margin: 6px 0 !important;
+}
+
+html.academic-mode .tag-pill {
+  display: inline-block !important;
+  background: #EFEFEF !important;
+  color: #000000 !important;
+  border: 1px solid #CCCCCC !important;
+  padding: 1px 5px !important;
+  font-size: 0.8rem !important;
+  margin-right: 4px !important;
+  margin-bottom: 4px !important;
+}
+
+html.academic-mode .card-links {
+  display: block !important;
+  border: none !important;
+  background: transparent !important;
+  margin-top: 8px !important;
+  padding-top: 6px !important;
+  border-top: 1px dashed #CCCCCC !important;
+}
+
+html.academic-mode .card-link {
+  display: inline-block !important;
+  color: #0000EE !important;
+  text-decoration: underline !important;
+  background: transparent !important;
+  padding: 2px 8px 2px 0 !important;
+  min-height: auto !important;
+  font-weight: normal !important;
+}
+
+html.academic-mode .card-link.card-link-static {
+  color: #666666 !important;
+  text-decoration: none !important;
+  font-style: italic !important;
+}
+
+/* SECTION 03: WRONG MARTIN in Academic Mode */
+html.academic-mode .shorts-grid {
+  display: block !important;
+  border: none !important;
+  background: transparent !important;
+}
+
+html.academic-mode .short-card {
+  display: block !important;
+  border: 1px solid #888888 !important;
+  background: #FFFFFF !important;
+  margin-bottom: 18px !important;
+  padding: 12px !important;
+  outline: none !important;
+}
+
+html.academic-mode .short-card-header {
+  display: block !important;
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  margin-bottom: 6px !important;
+}
+
+html.academic-mode .short-index {
+  font-weight: bold !important;
+  color: #000000 !important;
+}
+
+html.academic-mode .featured-tag,
+html.academic-mode .featured-stage-ribbon {
+  display: inline-block !important;
+  background: #FFFF99 !important;
+  color: #000000 !important;
+  border: 1px solid #CCCC66 !important;
+  padding: 1px 4px !important;
+  font-size: 0.8rem !important;
+  position: static !important;
+}
+
+html.academic-mode .stage-wrapper {
+  aspect-ratio: auto !important;
+  background: transparent !important;
+  border: none !important;
+  max-width: 240px !important;
+  margin: 8px 0 !important;
+}
+
+html.academic-mode .yt-facade {
+  position: static !important;
+  width: auto !important;
+  height: auto !important;
+  background: transparent !important;
+  border: 1px solid #888888 !important;
+  display: block !important;
+}
+
+html.academic-mode .yt-facade img {
+  width: 100% !important;
+  max-width: 240px !important;
+  height: auto !important;
+  filter: none !important;
+  transform: none !important;
+}
+
+html.academic-mode .play-overlay,
+html.academic-mode .genre-tag {
+  display: none !important;
+}
+
+html.academic-mode .short-card-body {
+  display: block !important;
+  padding: 0 !important;
+  margin-top: 8px !important;
+}
+
+html.academic-mode .short-recipient {
+  color: #444444 !important;
+  font-size: 0.9rem !important;
+  margin: 4px 0 !important;
+}
+
+html.academic-mode .short-footer {
+  background: transparent !important;
+  border: none !important;
+  padding: 6px 0 0 0 !important;
+  border-top: 1px dashed #CCCCCC !important;
+  margin-top: 6px !important;
+}
+
+html.academic-mode .submission-stage {
+  border: 1px dashed #888888 !important;
+  background: #FDFDFD !important;
+  padding: 12px !important;
+  max-width: none !important;
+}
+
+html.academic-mode .terminal-signal-circle {
+  display: none !important;
+}
+
+/* SECTION 04: PLAYLISTS in Academic Mode */
+html.academic-mode .playlists-grid {
+  display: block !important;
+  border: none !important;
+  background: transparent !important;
+}
+
+html.academic-mode .playlist-card {
+  display: block !important;
+  border: 1px solid #888888 !important;
+  background: #FFFFFF !important;
+  margin-bottom: 18px !important;
+  padding: 12px !important;
+  outline: none !important;
+}
+
+html.academic-mode .playlist-top-bar {
+  display: block !important;
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  margin-bottom: 6px !important;
+  font-weight: bold !important;
+}
+
+html.academic-mode .playlist-cover-wrapper {
+  aspect-ratio: auto !important;
+  max-width: 260px !important;
+  background: transparent !important;
+  border: 1px solid #888888 !important;
+  margin: 8px 0 !important;
+}
+
+html.academic-mode .playlist-cover-img {
+  max-width: 100% !important;
+  height: auto !important;
+  filter: none !important;
+  transform: none !important;
+}
+
+html.academic-mode .playlist-body {
+  display: block !important;
+  padding: 0 !important;
+}
+
+html.academic-mode .playlist-genre {
+  font-size: 0.85rem !important;
+  color: #555555 !important;
+  font-style: italic !important;
+}
+
+html.academic-mode .playlist-footer {
+  border: none !important;
+  padding: 6px 0 0 0 !important;
+  margin-top: 8px !important;
+  border-top: 1px dashed #CCCCCC !important;
+}
+
+html.academic-mode .spotify-btn,
+html.academic-mode .spotify-preview-btn {
+  display: inline-block !important;
+  color: #0000EE !important;
+  text-decoration: underline !important;
+  background: transparent !important;
+  border: none !important;
+  padding: 0 10px 0 0 !important;
+  font-weight: normal !important;
+  cursor: pointer !important;
+}
+
+/* SECTION 05: CONTACT in Academic Mode */
+html.academic-mode .contact-grid {
+  display: block !important;
+  border: none !important;
+  background: transparent !important;
+}
+
+html.academic-mode .contact-terminal-col,
+html.academic-mode .contact-intel-col {
+  display: block !important;
+  border: none !important;
+  padding: 0 !important;
+  margin-bottom: 24px !important;
+}
+
+html.academic-mode .terminal-header-bar,
+html.academic-mode .intel-header-bar {
+  display: block !important;
+  border-bottom: 1px solid #000000 !important;
+  padding-bottom: 4px !important;
+  margin-bottom: 12px !important;
+  font-weight: bold !important;
+  background: transparent !important;
+}
+
+html.academic-mode .terminal-label,
+html.academic-mode .intel-label {
+  color: #000000 !important;
+}
+
+html.academic-mode .contact-form {
+  display: block !important;
+}
+
+html.academic-mode .form-field {
+  display: block !important;
+  border: none !important;
+  margin-bottom: 12px !important;
+  padding: 0 !important;
+}
+
+html.academic-mode .form-field label {
+  display: block !important;
+  font-weight: bold !important;
+  color: #000000 !important;
+  margin-bottom: 4px !important;
+  background: transparent !important;
+  padding: 0 !important;
+  border: none !important;
+}
+
+html.academic-mode .form-field input,
+html.academic-mode .form-field textarea {
+  display: block !important;
+  width: 100% !important;
+  max-width: 600px !important;
+  background: #FFFFFF !important;
+  color: #000000 !important;
+  border: 1px solid #767676 !important;
+  padding: 6px !important;
+  font-family: inherit !important;
+  font-size: 1rem !important;
+}
+
+html.academic-mode .submit-btn {
+  display: inline-block !important;
+  background: #EFEFEF !important;
+  color: #000000 !important;
+  border: 2px outset #767676 !important;
+  padding: 6px 14px !important;
+  font-size: 1rem !important;
+  font-weight: bold !important;
+  cursor: pointer !important;
+  width: auto !important;
+  min-height: auto !important;
+}
+
+html.academic-mode .submit-btn:active {
+  border-style: inset !important;
+}
+
+html.academic-mode .form-status {
+  margin: 10px 0 !important;
+  padding: 8px !important;
+  border: 1px solid #000000 !important;
+  background: #FFFFEE !important;
+  color: #000000 !important;
+}
+
+html.academic-mode .intel-card,
+html.academic-mode .intel-notice {
+  border: 1px solid #888888 !important;
+  background: #FDFDFD !important;
+  padding: 12px !important;
+  margin-bottom: 16px !important;
+}
+
+html.academic-mode .copy-handle-btn,
+html.academic-mode .social-action-btn {
+  display: inline-block !important;
+  background: #EFEFEF !important;
+  color: #000000 !important;
+  border: 1px solid #767676 !important;
+  padding: 4px 8px !important;
+  font-size: 0.9rem !important;
+  cursor: pointer !important;
+  margin-top: 6px !important;
+  text-decoration: none !important;
+  min-height: auto !important;
+}
+
+/* Footer in Academic Mode */
+html.academic-mode .chassis-footer {
+  display: block !important;
+  border: none !important;
+  border-top: 2px solid #000000 !important;
+  padding-top: 16px !important;
+  margin-top: 30px !important;
+  background: transparent !important;
+  color: #444444 !important;
+}
+
+html.academic-mode .footer-left,
+html.academic-mode .footer-center,
+html.academic-mode .footer-right {
+  display: block !important;
+  padding: 4px 0 !important;
+  border: none !important;
+}
+
+html.academic-mode .footer-key-badge {
+  display: none !important;
+}
