@@ -2086,3 +2086,47 @@ describe('Stage 8: Regression Suite for Audit Priorities 1-5', () => {
 });
 
 
+
+describe('Academic Mode regressions', () => {
+  test('switch state and label follow both directions and preserve the stored normal theme', () => {
+    const doc = createMockDocument();
+    const values = {fac_md_theme: 'dark', mjd_academic_mode: 'false'};
+    const storage = {getItem: key => values[key] || null, setItem: (key, value) => { values[key] = value; }};
+    app.initAcademicMode(doc, storage);
+    const button = doc.getElementById('academic-toggle');
+    assert.equal(button.getAttribute('aria-checked'), 'false');
+    button.listeners.click[0]({});
+    assert.equal(button.getAttribute('aria-checked'), 'true');
+    assert.match(button.getAttribute('aria-label'), /is active/);
+    assert.equal(values.mjd_academic_mode, 'true');
+    assert.equal(values.fac_md_theme, 'dark');
+    button.listeners.click[0]({});
+    assert.equal(button.getAttribute('aria-checked'), 'false');
+    assert.equal(values.mjd_academic_mode, 'false');
+  });
+
+  test('live portrait switches supply only the missing mode variants, without duplicates', () => {
+    const doc = createMockDocument();
+    const images = [];
+    const portrait = {
+      querySelector: selector => images.find(image => '.' + image.className === selector) || null,
+      appendChild: image => images.push(image)
+    };
+    doc.querySelector = selector => selector === '.about-portrait' ? portrait : null;
+    const storage = {getItem: () => 'true', setItem: () => {}};
+    app.initAcademicMode(doc, storage);
+    assert.deepEqual(images.map(image => image.className), ['portrait-academic']);
+    doc.getElementById('academic-toggle').listeners.click[0]({});
+    assert.equal(images.length, 3);
+    doc.getElementById('academic-toggle').listeners.click[0]({});
+    assert.equal(images.length, 3);
+  });
+
+  test('plain thumbnails use local compressed variants, never YouTube originals', () => {
+    const doc = createMockDocument();
+    doc.documentElement.classList.add('academic-mode');
+    const html = app.buildShortCardHtml(app.FALLBACK_WRONG_MARTIN[0], 0, doc);
+    assert.match(html, /src="\.\/assets\/shorts-academic\//);
+    assert.doesNotMatch(html, /i\.ytimg\.com/);
+  });
+});

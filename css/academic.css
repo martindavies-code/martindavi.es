@@ -146,7 +146,7 @@ html.academic-mode .chassis-controls {
   border: 1px solid var(--ink-secondary, #4A4843);
 }
 
-.academic-toggle-btn[aria-pressed="true"] .academic-status-dot {
+.academic-toggle-btn[aria-checked="true"] .academic-status-dot {
   background-color: var(--accent, #FF4F00);
   border-color: var(--accent, #FF4F00);
   box-shadow: 0 0 6px var(--accent, #FF4F00);
@@ -857,4 +857,157 @@ html.academic-mode .footer-right {
 
 html.academic-mode .footer-key-badge {
   display: none !important;
+}
+
+/* Mode isolation: normal-theme variables must never leak into plain pages. */
+html.academic-mode {
+  --bg-primary: #fff;
+  --bg-secondary: #fff;
+  --bg-card: #fff;
+  --ink-primary: #000;
+  --ink-secondary: #444;
+  --border-color: #888;
+  --accent: #000;
+  --accent-text: #000;
+  --accent-contrast: #fff;
+  --signal-ok: #005a30;
+  --signal-err: #a00000;
+  color-scheme: light;
+}
+
+/* Match the real Contact markup, rather than obsolete class names. */
+html.academic-mode .split-grid.contact-layout,
+html.academic-mode .split-grid > .grid-column {
+  display: block !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  margin-bottom: 20px;
+}
+html.academic-mode .terminal-panel,
+html.academic-mode .dossier-card,
+html.academic-mode .notice-box {
+  background: #fff !important;
+  color: #000 !important;
+  border: 1px solid #888 !important;
+}
+html.academic-mode .panel-header,
+html.academic-mode .dossier-header {
+  background: #fff !important;
+  color: #000 !important;
+  border-bottom: 1px solid #888 !important;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+html.academic-mode .form-input,
+html.academic-mode .form-textarea {
+  color: #000 !important;
+  background: #fff !important;
+  border: 1px solid #767676 !important;
+}
+html.academic-mode .form-input::placeholder,
+html.academic-mode .form-textarea::placeholder {
+  color: #555;
+  opacity: 1;
+}
+html.academic-mode .btn {
+  background: #efefef !important;
+  color: #000 !important;
+  border: 1px solid #767676 !important;
+  white-space: normal;
+}
+
+/* Every destination remains recognisably a link, including the current page. */
+html.academic-mode .nav-link.active,
+html.academic-mode .nav-link[aria-current="page"] {
+  text-decoration: underline !important;
+}
+html.academic-mode .chassis-controls {
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+html.academic-mode .site-title {
+  white-space: normal !important;
+}
+html.academic-mode .nav-link {
+  white-space: normal !important;
+  overflow-wrap: anywhere;
+}
+html.academic-mode .academic-toggle-btn {
+  min-height: 44px !important;
+  max-width: 100%;
+  white-space: normal;
+  text-align: left;
+}
+html.academic-mode :focus-visible {
+  outline: 2px solid #000 !important;
+  outline-offset: 3px;
+}
+
+/* Legacy compressed thumbnails were resized from 4:3 into 240x426 files.
+   Restore the source artwork's 4:3 display ratio without downloading originals. */
+html.academic-mode .yt-facade img {
+  width: 100% !important;
+  height: auto !important;
+  aspect-ratio: 4 / 3 !important;
+  object-fit: fill !important;
+}
+html.academic-mode .yt-facade::after {
+  content: "Play YouTube Short";
+  display: block;
+  color: #0000ee;
+  text-decoration: underline;
+  padding: 6px;
+}
+html.academic-mode .stage-wrapper:has(iframe) {
+  aspect-ratio: 9 / 16 !important;
+  width: 100% !important;
+}
+html.academic-mode .stage-wrapper iframe {
+  aspect-ratio: 9 / 16;
+  width: 100% !important;
+  height: auto !important;
+}
+html.academic-mode .short-title,
+html.academic-mode .playlist-title {
+  min-height: 0 !important;
+}
+html.academic-mode .playlist-cover-wrapper:has(iframe) {
+  max-width: 100% !important;
+  aspect-ratio: auto !important;
+}
+html.academic-mode .bsky-handle,
+html.academic-mode .spec-val {
+  overflow-wrap: anywhere;
+}
+
+/* Do not let the phone navigation's styled active badge leak into plain mode. */
+html.academic-mode .chassis-nav .nav-link.active,
+html.academic-mode .chassis-nav .nav-link[aria-current="page"],
+html.academic-mode .chassis-nav .nav-link.active .nav-num,
+html.academic-mode .chassis-nav .nav-link[aria-current="page"] .nav-num {
+  background: transparent !important;
+  color: #000 !important;
+  border: none !important;
+}
+
+/* A portrait added during a live mode switch must not remain in normal mode. */
+html:not(.academic-mode) .about-portrait .portrait-academic {
+  display: none !important;
+}
+/* Let both header controls wrap instead of clipping on narrow phones. */
+html:not(.academic-mode) .chassis-controls {
+  flex-wrap: wrap;
+  gap: 8px;
+}
+html.academic-mode .spotify-embed-iframe {
+  height: 352px;
+  min-height: 352px;
+}
+/* Keep the catalogue number attached to its destination as links wrap. */
+html.academic-mode .chassis-nav .nav-link {
+  display: inline-block !important;
+  width: auto !important;
+  max-width: 100% !important;
+  white-space: normal !important;
 }
