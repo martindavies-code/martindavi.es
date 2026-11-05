@@ -25,10 +25,10 @@ const FALLBACK_PROJECTS = [
     "tech": ["HTML5", "CSS Grid", "Vanilla JS", "GitHub Pages", "Live Telemetry"],
     "links": {
       "nfl_live": "https://martindavies-code.github.io/nfl-live-dashboard/",
-      "nfl": "https://github.com/martindavies-code/nfl-live-dashboard",
       "nba_live": "https://martindavies-code.github.io/nba-live-dashboard/",
-      "nba": "https://github.com/martindavies-code/nba-live-dashboard",
       "tdf_live": "https://martindavies-code.github.io/tdf-dashboard/",
+      "nfl": "https://github.com/martindavies-code/nfl-live-dashboard",
+      "nba": "https://github.com/martindavies-code/nba-live-dashboard",
       "tdf": "https://github.com/martindavies-code/tdf-dashboard"
     }
   },
