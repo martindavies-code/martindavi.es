@@ -1004,3 +1004,10 @@ html.academic-mode .spotify-embed-iframe {
   height: 352px;
   min-height: 352px;
 }
+/* Keep the catalogue number attached to its destination as links wrap. */
+html.academic-mode .chassis-nav .nav-link {
+  display: inline-block !important;
+  width: auto !important;
+  max-width: 100% !important;
+  white-space: normal !important;
+}
