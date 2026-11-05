@@ -24,8 +24,11 @@ const FALLBACK_PROJECTS = [
     "details": "Engineered with vanilla ES6 and CSS Grid without framework overhead. Showcases three live deployments: the NFL Live tactical radar and win probability engine, the NBA Live court shot chart and Scorigami tracker, and the Tour de France Points Classification radar. Audited with custom contrast and responsive geometry rules before deployment.",
     "tech": ["HTML5", "CSS Grid", "Vanilla JS", "GitHub Pages", "Live Telemetry"],
     "links": {
+      "nfl_live": "https://martindavies-code.github.io/nfl-live-dashboard/",
       "nfl": "https://github.com/martindavies-code/nfl-live-dashboard",
+      "nba_live": "https://martindavies-code.github.io/nba-live-dashboard/",
       "nba": "https://github.com/martindavies-code/nba-live-dashboard",
+      "tdf_live": "https://martindavies-code.github.io/tdf-dashboard/",
       "tdf": "https://github.com/martindavies-code/tdf-dashboard"
     }
   },
@@ -39,7 +42,9 @@ const FALLBACK_PROJECTS = [
     "details": "Features 'Fourth Down Lab' (an Eyeshield 21-inspired NFL coaching audit evaluating 1,718 fourth-down decisions using Python nfl4th/nflfastR multinomial XGBoost win-probability models) and an empirical scorecard audit of 31,881 UFC rounds analysing judge dissent rates and scoring anomalies.",
     "tech": ["Python", "XGBoost", "TypeScript", "React", "Statistical Modelling"],
     "links": {
+      "fourthdown_live": "https://martindavies-code.github.io/fourth-down-lab/",
       "fourthdown": "https://github.com/martindavies-code/fourth-down-lab",
+      "ufc_live": "https://martindavies-code.github.io/ufc-judging-analysis/",
       "ufc": "https://github.com/martindavies-code/ufc-judging-analysis"
     }
   },
@@ -411,10 +416,15 @@ function normalizeTheme(value) {
 function resolveLinkLabel(key) {
   const k = key.toLowerCase();
   if (k === 'nfl') return 'NFL RADAR // GITHUB &nearr;';
+  if (k === 'nfl_live') return 'NFL RADAR // LIVE &nearr;';
   if (k === 'nba') return 'NBA LIVE // GITHUB &nearr;';
-  if (k === 'ufc') return 'UFC AUDIT // GITHUB &nearr;';
-  if (k === 'fourthdown') return '4TH DOWN LAB // GITHUB &nearr;';
+  if (k === 'nba_live') return 'NBA LIVE // LIVE &nearr;';
   if (k === 'tdf') return 'TDF POINTS // GITHUB &nearr;';
+  if (k === 'tdf_live') return 'TDF POINTS // LIVE &nearr;';
+  if (k === 'ufc') return 'UFC AUDIT // GITHUB &nearr;';
+  if (k === 'ufc_live') return 'UFC AUDIT // LIVE &nearr;';
+  if (k === 'fourthdown') return '4TH DOWN LAB // GITHUB &nearr;';
+  if (k === 'fourthdown_live') return '4TH DOWN LAB // LIVE &nearr;';
   if (k === 'github') return 'GITHUB // REPO &nearr;';
   if (k === 'youtube') return 'YOUTUBE // SHORT &nearr;';
   if (k === 'live' || k === 'demo') return 'LAUNCH // LIVE &nearr;';

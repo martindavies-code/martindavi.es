@@ -184,10 +184,15 @@ describe('Stage 1 & 2: Pure Domain Logic & Sanitisation', () => {
   describe('resolveLinkLabel()', () => {
     test('maps recognized keys to industrial label formats', () => {
       assert.equal(app.resolveLinkLabel('nfl'), 'NFL RADAR // GITHUB &nearr;');
+      assert.equal(app.resolveLinkLabel('nfl_live'), 'NFL RADAR // LIVE &nearr;');
       assert.equal(app.resolveLinkLabel('NBA'), 'NBA LIVE // GITHUB &nearr;');
+      assert.equal(app.resolveLinkLabel('nba_live'), 'NBA LIVE // LIVE &nearr;');
       assert.equal(app.resolveLinkLabel('ufc'), 'UFC AUDIT // GITHUB &nearr;');
+      assert.equal(app.resolveLinkLabel('ufc_live'), 'UFC AUDIT // LIVE &nearr;');
       assert.equal(app.resolveLinkLabel('fourthdown'), '4TH DOWN LAB // GITHUB &nearr;');
+      assert.equal(app.resolveLinkLabel('fourthdown_live'), '4TH DOWN LAB // LIVE &nearr;');
       assert.equal(app.resolveLinkLabel('tdf'), 'TDF POINTS // GITHUB &nearr;');
+      assert.equal(app.resolveLinkLabel('tdf_live'), 'TDF POINTS // LIVE &nearr;');
       assert.equal(app.resolveLinkLabel('github'), 'GITHUB // REPO &nearr;');
       assert.equal(app.resolveLinkLabel('youtube'), 'YOUTUBE // SHORT &nearr;');
       assert.equal(app.resolveLinkLabel('live'), 'LAUNCH // LIVE &nearr;');
