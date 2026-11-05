@@ -21,7 +21,7 @@
     "category": "Empirical Data & Modelling",
     "status": "Active",
     "summary": "Deep-dive empirical sports modelling and statistical audits separating tactical decision quality from real-world execution bias across the NFL and UFC.",
-    "details": "Combines Fourth Down Lab (an Eyeshield 21-inspired NFL coaching audit evaluating 1,718 fourth-down decisions using Python nfl4th/nflfastR multinomial XGBoost win-probability models) with an empirical scorecard audit of 31,881 UFC rounds analysing judge dissent rates and scoring anomalies.",
+    "details": "Features 'Fourth Down Lab' (an Eyeshield 21-inspired NFL coaching audit evaluating 1,718 fourth-down decisions using Python nfl4th/nflfastR multinomial XGBoost win-probability models) and an empirical scorecard audit of 31,881 UFC rounds analysing judge dissent rates and scoring anomalies.",
     "tech": ["Python", "XGBoost", "TypeScript", "React", "Statistical Modelling"],
     "links": {
       "fourthdown": "https://github.com/martindavies-code/fourth-down-lab",
