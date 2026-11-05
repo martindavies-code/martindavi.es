@@ -1030,6 +1030,13 @@ main {
   color: var(--bg-primary);
 }
 
+.card-link.card-link-static,
+.card-link.card-link-static:hover {
+  color: var(--ink-secondary);
+  background-color: var(--bg-secondary);
+  cursor: default;
+}
+
 /* --- Section 03: The Wrong Martin Davies (Shorts Gallery) --- */
 .shorts-grid {
   display: grid;

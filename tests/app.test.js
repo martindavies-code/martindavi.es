@@ -381,7 +381,7 @@ describe('Stage 5: HTML Template Builders & Facade Swapping', () => {
     assert.match(html, /Deep details/);
   });
 
-  test('buildProjectCardHtml handles single link and empty links gracefully', () => {
+  test('buildProjectCardHtml handles single link, footerNote, and empty links gracefully', () => {
     const singleLinkItem = {
       id: 'EXP-100',
       title: 'Solo',
@@ -390,6 +390,17 @@ describe('Stage 5: HTML Template Builders & Facade Swapping', () => {
     };
     const html1 = app.buildProjectCardHtml(singleLinkItem);
     assert.match(html1, /single-link/);
+
+    const footerNoteItem = {
+      id: 'EXP-104',
+      title: 'Local Tool',
+      category: 'Desktop Utilities',
+      footerNote: 'LOCAL BUILD ONLY // NOT PUBLICLY DISTRIBUTED'
+    };
+    const htmlNote = app.buildProjectCardHtml(footerNoteItem);
+    assert.match(htmlNote, /card-links single-link/);
+    assert.match(htmlNote, /card-link card-link-static/);
+    assert.match(htmlNote, /LOCAL BUILD ONLY \/\/ NOT PUBLICLY DISTRIBUTED/);
 
     const noLinkItem = { id: 'EXP-101', title: 'No Links', category: 'CLI' };
     const html2 = app.buildProjectCardHtml(noLinkItem);
