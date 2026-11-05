@@ -843,46 +843,6 @@ function swapSpotifyFacade(coverWrapper, embedUrl, previewBtn = null, doc = (typ
   return true;
 }
 
-/**
- * Synthesises a crisp mechanical micro-switch relay click via Web Audio API.
- * @param {Window | null} [win=(typeof window !== 'undefined' ? window : null)]
- */
-function playMechanicalClickSound(win = (typeof window !== 'undefined' ? window : null)) {
-  if (!win) return;
-  try {
-    const AudioCtx = /** @type {any} */ (win).AudioContext || /** @type {any} */ (win).webkitAudioContext;
-    if (!AudioCtx) return;
-    const ctx = new AudioCtx();
-    const now = ctx.currentTime;
-
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-    osc.type = 'triangle';
-    osc.frequency.setValueAtTime(140, now);
-    osc.frequency.exponentialRampToValueAtTime(40, now + 0.025);
-    gain.gain.setValueAtTime(0.12, now);
-    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.025);
-    osc.connect(gain);
-    gain.connect(ctx.destination);
-    osc.start(now);
-    osc.stop(now + 0.03);
-
-    const snap = ctx.createOscillator();
-    const snapGain = ctx.createGain();
-    snap.type = 'square';
-    snap.frequency.setValueAtTime(920, now + 0.005);
-    snap.frequency.exponentialRampToValueAtTime(180, now + 0.02);
-    snapGain.gain.setValueAtTime(0.08, now + 0.005);
-    snapGain.gain.exponentialRampToValueAtTime(0.001, now + 0.02);
-    snap.connect(snapGain);
-    snapGain.connect(ctx.destination);
-    snap.start(now + 0.005);
-    snap.stop(now + 0.025);
-  } catch {
-    // Fail silently if audio context cannot be initialized
-  }
-}
-
 /* --- Section Controller Initialisers --- */
 
 function isAcademicMode(doc = (typeof document !== 'undefined' ? document : null)) {
@@ -911,7 +871,6 @@ function initAcademicMode(doc = (typeof document !== 'undefined' ? document : nu
       const newMode = !currentlyOn;
       applyAcademicMode(newMode);
       safeSetStorage(storage, 'mjd_academic_mode', String(newMode));
-      playMechanicalClickSound(typeof window !== 'undefined' ? window : null);
     });
   }
 
@@ -967,7 +926,6 @@ function initTheme(doc = (typeof document !== 'undefined' ? document : null), st
       const newTheme = currentTheme === 'light' ? 'dark' : 'light';
       applyTheme(newTheme);
       safeSetStorage(storage, 'fac_md_theme', newTheme);
-      playMechanicalClickSound(typeof window !== 'undefined' ? window : null);
     });
   }
 
@@ -1596,7 +1554,6 @@ if (typeof module !== 'undefined' && module.exports) {
     buildPlaylistCardHtml,
     swapYoutubeFacade,
     swapSpotifyFacade,
-    playMechanicalClickSound,
     isAcademicMode,
     initAcademicMode,
     initTheme,

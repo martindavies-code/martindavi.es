@@ -1334,38 +1334,6 @@ describe('Stage 6: DOM Mock Controller Integration', () => {
     await grid.dispatch('click', { target: btnNoWrap });
   });
 
-  test('playMechanicalClickSound executes safely in all environments and handles throws', () => {
-    assert.doesNotThrow(() => app.playMechanicalClickSound(null));
-    const mockWin = {
-      AudioContext: class {
-        constructor() { this.currentTime = 0; this.destination = {}; }
-        createOscillator() {
-          return {
-            type: '',
-            frequency: { setValueAtTime() {}, exponentialRampToValueAtTime() {} },
-            connect() {},
-            start() {},
-            stop() {}
-          };
-        }
-        createGain() {
-          return {
-            gain: { setValueAtTime() {}, exponentialRampToValueAtTime() {} },
-            connect() {}
-          };
-        }
-      }
-    };
-    assert.doesNotThrow(() => app.playMechanicalClickSound(mockWin));
-
-    const throwingWin = {
-      AudioContext: class {
-        constructor() { throw new Error('Audio disabled'); }
-      }
-    };
-    assert.doesNotThrow(() => app.playMechanicalClickSound(throwingWin));
-  });
-
   test('comprehensive branch coverage for edge cases across all modules', async () => {
     // 1. sanitizeUrl edge cases
     assert.equal(app.sanitizeUrl(null), '#');
@@ -1465,31 +1433,7 @@ describe('Stage 6: DOM Mock Controller Integration', () => {
     const spWrapper = createMockElement('sp', 'DIV');
     assert.equal(app.swapSpotifyFacade(spWrapper, 'https://open.spotify.com/embed/playlist/test', null, doc), true);
 
-    // 10. playMechanicalClickSound webkitAudioContext fallback and missing audioContext
-    const mockWebkitWin = {
-      webkitAudioContext: class {
-        constructor() { this.currentTime = 0; this.destination = {}; }
-        createOscillator() {
-          return {
-            type: '',
-            frequency: { setValueAtTime() {}, exponentialRampToValueAtTime() {} },
-            connect() {},
-            start() {},
-            stop() {}
-          };
-        }
-        createGain() {
-          return {
-            gain: { setValueAtTime() {}, exponentialRampToValueAtTime() {} },
-            connect() {}
-          };
-        }
-      }
-    };
-    assert.doesNotThrow(() => app.playMechanicalClickSound(mockWebkitWin));
-    assert.doesNotThrow(() => app.playMechanicalClickSound({}));
-
-    // 11. initTheme with toggle click when optLight and optDark are missing
+    // 10. initTheme with toggle click when optLight and optDark are missing
     const docNoOpts = createMockDocument();
     docNoOpts.elements.set('theme-opt-light', null);
     docNoOpts.elements.set('theme-opt-dark', null);
