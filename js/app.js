@@ -887,10 +887,34 @@ function initAcademicMode(doc = (typeof document !== 'undefined' ? document : nu
     }
 
     if (toggleBtn) {
-      toggleBtn.setAttribute('aria-pressed', enabled ? 'true' : 'false');
+      toggleBtn.removeAttribute('aria-pressed');
+      toggleBtn.setAttribute('aria-checked', enabled ? 'true' : 'false');
+      toggleBtn.setAttribute('aria-label', enabled
+        ? 'Distinguished Academic Mode is active. Click to switch to normal styled mode.'
+        : 'Distinguished Academic Mode is inactive. Click to switch to plain academic mode.');
       toggleBtn.title = enabled
         ? 'Distinguished Academic Mode is active. Click to switch to normal styled mode.'
         : 'Distinguished Academic Mode is inactive. Click to switch to plain academic mode.';
+    }
+
+    // The initial HTML only loads the chosen portrait. Supply missing variants
+    // on a live switch without eagerly downloading full-size normal images.
+    const portrait = typeof doc.querySelector === 'function' ? doc.querySelector('.about-portrait') : null;
+    if (portrait) {
+      const variants = enabled
+        ? [['portrait-academic', './assets/martin-academic.jpg', 360]]
+        : [['portrait-dark', './assets/martin.jpg', 800], ['portrait-light', './assets/martin-light.jpg', 800]];
+      variants.forEach(([className, src, size]) => {
+        if (portrait.querySelector('.' + className)) return;
+        const image = doc.createElement('img');
+        image.className = className;
+        image.src = src;
+        image.alt = 'Stylised glitch-art portrait of Martin Davies, bald with a stubbled beard, wearing a knitted hoodie';
+        image.width = size;
+        image.height = size;
+        image.decoding = 'async';
+        portrait.appendChild(image);
+      });
     }
 
     // Dynamic re-render if data already present
@@ -1575,4 +1599,4 @@ if (typeof module !== 'undefined' && module.exports) {
     WEB3FORMS_ENDPOINT,
     WEB3FORMS_ACCESS_KEY
   };
-}
+    }
