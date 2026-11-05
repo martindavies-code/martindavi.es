@@ -186,6 +186,7 @@ describe('Stage 1 & 2: Pure Domain Logic & Sanitisation', () => {
       assert.equal(app.resolveLinkLabel('nfl'), 'NFL RADAR // GITHUB &nearr;');
       assert.equal(app.resolveLinkLabel('NBA'), 'NBA LIVE // GITHUB &nearr;');
       assert.equal(app.resolveLinkLabel('ufc'), 'UFC AUDIT // GITHUB &nearr;');
+      assert.equal(app.resolveLinkLabel('fourthdown'), '4TH DOWN LAB // GITHUB &nearr;');
       assert.equal(app.resolveLinkLabel('tdf'), 'TDF POINTS // GITHUB &nearr;');
       assert.equal(app.resolveLinkLabel('github'), 'GITHUB // REPO &nearr;');
       assert.equal(app.resolveLinkLabel('youtube'), 'YOUTUBE // SHORT &nearr;');
@@ -558,12 +559,16 @@ describe('Stage 6: DOM Mock Controller Integration', () => {
     const mockFetch = async () => new Response(JSON.stringify(app.FALLBACK_PROJECTS), { status: 200 });
     await app.loadProjects(doc, mockFetch);
     assert.match(counter.textContent, /4 R&D UNITS/);
-    assert.match(grid.innerHTML, /Interactive Dashboards/);
+    assert.match(grid.innerHTML, /Live Sports Dashboards/);
+    assert.match(grid.innerHTML, /Sports Analysis/);
+    assert.match(grid.innerHTML, /RhythmQuest/);
 
     // Test fallback on fetch error
     const failingFetch = async () => { throw new Error('Offline'); };
     await app.loadProjects(doc, failingFetch);
-    assert.match(grid.innerHTML, /Interactive Dashboards/);
+    assert.match(grid.innerHTML, /Live Sports Dashboards/);
+    assert.match(grid.innerHTML, /Sports Analysis/);
+    assert.match(grid.innerHTML, /RhythmQuest/);
   });
 
   test('loadWrongMartin and renderWrongMartin binds delegation idempotently', async () => {

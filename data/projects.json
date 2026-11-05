@@ -2,38 +2,45 @@
   {
     "id": "MJD-EXP-01",
     "date": "October 2026",
-    "title": "Interactive Sports Dashboards",
-    "category": "Frontend & Data",
+    "title": "Live Sports Dashboards",
+    "category": "Frontend & Live Data",
     "status": "Active",
-    "summary": "Zero-dependency static data dashboards hosted on GitHub Pages, delivering sub-second visual analytics for NFL live scores and field position, NBA shot charts, UFC judging scorecards, and cycling competitions.",
-    "details": "Engineered with vanilla ES6 and CSS Grid without framework overhead. Showcases four live deployments: the NFL Live tactical radar and win probability engine, the NBA Live court shot chart and Scorigami tracker, an empirical scorecard audit of 31,881 UFC rounds evaluating judge dissent rates, and the Tour de France Points Classification radar. Audited with custom contrast and responsive geometry rules before deployment.",
-    "tech": ["HTML5", "CSS Grid", "Vanilla JS", "GitHub Pages", "Data Analytics"],
+    "summary": "Zero-dependency static data dashboards hosted on GitHub Pages, delivering sub-second live visual telemetry for NFL scores and field positions, NBA shot charts, and cycling competitions.",
+    "details": "Engineered with vanilla ES6 and CSS Grid without framework overhead. Showcases three live deployments: the NFL Live tactical radar and win probability engine, the NBA Live court shot chart and Scorigami tracker, and the Tour de France Points Classification radar. Audited with custom contrast and responsive geometry rules before deployment.",
+    "tech": ["HTML5", "CSS Grid", "Vanilla JS", "GitHub Pages", "Live Telemetry"],
     "links": {
       "nfl": "https://github.com/martindavies-code/nfl-live-dashboard",
       "nba": "https://github.com/martindavies-code/nba-live-dashboard",
-      "ufc": "https://github.com/martindavies-code/ufc-judging-analysis",
       "tdf": "https://github.com/martindavies-code/tdf-dashboard"
     }
   },
   {
     "id": "MJD-EXP-02",
-    "date": "October 2026",
-    "title": "Antigravity Custom Agent Skills",
-    "category": "Agentic Workflows",
+    "date": "November 2026",
+    "title": "Sports Analysis",
+    "category": "Empirical Data & Modelling",
     "status": "Active",
-    "summary": "A collection of specialised agent skills built for Google Antigravity IDE to automate multi-step research and production tasks.",
-    "details": "Includes dj-man (extracts Camelot key and BPM data to order DJ sets with verified harmonic transitions), sports-radar (compiles 24-hour UK broadcast schedules across mainstream and niche sports), and match-my-writing-style (analyses personal Workspace correspondence to strip out synthetic phrasing).",
-    "tech": ["Google Antigravity", "Prompt Engineering", "JSON Schema", "Markdown"]
+    "summary": "Deep-dive empirical sports modelling and statistical audits separating tactical decision quality from real-world execution bias across the NFL and UFC.",
+    "details": "Combines Fourth Down Lab (an Eyeshield 21-inspired NFL coaching audit evaluating 1,718 fourth-down decisions using Python nfl4th/nflfastR multinomial XGBoost win-probability models) with an empirical scorecard audit of 31,881 UFC rounds analysing judge dissent rates and scoring anomalies.",
+    "tech": ["Python", "XGBoost", "TypeScript", "React", "Statistical Modelling"],
+    "links": {
+      "fourthdown": "https://github.com/martindavies-code/fourth-down-lab",
+      "ufc": "https://github.com/martindavies-code/ufc-judging-analysis"
+    }
   },
   {
     "id": "MJD-EXP-03",
-    "date": "August 2026",
-    "title": "PromptologyLabs Reference Blueprints",
-    "category": "Applied AI & Design",
+    "date": "November 2026",
+    "title": "RhythmQuest",
+    "category": "Neurodiverse-Friendly Web App",
     "status": "Live",
-    "summary": "Structured prompt workflow blueprints and technical reference sheets designed for novice Google Gemini users.",
-    "details": "Built during my 2026 sabbatical alongside the seven-course Google AI Professional Certificate. Combines modular information design with tested system instruction patterns to reduce repetitive rework in research and editorial pipelines.",
-    "tech": ["Google Gemini", "System Instructions", "Information Design", "Etsy Digital"]
+    "summary": "A local-first, sensory-accessible daily habit and action tracker designed for neurodiverse minds, combining a single-task focus view with optional low-pressure game elements.",
+    "details": "Built with React 19, TypeScript, and offline-first Service Worker caching with zero cloud tracking. Features an on-device step helper, deadline-based focus timer with session recovery, streak shields, four three-stage illustrated companions, nine interface languages, and customisable reading comfort controls including Lexend typography.",
+    "tech": ["React 19", "TypeScript", "Local-First PWA", "Accessibility", "Vite"],
+    "links": {
+      "live": "https://martindavies-code.github.io/neuro-action-tracker/",
+      "github": "https://github.com/martindavies-code/neuro-action-tracker"
+    }
   },
   {
     "id": "MJD-EXP-04",
