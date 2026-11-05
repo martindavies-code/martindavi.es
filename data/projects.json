@@ -28,8 +28,8 @@
     "tech": ["Python", "XGBoost", "TypeScript", "React", "Statistical Modelling"],
     "links": {
       "fourthdown_live": "https://martindavies-code.github.io/fourth-down-lab/",
-      "fourthdown": "https://github.com/martindavies-code/fourth-down-lab",
       "ufc_live": "https://martindavies-code.github.io/ufc-judging-analysis/",
+      "fourthdown": "https://github.com/martindavies-code/fourth-down-lab",
       "ufc": "https://github.com/martindavies-code/ufc-judging-analysis"
     }
   },

@@ -43,8 +43,8 @@ const FALLBACK_PROJECTS = [
     "tech": ["Python", "XGBoost", "TypeScript", "React", "Statistical Modelling"],
     "links": {
       "fourthdown_live": "https://martindavies-code.github.io/fourth-down-lab/",
-      "fourthdown": "https://github.com/martindavies-code/fourth-down-lab",
       "ufc_live": "https://martindavies-code.github.io/ufc-judging-analysis/",
+      "fourthdown": "https://github.com/martindavies-code/fourth-down-lab",
       "ufc": "https://github.com/martindavies-code/ufc-judging-analysis"
     }
   },
@@ -552,6 +552,7 @@ function buildProjectCardHtml(item) {
 
   if (linkKeys.length > 0) {
     const isSingleLink = linkKeys.length === 1;
+    const isQuadLink = linkKeys.length === 4;
     const linksHtml = linkKeys.map(key => {
       const rawUrl = item.links[key];
       const safeUrl = sanitizeUrl(rawUrl, true);
@@ -559,8 +560,9 @@ function buildProjectCardHtml(item) {
       return `<a href="${escapeHtml(safeUrl)}" class="card-link" target="_blank" rel="noopener noreferrer">${label}</a>`;
     }).join('');
 
+    const layoutClass = isSingleLink ? 'single-link' : (isQuadLink ? 'quad-links' : '');
     linksSectionHtml = `
-      <div class="card-links ${isSingleLink ? 'single-link' : ''}">
+      <div class="card-links ${layoutClass}">
         ${linksHtml}
       </div>
     `;

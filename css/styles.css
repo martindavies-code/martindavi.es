@@ -1009,6 +1009,10 @@ main {
   grid-template-columns: 1fr;
 }
 
+.card-links.quad-links {
+  grid-template-columns: repeat(2, 1fr);
+}
+
 .card-link {
   font-family: var(--font-mono);
   font-size: var(--text-caption);
