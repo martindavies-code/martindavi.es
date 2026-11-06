@@ -2003,7 +2003,15 @@ main {
     flex: 1 0 100%;
     border-bottom: 1px solid var(--border-color);
     padding: var(--space-xs);
-    justify-content: flex-end;
+    justify-content: stretch;
+    gap: 6px;
+  }
+  .chassis-controls .academic-toggle-btn,
+  .chassis-controls .theme-toggle-btn {
+    flex: 1 1 0;
+    min-width: 0;
+    justify-content: center;
+    text-align: center;
   }
   .site-title {
     white-space: normal;
