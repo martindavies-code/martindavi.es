@@ -87,6 +87,15 @@ const FALLBACK_WRONG_MARTIN = [
     "url": "https://youtube.com/shorts/IX8mW3_-ODQ"
   },
   {
+    "id": "-o73jwe1zOU",
+    "date": "6 November 2026",
+    "title": "Fender Precision Bass Scratch Plate (Quotation q1110299)",
+    "recipient": "Robin Whitnell, Absolute Music",
+    "genre": "Slap-Bass Funk",
+    "blurb": "Billed £32.00 to swap a white Fender Precision Bass scratch plate for three-ply black in Bournemouth. Despite being born in Poole Hospital and raised in Corfe Mullen, I denied all knowledge and dropped a slap-bass funk track instead.",
+    "url": "https://youtube.com/shorts/-o73jwe1zOU"
+  },
+  {
     "id": "OIk50i5G6s0",
     "date": "28 October 2026",
     "title": "98 Park Road Blackpool (Access Code)",
@@ -1058,9 +1067,8 @@ function renderWrongMartin(doc = (typeof document !== 'undefined' ? document : n
   if (!container) return;
 
   const cardsHtml = wrongMartinData.map((item, index) => buildShortCardHtml(item, index, doc)).join('');
-  const submissionCardHtml = buildSubmissionCardHtml();
 
-  container.innerHTML = cardsHtml + submissionCardHtml;
+  container.innerHTML = cardsHtml;
 
   // Idempotent Event Delegation for YouTube Facades
   if (!container.dataset.listenerBound) {

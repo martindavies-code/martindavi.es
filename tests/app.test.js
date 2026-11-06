@@ -595,7 +595,10 @@ describe('Stage 6: DOM Mock Controller Integration', () => {
     await app.loadWrongMartin(doc, mockFetch);
 
     assert.match(grid.innerHTML, /WM-01/);
+    assert.match(grid.innerHTML, /WM-02/);
+    assert.match(grid.innerHTML, /-o73jwe1zOU/);
     assert.match(grid.innerHTML, /WM-12/);
+    assert.doesNotMatch(grid.innerHTML, /YOUR MISDIRECTED EMAIL COULD BE NEXT/);
     assert.equal(grid.listeners['click'].length, 1);
 
     // Re-rendering does not accumulate extra click listeners
