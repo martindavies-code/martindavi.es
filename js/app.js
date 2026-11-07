@@ -92,7 +92,7 @@ const FALLBACK_WRONG_MARTIN = [
     "title": "Fender Precision Bass Scratch Plate (Quotation q1110299)",
     "recipient": "Robin Whitnell, Absolute Music",
     "genre": "Slap-Bass Funk",
-    "blurb": "Billed £32.00 to swap a white Fender Precision Bass scratch plate for three-ply black in Bournemouth. Despite being born in Poole Hospital, I denied all knowledge and dropped a slap-bass funk track instead.",
+    "blurb": "Billed 32 quid to swap a white Fender Precision Bass scratch plate for three-ply black in Bournemouth. Despite being born in Poole Hospital, I denied all knowledge and dropped a slap-bass funk track instead.",
     "url": "https://youtube.com/shorts/-o73jwe1zOU"
   },
   {
