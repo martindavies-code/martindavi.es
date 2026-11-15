@@ -38,14 +38,16 @@ const FALLBACK_PROJECTS = [
     "title": "Sports Analysis",
     "category": "Empirical Data & Modelling",
     "status": "Active",
-    "summary": "Deep-dive empirical sports modelling and statistical audits separating tactical decision quality from real-world execution bias across the NFL and UFC.",
-    "details": "Features 'Fourth Down Lab' (an Eyeshield 21-inspired NFL coaching audit evaluating 1,718 fourth-down decisions using Python nfl4th/nflfastR multinomial XGBoost win-probability models) and an empirical scorecard audit of 31,881 UFC rounds analysing judge dissent rates and scoring anomalies.",
+    "summary": "Deep-dive empirical sports modelling and statistical audits separating tactical decision quality from real-world execution bias across the NFL, UFC and Premier League.",
+    "details": "Features 'Fourth Down Lab' (an Eyeshield 21-inspired NFL coaching audit evaluating 1,718 fourth-down decisions using Python nfl4th/nflfastR multinomial XGBoost win-probability models) an empirical scorecard audit of 31,881 UFC rounds analysing judge dissent rates and scoring anomalies, and 'The Championship Formula', 33 Premier League seasons of data on what actually wins the title: wins, goals scored, the 40-point myth and the draw trap.",
     "tech": ["Python", "XGBoost", "TypeScript", "React", "Statistical Modelling"],
     "links": {
       "fourthdown_live": "https://martindavies-code.github.io/fourth-down-lab/",
-      "ufc_live": "https://martindavies-code.github.io/ufc-judging-analysis/",
       "fourthdown": "https://github.com/martindavies-code/fourth-down-lab",
-      "ufc": "https://github.com/martindavies-code/ufc-judging-analysis"
+      "ufc_live": "https://martindavies-code.github.io/ufc-judging-analysis/",
+      "ufc": "https://github.com/martindavies-code/ufc-judging-analysis",
+      "championship_live": "https://martindavies-code.github.io/championship-formula/",
+      "championship": "https://github.com/martindavies-code/championship-formula"
     }
   },
   {
@@ -434,6 +436,8 @@ function resolveLinkLabel(key) {
   if (k === 'ufc_live') return 'UFC AUDIT // LIVE &nearr;';
   if (k === 'fourthdown') return '4TH DOWN LAB // GITHUB &nearr;';
   if (k === 'fourthdown_live') return '4TH DOWN LAB // LIVE &nearr;';
+  if (k === 'championship') return 'CHAMPIONSHIP FORMULA // GITHUB &nearr;';
+  if (k === 'championship_live') return 'CHAMPIONSHIP FORMULA // LIVE &nearr;';
   if (k === 'github') return 'GITHUB // REPO &nearr;';
   if (k === 'youtube') return 'YOUTUBE // SHORT &nearr;';
   if (k === 'live' || k === 'demo') return 'LAUNCH // LIVE &nearr;';
@@ -561,7 +565,7 @@ function buildProjectCardHtml(item) {
 
   if (linkKeys.length > 0) {
     const isSingleLink = linkKeys.length === 1;
-    const isQuadLink = linkKeys.length === 4;
+    const isQuadLink = linkKeys.length === 4 || linkKeys.length === 6;
     const linksHtml = linkKeys.map(key => {
       const rawUrl = item.links[key];
       const safeUrl = sanitizeUrl(rawUrl, true);
@@ -1608,3 +1612,4 @@ if (typeof module !== 'undefined' && module.exports) {
     WEB3FORMS_ACCESS_KEY
   };
     }
+
