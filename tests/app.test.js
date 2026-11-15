@@ -191,6 +191,8 @@ describe('Stage 1 & 2: Pure Domain Logic & Sanitisation', () => {
       assert.equal(app.resolveLinkLabel('ufc_live'), 'UFC AUDIT // LIVE &nearr;');
       assert.equal(app.resolveLinkLabel('fourthdown'), '4TH DOWN LAB // GITHUB &nearr;');
       assert.equal(app.resolveLinkLabel('fourthdown_live'), '4TH DOWN LAB // LIVE &nearr;');
+      assert.equal(app.resolveLinkLabel('championship'), 'CHAMPIONSHIP FORMULA // GITHUB &nearr;');
+      assert.equal(app.resolveLinkLabel('championship_live'), 'CHAMPIONSHIP FORMULA // LIVE &nearr;');
       assert.equal(app.resolveLinkLabel('tdf'), 'TDF POINTS // GITHUB &nearr;');
       assert.equal(app.resolveLinkLabel('tdf_live'), 'TDF POINTS // LIVE &nearr;');
       assert.equal(app.resolveLinkLabel('github'), 'GITHUB // REPO &nearr;');
@@ -2133,3 +2135,4 @@ describe('Academic Mode regressions', () => {
     assert.doesNotMatch(html, /i\.ytimg\.com/);
   });
 });
+
