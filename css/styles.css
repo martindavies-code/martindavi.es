@@ -62,7 +62,7 @@
 html {
   font-size: 16px;
   scroll-behavior: smooth;
-  scroll-padding-top: 60px;
+  scroll-padding-top: 125px;
   background-color: var(--bg-primary);
   color: var(--ink-primary);
   overflow-x: hidden;
@@ -798,8 +798,8 @@ main {
   text-underline-offset: 3px;
   font-family: var(--font-mono);
   font-weight: 700;
-  overflow-wrap: break-word;
-  word-break: break-all;
+  overflow-wrap: anywhere;
+  word-break: normal;
   transition: color var(--transition-fast);
 }
 
@@ -1932,10 +1932,103 @@ main {
   background-color: var(--accent);
 }
 
+/* Compact 1280px-1359px laptop header so longer page badges fit on Row 1 */
+@media (min-width: 1280px) and (max-width: 1359px) {
+  .chassis-cell {
+    padding: var(--space-xs) 12px;
+  }
+  .chassis-id {
+    gap: 6px;
+  }
+  .chassis-controls {
+    gap: 6px;
+  }
+  .academic-toggle-btn {
+    padding: 0 10px;
+  }
+  .catalogue-tag,
+  .page-status-badge {
+    font-size: 0.75rem;
+    padding: 3px 6px;
+  }
+}
+
+/* Stacked Full-Width Header Rows (< 1280px: Landscape Tablets, Portrait Tablets, Mobile) */
+@media (max-width: 1279px) {
+  html {
+    scroll-padding-top: 170px;
+  }
+  .chassis-id {
+    width: 100%;
+    flex: 1 0 100%;
+    border-right: none;
+    border-bottom: 1px solid var(--border-color);
+    padding: var(--space-xs) var(--space-sm);
+    gap: var(--space-xs);
+  }
+  .chassis-controls {
+    width: 100%;
+    flex: 1 0 100%;
+    padding: var(--space-xs) var(--space-sm);
+    justify-content: stretch;
+    gap: var(--space-xs);
+    background-color: var(--bg-primary);
+  }
+  .chassis-controls .academic-toggle-btn,
+  .chassis-controls .theme-toggle-btn {
+    flex: 1 1 0;
+    min-width: 0;
+    justify-content: center;
+    text-align: center;
+  }
+}
+
+/* Tablet Identity Bar (641px - 1279px): Clean full-width single line with right-aligned page badge */
+@media (min-width: 641px) and (max-width: 1279px) {
+  .chassis-id {
+    flex-wrap: nowrap;
+    gap: clamp(6px, 1vw, 8px);
+  }
+  .chassis-id .page-status-badge {
+    margin-left: auto;
+  }
+  .chassis-id .site-title {
+    font-size: clamp(0.8125rem, 1.8vw, 1rem);
+  }
+  .chassis-id .catalogue-tag,
+  .chassis-id .page-status-badge {
+    font-size: clamp(0.7rem, 1.35vw, 0.8125rem);
+    padding: 3px clamp(6px, 1vw, 8px);
+  }
+}
+
+/* Landscape Tablet (1024px - 1199px): Prevent cramped specs & telemetry strip */
+@media (min-width: 1024px) and (max-width: 1199px) {
+  .about-grid {
+    grid-template-columns: minmax(225px, 260px) minmax(0, 1.5fr) minmax(305px, 1.05fr);
+  }
+  .about-portrait-col,
+  .about-bio-col,
+  .about-specs {
+    padding: var(--space-md) var(--space-sm);
+  }
+  .about-telemetry-strip {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .telemetry-cell:nth-child(2) {
+    border-right: none;
+  }
+  .telemetry-cell:nth-child(1),
+  .telemetry-cell:nth-child(2) {
+    border-bottom: 1px solid var(--border-color);
+  }
+}
+
 /* Tablet & Mobile (< 1024px) */
 @media (max-width: 1023px) {
-  .chassis-nav {
-    padding: 0 var(--space-xs);
+  .section-header,
+  .directory-guide-box .dir-header {
+    flex-wrap: wrap;
     gap: var(--space-xs);
   }
   .about-grid {
@@ -1947,8 +2040,10 @@ main {
     border-bottom: 1px solid var(--border-color);
     padding: var(--space-md);
   }
-  .about-portrait {
+  .about-portrait,
+  .about-portrait-caption {
     max-width: 320px;
+    width: 100%;
   }
   .about-telemetry-strip {
     grid-template-columns: repeat(2, 1fr);
@@ -1983,6 +2078,50 @@ main {
   }
 }
 
+/* Portrait Tablet About Grid (680px - 1023px): Portrait + Bio side-by-side, full-width 2-col specs */
+@media (min-width: 680px) and (max-width: 1023px) {
+  .about-grid {
+    grid-template-columns: minmax(245px, 275px) minmax(0, 1fr);
+  }
+  .about-portrait-col {
+    border-right: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
+    justify-content: flex-start;
+    padding: var(--space-md) var(--space-sm);
+  }
+  .about-portrait,
+  .about-portrait-caption {
+    max-width: 100%;
+  }
+  .about-portrait-caption {
+    padding: var(--space-xs) 10px;
+  }
+  .about-portrait-caption .caption-meta {
+    font-size: 0.72rem;
+  }
+  .about-bio-col {
+    border-right: none;
+    border-bottom: 1px solid var(--border-color);
+  }
+  .about-specs {
+    grid-column: 1 / -1;
+  }
+  .spec-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .spec-list > :nth-child(odd) {
+    border-right: 1px solid var(--border-color);
+  }
+  .spec-list > .spec-row-split,
+  .spec-list > .spec-row-full {
+    border-bottom: 1px solid var(--border-color);
+  }
+  .spec-list > :nth-last-child(-n+2) {
+    border-bottom: none;
+  }
+}
+
 /* Mobile & Small Tablets (<= 640px) */
 @media (max-width: 640px) {
   body {
@@ -1990,28 +2129,13 @@ main {
     border-right: none;
   }
   .chassis-id {
-    width: 100%;
-    flex: 1 0 100%;
-    border-right: none;
-    border-bottom: 1px solid var(--border-color);
     flex-wrap: wrap;
     gap: 4px;
     padding: var(--space-xs);
   }
   .chassis-controls {
-    width: 100%;
-    flex: 1 0 100%;
-    border-bottom: 1px solid var(--border-color);
     padding: var(--space-xs);
-    justify-content: stretch;
     gap: 6px;
-  }
-  .chassis-controls .academic-toggle-btn,
-  .chassis-controls .theme-toggle-btn {
-    flex: 1 1 0;
-    min-width: 0;
-    justify-content: center;
-    text-align: center;
   }
   .site-title {
     white-space: normal;
@@ -2033,7 +2157,7 @@ main {
   .theme-toggle-btn {
     padding: 0 6px;
     gap: 4px;
-    min-height: 40px;
+    min-height: 44px;
   }
   .theme-opt {
     padding: 3px 5px;
@@ -2104,26 +2228,78 @@ main {
 [data-theme="dark"] .about-portrait .portrait-dark { display: block; }
 
 /* Responsive Navigation Architecture */
-/* Compact wrapping directory pills for tablet/intermediate viewports (481px - 1024px) */
-@media (min-width: 481px) and (max-width: 1024px) {
+/* Landscape tablet nav (1024px - 1279px) */
+@media (min-width: 1024px) and (max-width: 1279px) {
+  .chassis-nav {
+    padding: 8px var(--space-sm);
+    gap: var(--space-xs);
+  }
+  .chassis-nav .nav-link {
+    min-height: 40px;
+    padding: 4px 10px;
+  }
+}
+
+/* Balanced single-row / edge-to-edge directory nav for tablets & phablets (481px - 1023px) */
+@media (min-width: 481px) and (max-width: 1023px) {
   .chassis-nav {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    align-items: center;
+    align-items: stretch;
     padding: 8px var(--space-sm);
-    gap: var(--space-xs);
+    gap: 6px;
     white-space: normal;
   }
 
+  .chassis-nav .nav-dir-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
   .chassis-nav .nav-link {
+    flex: 1 1 auto;
+    justify-content: center;
     display: inline-flex;
     width: auto;
     max-width: 100%;
-    min-height: 36px;
-    padding: 4px 12px;
+    min-height: 44px;
+    padding: 6px 8px;
     border: 1px solid var(--border-color);
     white-space: nowrap;
+    font-size: clamp(0.68rem, 1.5vw, 0.8125rem);
+  }
+}
+
+@media (min-width: 481px) and (max-width: 679px) {
+  .chassis-nav .nav-link {
+    flex: 1 1 30%;
+  }
+}
+
+@media (min-width: 481px) and (max-width: 640px) {
+  .chassis-nav {
+    padding: 8px var(--space-xs);
+  }
+  .chassis-nav .nav-link {
+    padding: 6px 10px;
+  }
+}
+
+/* Short-height viewports (e.g. landscape phones / compact split-screen): keep content unobstructed */
+@media (max-height: 680px) {
+  .chassis-header {
+    position: static;
+  }
+  html {
+    scroll-padding-top: 16px;
   }
 }
 

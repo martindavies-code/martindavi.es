@@ -38,8 +38,8 @@ const FALLBACK_PROJECTS = [
     "title": "Sports Analysis",
     "category": "Empirical Data & Modelling",
     "status": "Active",
-    "summary": "Deep-dive empirical sports modelling and statistical audits separating tactical decision quality from real-world execution bias across the NFL, UFC and Premier League.",
-    "details": "Features 'Fourth Down Lab' (an Eyeshield 21-inspired NFL coaching audit evaluating 1,718 fourth-down decisions using Python nfl4th/nflfastR multinomial XGBoost win-probability models) an empirical scorecard audit of 31,881 UFC rounds analysing judge dissent rates and scoring anomalies, and 'The Championship Formula', 33 Premier League seasons of data on what actually wins the title: wins, goals scored, the 40-point myth and the draw trap.",
+    "summary": "Deep-dive empirical sports modelling and statistical audits separating tactical decision quality from real-world execution bias across the NFL, UFC and all four tiers of English football.",
+    "details": "Features 'Fourth Down Lab' (an Eyeshield 21-inspired NFL coaching audit evaluating 1,718 fourth-down decisions using Python nfl4th/nflfastR multinomial XGBoost win-probability models), an empirical scorecard audit of 31,881 UFC rounds analysing judge dissent rates and scoring anomalies, and 'The Championship Formula': a zero-dependency study of 180 league tables across English Tiers 1 to 4 from 1981 to 2026 (91,270 matches, 238,714 goals), featuring interactive SVG charts on title races, survival cutoffs and play-off seed odds, verified scorer audits, a sortable full-archive explorer, an Official vs On-Pitch Points toggle, and a Normal Person / Statistics Sicko reading switch.",
     "tech": ["Python", "XGBoost", "TypeScript", "React", "Statistical Modelling"],
     "links": {
       "fourthdown_live": "https://martindavies-code.github.io/fourth-down-lab/",

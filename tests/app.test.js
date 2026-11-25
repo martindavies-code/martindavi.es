@@ -2136,3 +2136,32 @@ describe('Academic Mode regressions', () => {
   });
 });
 
+describe('Championship Formula copy & Tablet responsive layout regressions', () => {
+  test('data/projects.json stays in lockstep with FALLBACK_PROJECTS and describes expanded Tiers 1-4 Championship Formula', () => {
+    const projectsPath = path.resolve(process.cwd(), 'data/projects.json');
+    const projectsJson = JSON.parse(fs.readFileSync(projectsPath, 'utf8'));
+    assert.deepEqual(projectsJson, app.FALLBACK_PROJECTS);
+
+    const sportsAnalysis = projectsJson.find(p => p.id === 'MJD-EXP-02');
+    assert.ok(sportsAnalysis, 'MJD-EXP-02 Sports Analysis entry must exist');
+    assert.match(sportsAnalysis.summary, /all four tiers of English football/i);
+    assert.match(sportsAnalysis.details, /180 league tables/);
+    assert.match(sportsAnalysis.details, /Tiers 1 to 4/);
+    assert.match(sportsAnalysis.details, /1981 to 2026/);
+    assert.match(sportsAnalysis.details, /91,270 matches/);
+    assert.match(sportsAnalysis.details, /238,714 goals/);
+    assert.match(sportsAnalysis.details, /Normal Person \/ Statistics Sicko/);
+    assert.doesNotMatch(sportsAnalysis.summary + sportsAnalysis.details, /\u2014/);
+  });
+
+  test('CSS provides balanced full-width tablet header controls, 44px single-row tablet nav targets, and clean spec link wrapping', () => {
+    const cssPath = path.resolve(process.cwd(), 'css/styles.css');
+    const cssContent = fs.readFileSync(cssPath, 'utf8');
+
+    assert.match(cssContent, /@media\s*\(max-width:\s*1279px\)\s*\{[\s\S]*\.chassis-id\s*\{[^}]*width:\s*100%;[^}]*border-bottom:\s*1px solid var\(--border-color\);/);
+    assert.match(cssContent, /@media\s*\(max-width:\s*1279px\)\s*\{[\s\S]*\.chassis-controls\s*\{[^}]*width:\s*100%;[^}]*justify-content:\s*stretch;/);
+    assert.match(cssContent, /@media\s*\(min-width:\s*481px\)\s+and\s+\(max-width:\s*1023px\)\s*\{[\s\S]*\.chassis-nav\s+\.nav-link\s*\{[^}]*min-height:\s*44px;/);
+    assert.match(cssContent, /\.spec-val a\s*\{[^}]*overflow-wrap:\s*anywhere;[^}]*word-break:\s*normal;/);
+    assert.doesNotMatch(cssContent, /\.spec-val a\s*\{[^}]*word-break:\s*break-all;/);
+  });
+});

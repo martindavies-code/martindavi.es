@@ -1000,6 +1000,9 @@ html:not(.academic-mode) .chassis-controls {
   flex-wrap: wrap;
   gap: 8px;
 }
+html.academic-mode .chassis-controls .academic-toggle-btn {
+  flex: 0 0 auto !important;
+}
 html.academic-mode .spotify-embed-iframe {
   height: 352px;
   min-height: 352px;
