@@ -2231,12 +2231,22 @@ main {
 /* Landscape tablet nav (1024px - 1279px) */
 @media (min-width: 1024px) and (max-width: 1279px) {
   .chassis-nav {
-    padding: 8px var(--space-sm);
+    padding: 6px var(--space-sm);
     gap: var(--space-xs);
   }
   .chassis-nav .nav-link {
-    min-height: 40px;
+    min-height: 44px;
     padding: 4px 10px;
+  }
+}
+
+/* Desktop nav (>= 1280px): 44px touch targets, bar height kept at the previous 52px */
+@media (min-width: 1280px) {
+  .chassis-nav {
+    padding: 4px var(--space-sm);
+  }
+  .chassis-nav .nav-link {
+    min-height: 44px;
   }
 }
 
