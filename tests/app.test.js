@@ -2165,3 +2165,16 @@ describe('Championship Formula copy & Tablet responsive layout regressions', () 
     assert.doesNotMatch(cssContent, /\.spec-val a\s*\{[^}]*word-break:\s*break-all;/);
   });
 });
+describe('Nav touch targets (680px and up)', () => {
+  const styles = fs.readFileSync(path.resolve(process.cwd(), 'css/styles.css'), 'utf8');
+  const academic = fs.readFileSync(path.resolve(process.cwd(), 'css/academic.css'), 'utf8');
+
+  test('dark/light nav links are at least 44px at 1024px and above', () => {
+    assert.match(styles, /@media\s*\(min-width:\s*1024px\)\s+and\s+\(max-width:\s*1279px\)\s*\{[\s\S]*?\.chassis-nav\s+\.nav-link\s*\{[^}]*min-height:\s*44px;/);
+    assert.match(styles, /@media\s*\(min-width:\s*1280px\)\s*\{\s*\.chassis-nav\s*\{[^}]*\}\s*\.chassis-nav\s+\.nav-link\s*\{[^}]*min-height:\s*44px;/);
+  });
+
+  test('Academic Mode nav links are at least 44px from 680px up', () => {
+    assert.match(academic, /@media\s*\(min-width:\s*680px\)\s*\{\s*html\.academic-mode\s+\.chassis-nav\s+\.nav-link\s*\{[^}]*display:\s*inline-flex\s*!important;[^}]*min-height:\s*44px\s*!important;/);
+  });
+});
