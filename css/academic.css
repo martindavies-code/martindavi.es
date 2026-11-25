@@ -1014,3 +1014,19 @@ html.academic-mode .chassis-nav .nav-link {
   max-width: 100% !important;
   white-space: normal !important;
 }
+
+/* Academic Mode: 44px touch targets for the five nav links from 680px up (plain look unchanged) */
+@media (min-width: 680px) {
+  html.academic-mode .chassis-nav .nav-link {
+    display: inline-flex !important;
+    align-items: center;
+    vertical-align: middle;
+    min-height: 44px !important;
+  }
+  html.academic-mode .chassis-nav .nav-dir-label {
+    display: inline-flex !important;
+    align-items: center;
+    vertical-align: middle;
+    min-height: 44px;
+  }
+}
